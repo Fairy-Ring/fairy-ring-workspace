@@ -1,11 +1,12 @@
-# Docs (public surface)
+# Docs (contributor surface)
 
-This public tree ships a **thin** documentation set only.
+This tree ships a **thin** documentation set only.
 
-| Included | Not included |
-|----------|----------------|
-| Decisions (fences, branding, public surface) | Session plans / thrash logs |
-| Authenticity stance | Full research corpus / readiness XL |
-| Root `AGENT_BRIEF.md` | Gap dumps, COLD_START, operator paths |
+| Included | Not included by default |
+|----------|-------------------------|
+| Decisions (fences, branding, thin surface) | Session thrash plans |
+| Authenticity stance | Full readiness XL / port dumps |
+| **Deviations log** | Gap dumps / private cold-start notes |
+| Root `AGENT_BRIEF.md` | Harness screenshot archives |
 
-**Private vault** (operator) holds the full process corpus. See Decision **011**.
+Need depth on a **named** unit? Open a GitHub issue — Decision **011**.

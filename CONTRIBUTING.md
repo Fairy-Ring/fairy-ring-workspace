@@ -33,32 +33,31 @@ As maintainer we **do not claim** that this project **is** authentic, original, 
 4. Prefer **honest FAIL / DIRTY labels** over soft greens sold as authenticity.  
 5. **AI is used here** (coding agents as tools). If you use AI on a PR, that is fine — same bar as human edits: no invent, cite sources, do not claim authenticity without residual/product evidence.
 
-## Public vs private docs (Decision 011)
+## Docs on this surface (Decision 011)
 
-| Public surface (export) | Private vault (operator) |
-|-------------------------|--------------------------|
-| README, NOTICE, LICENSE, CONTRIBUTING, `AGENT_BRIEF.md` | Full `docs/plans/**` thrash |
-| Decisions + authenticity-stance | Full research corpus, gap, COLD_START |
-| Thin runbooks + harness **code** | `CORPUS_DIGEST.md`, harness shots |
+This repo is intentionally **thin**: enough for bootstrap, accuracy bar, and evidence-backed PRs.
 
-Most session plans and readiness XL **do not** belong in PRs aimed at a public export. Export helper: `scripts/export-public-workspace.sh`.
+| On this tree | Ask via issue (not assumed in-tree) |
+|--------------|-------------------------------------|
+| README, NOTICE, LICENSE, CONTRIBUTING, `AGENT_BRIEF` | Full session thrash logs |
+| Decisions + authenticity-stance + **deviations** | Long readiness XL / unit port dumps |
+| Thin runbooks + harness **code** | Harness screenshot dumps |
 
 ### Requesting deeper context
 
-We **do not mind sharing** — thin defaults are for token cost and noise, not secrecy.
+Thin defaults are for **token cost and noise**, not secrecy.
 
 1. Open an **issue** with a **named unit** (e.g. `quest_mortton` Flamtaer residual, greegree leave-zone, mesbox IF_SETTEXT).  
 2. State what you need (product path, readiness, known soft labels, client SHA).  
 3. **Agents may open issues** the same way.  
-4. We pattern-match private notes → **smell test** (Decision **011**: brand, residual bar, scope, hygiene, no invent) → scoped reply.  
-5. We will **not** zip the whole vault or soft-green authenticity claims.
+4. Maintainers may share a **scoped** extract if it passes the smell test (Decision **011**: brand, residual bar, scope, hygiene, no invent).  
+5. We will **not** soft-green authenticity claims without evidence.
 
 ## What belongs where
 
 | Change | Where |
 |--------|--------|
-| Public-facing rules / brief | Root + decisions + authenticity-stance |
-| Private process (plans, full research, gap) | Operator vault — not required on public remote |
+| Rules / brief / deviations | Root + `docs/decisions/` + `docs/research/{authenticity-stance,deviations}.md` |
 | Harness smokes / thrash / prep toys | `tools/harness/` only |
 | Content / engine / pure client | Separate vendor trees — **not** mixed into pure Client-TS as harness hooks |
 | Soft-pass “make CI green” that skips live `.rs2` | **Rejected** for product claims |
@@ -67,7 +66,7 @@ We **do not mind sharing** — thin defaults are for token cost and noise, not s
 
 ```bash
 export RS2_R377_ROOT=/path/to/fairy-ring-workspace   # preferred
-# export RS2_R377_ROOT="$RS2_R377_ROOT"               # legacy alias still used in older docs
+# export LC377_ROOT="$RS2_R377_ROOT"               # legacy alias still used in older docs
 cd "$RS2_R377_ROOT"
 
 # 1) This workspace (already cloned)
@@ -77,7 +76,7 @@ mkdir -p vendor
 # git clone … vendor/engine
 # git clone … vendor/content
 # git clone … vendor/client-ts
-# See vendor/README.md for pin layout used by the operator.
+# See vendor/README.md for pin layout.
 
 # 3) Cache — download yourself; NEVER commit blobs
 #    OpenRS2 id 657 = RS2 build 377 (NOT openrs2 path …/377/ — that is OSRS)
@@ -104,14 +103,14 @@ Do not point experiments at live 274 production trees.
 - **Never** `git push` to `LostCityRS/*` without explicit permission.  
 - **Never** present this project as official Lost City / “LC.”  
 - **Never** commit cache blobs (OpenRS2 downloads stay local; see `cache/README.md`), `.env`, PEM private keys, or harness screenshot dumps.  
-- Use **`$RS2_R377_ROOT`** in new docs; avoid personal laptop paths.  
+- Use **`$RS2_R377_ROOT`** in new docs; avoid machine-specific absolute paths.  
 - Residual / mid-gate smokes: one soft stage setvar at entry is OK when labeled; mid-path quest setvar / quest-critical give = **DIRTY**.
 
 ## PR expectations
 
 | Kind | Expectation |
 |------|-------------|
-| **Docs / research** | Sources + ladder; link from `docs/research/INDEX.md` if new unit (private vault) or brief extract (public) |
+| **Docs / research** | Sources + ladder; intentional non-auth → `docs/research/deviations.md`; deep unit notes via issue if not in-tree |
 | **Harness** | Label soft vs residual; no claim of pure product authenticity |
 | **Content / client / engine** | Cite oracle (Client-Java 377, content scripts); ship as vendor patches or clear SHAs |
 | **Bugfix PRs** | **Will not be reviewed** without **sufficient proof for human review** (repro steps, stage/var or run id, log path and/or headed shot, soft vs residual honesty, expected vs actual). Prefer filing the bug template first. |

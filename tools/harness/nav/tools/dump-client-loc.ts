@@ -3,7 +3,7 @@ import path from 'path';
 import { Reader } from './lib.ts';
 import { bunzip2 } from '../io/BZip2.js';
 
-const engineDir = '$RS2_R377_ROOT/vendor/engine';
+const engineDir = '/Users/acfrazier/experiments/LC-rs2-r377-2006-05-02/vendor/engine';
 
 class JagArchive {
     data: Uint8Array;

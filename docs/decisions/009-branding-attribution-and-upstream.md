@@ -3,7 +3,7 @@
 **Date:** 2026-08-06  
 **Updated:** 2026-08-09 — public brand locked **Fairy Ring**  
 **Status:** accepted  
-**Audience:** operators, agents, future contributors, LC / rs2b2t readers  
+**Audience:** maintainers, agents, contributors, LC / rs2b2t readers  
 
 ---
 
@@ -14,10 +14,9 @@
    - **Long horizon (shared with Lost City’s *goal*, not their *method*):** careful historical preservation of **RS2-era** RuneScape **up to the EOC / RS3 boundary** — era-true stacks, honest residuals, no invent.  
    - **This workspace / current focus:** **revision 377** (~2 May 2006; Return of the Wise Old Man era) is the **active tree**, not the permanent brand identity. Later Fairy Ring work may target other pre-EOC revisions under the same name.  
    - **Why this name:** thematic extension of Lost City / Zanaris / fairy-network lore — rings move you between places and times; this project moves careful work between tools, humans, and living playable stacks. Generic compound; not “RS2”, not “LC”, not “Wise Old Man”.  
-   - **Method (differs from LC):** isolation, mid-gates, residual bar, open AI-as-tool, thin public surface + private vault — without dunking LC process (see §5).  
-   - **GitHub (renamed 2026-08-09, still private until flip):**  
-     - thin: `fairy-ring-workspace`  
-     - vault: `FR-vault` (private)  
+   - **Method (differs from LC):** isolation, mid-gates, residual bar, open AI-as-tool, thin public contributor surface — without dunking LC process (see §5).  
+   - **GitHub (illustrative names):**  
+     - workspace: `fairy-ring-workspace`  
      - product: `FR-content`, `FR-engine`, `FR-client-ts`  
    - **Technical branch names** (e.g. `rs2-r377`) label a **revision line**, not the public brand.
 
@@ -43,7 +42,7 @@
    Whatever advances honest **pre-EOC** work (this tree: rev 377): LC branches, deob, harness, agents, media.  
    Speed vs upstream is a **side effect**, not a dunk on LC process.
 
-6. **Purpose (operator intent — public-safe).**  
+6. **Purpose (public-safe).**  
    The original period game is not fully recoverable as a pure object; we still work carefully.  
    Use every good tool — **including AI** — so playable, honest **pre-EOC** stacks can exist **in human time** (enjoy while we are here) and **outlast** a single contributor.  
    That is **not** a claim of completeness or perfect authenticity.  
@@ -73,13 +72,12 @@
 
 - [x] Public name **Fairy Ring** locked (2026-08-09); **not** brand-locked to rev 377 only  
 - [x] Drop **LC** / **rs2-*** as *public brand* (technical branch/legacy remotes may lag)  
-- [x] GitHub **repo rename** — `fairy-ring-workspace` + `FR-{vault,content,engine,client-ts}` (2026-08-09)  
-- [ ] **Visibility public** on launch units only (not vault) — after operator final review
+- [x] GitHub names: `fairy-ring-workspace` + `FR-{content,engine,client-ts}` (2026-08-09)  
 - [x] NOTICE + derivation + AI disclosure  
-- [x] Vendor README/NOTICE brand pass (follow-up same session as needed)  
-- [x] Thin export + AGENT_BRIEF (Decision **011**)  
-- [ ] GH descriptions at flip: Fairy Ring; rev 377; derived from Lost City; not official LC/Jagex  
-- [ ] Never push to LostCityRS without permission — restate at flip  
+- [x] Vendor README/NOTICE brand pass  
+- [x] Thin contributor surface + AGENT_BRIEF (Decision **011**)  
+- [ ] GH descriptions: Fairy Ring; rev 377; derived from Lost City; not official LC/Jagex  
+- [ ] Never push to LostCityRS without permission — restate publicly when opening remotes  
 
 ---
 

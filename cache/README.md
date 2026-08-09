@@ -65,7 +65,7 @@ Lost City–style stacks pack from **content** (+ engine tools). The OpenRS2 dum
 - **Jagex** — period game assets remain Jagex IP; presence on OpenRS2 does not change that  
 - See root [NOTICE.md](../NOTICE.md)
 
-## Deeper research (private vault / full tree)
+## Deeper research
 
-Operators with the full private vault: `docs/research/cache-377.md`.  
-Public thin export may only ship this README.
+Longer cache/parity notes may live in the broader research tree when present.  
+This README is the **contributor-facing** guide for downloading OpenRS2 **657** yourself.

@@ -28,7 +28,7 @@
 5. **Script-first, bot-later:** adapt rs2b0t **scripts + API names** onto the harness client for rapid iteration. Do **not** wait on a full `vendor/rs2b0t` product (BotHost, MultiBox, panel). Full bot vendoring is a later phase after the adapter ABI is proven.
 6. **When rs2b0t is vendored:** rebind adapter to 377 client; still no bot code inlined into Client-TS. Scripts stay on the bot/harness side of the fence.
 
-10. **rs2b0t is not the residual driver (2026-08-09 — operator affirm).**  
+10. **rs2b0t is not the residual driver (2026-08-09).**  
     - **Now:** harness-first for r377 authenticity proofs. Harvest **patterns** from live rs2b0t (read-only); do **not** switch residual/content work to full BotHost / multibox / 274 client stack.  
     - **Later:** vendor `vendor/rs2b0t` as the **bot product** after pure freeze + content-complete enough (same neighborhood as public / debug-PR phase — before QoL Decision 010). Rebuild nav packs for 377 (005); rebind adapter only.  
     - **Upstream direction:** rs2b0t → us = patterns; us → rs2b0t = only general tools/scripts (not LC residual thrash/cheats). Never make content purity depend on BotHost.  
@@ -38,10 +38,10 @@
    - **Not allowed:** auto-cheat inside a “tutorial complete” / stage-pass path so the proof never exercises the real OPLOCU / Talk / inv outcome.  
    Cheats still use the real client wire (`CLIENT_CHEAT`), not a forged bot protocol.
 
-8. **Audience split (2026-08-05 — operator promise).**  
+8. **Audience split (2026-08-05).**  
    - **Product (Client-TS / Engine / Content):** purity bar is **LC-grade accuracy**. Document for people who will reject “it mostly worked.”  
-   - **Toys (harness / eventual rs2b0t):** play however you like **without** contaminating product trees; soft proofs must be labeled in plans/deviations, never sold as period truth.  
-   - **Docs are the bridge** — not chat. See `AGENTS.md` § The promise.
+   - **Toys (harness / eventual rs2b0t):** play however you like **without** contaminating product trees; soft proofs must be labeled in `docs/research/deviations.md` (or PR/smoke headers), never sold as period truth.  
+   - **Docs are the bridge** — not chat.
 
 9. **Harness may outgrow a typical bot-script corpus (2026-08-08).**  
    - **OK:** test-only tools under `tools/harness/**` that a production bot would never ship (prep cheats, dirty-run lint, thrash helpers, clean logout for relog, random soft-kill, config injects).  
@@ -53,7 +53,7 @@
 - 1:1 port requires the client tree to remain a mechanical Java→TS map (`docs/plans/2026-08-03-one-to-one-ts-client.md`).
 - Mixing attach/login helpers into Client creates a fork that cannot claim stock-server readiness.
 - rs2b0t already solved this: only `ClientAdapter` names client fields; everything else uses the ABI.
-- LC collaborators (and the operator’s own standards) will inspect product trees harshly; toys exist so iteration speed does not force product lies.
+- LC-style accuracy readers will inspect product trees harshly; toys exist so iteration speed does not force product lies.
 
 ## Anti-patterns
 

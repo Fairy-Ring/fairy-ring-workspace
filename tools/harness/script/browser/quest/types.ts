@@ -4,7 +4,7 @@
  * Pattern source: rs2b0t AIOQuester / QuestEngine (`QuestModule.decide` → `QuestStep`)
  * but **much smaller** — no provisioning queue, multi-quest host, or settings UI yet.
  *
- * @see $RS2B0T_REF/src/bot/quests/engine/types.ts
+ * @see /Users/acfrazier/experiments/rs2b0t/src/bot/quests/engine/types.ts
  * @see docs/plans/2026-08-04-harness-quest-template.md
  */
 

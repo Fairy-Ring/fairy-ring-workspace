@@ -1,7 +1,7 @@
 /**
  * Derive openable wall doors from packed engine maps → doors.json.
  *
- * Port of rs2b0t `tools/nav/derive-doors.ts`, pointed at rs2-r377 engine pack.
+ * Port of rs2b0t `tools/nav/derive-doors.ts`, pointed at LC-rs2-r377 engine pack.
  * Re-run whenever maps / loc configs change between revs.
  *
  *   bun tools/harness/nav/tools/derive-doors.ts \

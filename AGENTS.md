@@ -26,9 +26,9 @@ cd "$RS2_R377_ROOT"
 3. **PASS** for a quest/skill stage means **live `.rs2` wrote that stage** — not host `setvar` of the claimed stage.  
 4. Residual bar: one soft entry setvar → e2e with setstat/generic only; honest **FAIL**, no soft green.  
 5. Soft thrash (`give` quest-critical items, mid setvar multi, etc.) is **DIRTY** if sold as authenticity.  
-6. Intentional non-auth: `docs/research/deviations.md` (when present) or label in the PR/smoke header.
+6. Intentional non-auth: **`docs/research/deviations.md`** (or label in the PR/smoke header).
 
-Full stance: `docs/research/authenticity-stance.md` (shipped on public surface).
+Full stance: `docs/research/authenticity-stance.md`.
 
 **Maintainer disclaimer:** we do **not** claim the stack **is** authentic/complete today. Good-faith PRs from **all** (humans and agents) welcome; declines need clear rationale. See `CONTRIBUTING.md`.
 
@@ -48,7 +48,7 @@ tools/harness/      smokes, thrash, prep — not purity claims
 - **Never** push experiment work to `LostCityRS/*` without explicit permission.  
 - Harness **headed** by default (`HEADLESS=1` only for CI/batch).
 
-Branding: Decision **009**. Public docs surface: Decision **011**.
+Branding: Decision **009**. Thin public surface: Decision **011**.
 
 ---
 
@@ -72,7 +72,7 @@ tools/harness/                    # toys
 Do **not** use OpenRS2 path id `377` (OSRS 2014). **Never commit** cache blobs.  
 Helper: `bash scripts/fetch-openrs2-cache.sh`.
 
-**Vendors:** clone under `vendor/` — see `vendor/README.md` and `docs/research/PROVENANCE-UPSTREAM-PINS.md` when present.
+**Vendors:** clone under `vendor/` — see `vendor/README.md` and `docs/research/PROVENANCE-UPSTREAM-PINS.md`.
 
 ---
 
@@ -95,18 +95,18 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 
 ## 5. What agents should open
 
-| Need | Public / thin surface | Full private vault (if you have it) |
-|------|------------------------|-------------------------------------|
-| Rules (short) | **`AGENT_BRIEF.md`** | same |
-| Rules (this file) | **`AGENTS.md`** | same |
-| Authenticity | `docs/research/authenticity-stance.md` | + full research INDEX |
-| Decisions | `docs/decisions/` | same |
-| Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` | + each vendor `PROVENANCE.md` |
-| Cache download | `cache/README.md` | same |
-| Operator cold resume | — | `docs/context/COLD_START.md` · horizon `docs/plans/2026-08-09-horizon-public-then-content.md` · `docs/context/AGENTS-OPERATOR.md` |
-| Session thrash / gap | — | `docs/plans/` · `docs/gap/` · game-knowledge corpus |
+| Need | Path |
+|------|------|
+| Rules (short) | **`AGENT_BRIEF.md`** |
+| Rules (this file) | **`AGENTS.md`** |
+| Authenticity | `docs/research/authenticity-stance.md` |
+| Intentional non-auth | `docs/research/deviations.md` |
+| Decisions | `docs/decisions/` |
+| Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` · vendor `PROVENANCE.md` |
+| Cache download | `cache/README.md` |
+| Deeper unit research | **GitHub issue** with a named unit (Decision **011**) |
 
-**Public thin export does not ship** full `docs/plans`, research corpus, or gap dumps (Decision **011**). Request scoped context via GitHub issues — see `CONTRIBUTING.md`.
+This surface does **not** ship full session plans or the entire research corpus. Prefer issues for scoped context over inventing missing docs.
 
 ---
 
@@ -123,19 +123,18 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 
 - Do not block for tens of minutes on one log stream.  
 - Background long smokes; poll periodically.  
-- On stall (same FAIL line, stuck login): inspect or kill — do not wait it out.  
-- With a **full vault**, pull idle research while waiting (`docs/plans/idle-research-queue.md`). On **public thin** surface, use issue-driven context or local notes instead.
+- On stall (same FAIL line, stuck login): inspect or kill — do not wait it out.
 
-### Documentation (when the tree has those dirs)
+### Documentation
 
-- Durable facts → `docs/research/` (or PR description if research tree is thin).  
-- Session thrash → dated plans **only if** that corpus exists (private vault).  
+- Intentional non-auth → **`docs/research/deviations.md`** same turn.  
+- Durable facts → research notes or PR description.  
 - Never leave the only copy of a learning in chat.
 
 ### Git
 
 - Small, frequent commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …).  
-- Never force-push `main` unless the operator asks.  
+- Never force-push shared branches unless maintainers explicitly ask.  
 - Never point `origin` at LostCityRS for experiment push.
 
 ### AI
@@ -155,5 +154,4 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 
 ---
 
-*Operators with the full private vault: also read `docs/context/AGENTS-OPERATOR.md` and `docs/context/COLD_START.md`.*  
 *Public brand is **Fairy Ring** (Decision **009**); git branch names may still say `rs2-r377`.*

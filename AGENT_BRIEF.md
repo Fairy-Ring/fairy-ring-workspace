@@ -1,9 +1,8 @@
 # Fairy Ring — agent brief (token-light)
 
-**Audience:** coding agents and humans who must not load the full private corpus.  
+**Audience:** coding agents and humans who should not need a private research dump to start.  
 **Size target:** ~1.5–3k tokens. **Lossy on purpose.**  
-**Private vault** (operator machine / private GH) has full plans, research, gap, residual thrash.  
-**Public open** ships this brief + README/NOTICE + fences — not the whole `docs/` tree (Decision **011**).
+This repo is the **thin contributor surface** (Decision **011**): rules, fences, harness, deviations — not every session thrash log.
 
 ---
 
@@ -15,12 +14,12 @@
 | **Long horizon** | Pre-EOC / pre-RS3 **RS2-era** preservation (same *goal* family as LC; different *method*) |
 | **This tree** | Focus **rev 377** (~May 2006) — current focus, **not** brand lock |
 | **Relation** | **Derivation** of open Lost City / LostCityRS work — **not** official LC |
-| **This workspace** | Process + harness toys + docs (private: full; public: thin) |
-| **Product trees** | Separate remotes: content, engine, client-ts (branch labels may still say `rs2-r377`) |
+| **This workspace** | Process + harness toys + thin docs |
+| **Product trees** | Separate remotes: content, engine, client-ts (branch labels may say `rs2-r377`) |
 
 Do not present as “Lost City,” “LC,” or a Jagex product. See `NOTICE.md` and Decision **009**.
 
-**Purpose:** original not fully recoverable; use every good tool (**including AI**) so honest stacks are **playable in human time** and can **outlast** us. Not a completeness stamp. Client surfaces (pure / bot / QoL): Decision **010** — purpose is choice.
+**Purpose:** original not fully recoverable; use every good tool (**including AI**) so honest stacks are **playable in human time**. Not a completeness stamp. Client surfaces (pure / bot / QoL): Decision **010** — purpose is choice.
 
 ---
 
@@ -34,7 +33,7 @@ Do not present as “Lost City,” “LC,” or a Jagex product. See `NOTICE.md`
 - **Do not invent** content, client handlers, or “close enough” dialogue/loot.  
 - **PASS** for a quest/skill stage means **live `.rs2` wrote that stage** — not host `setvar` of the claimed stage.  
 - Residual bar: one soft `setvar` entry → e2e with setstat/generic only; honest **FAIL**, no soft green.  
-- Soft thrash (give sacred oil, force multi bits, etc.) is **DIRTY** if sold as authenticity.
+- Soft thrash (give sacred oil, force multi bits, etc.) is **DIRTY** if sold as authenticity — log keepers in `docs/research/deviations.md`.
 
 Full stance: `docs/research/authenticity-stance.md`.
 
@@ -59,8 +58,8 @@ tools/harness/      smokes, thrash, prep — not purity claims
 ## 4. Bootstrap (high level)
 
 ```bash
-export RS2_R377_ROOT=/path/to/fairy-ring   # clone root; legacy env names may appear in old notes
-# clone content, engine, client-ts → vendor/
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
+# clone content, engine, client-ts → vendor/  (see vendor/README.md)
 # cache: download yourself — OpenRS2 id 657 = RS2 build 377 (NOT path …/377/)
 # bash scripts/fetch-openrs2-cache.sh
 bash scripts/apply-isolation-config.sh
@@ -100,50 +99,23 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 
 ---
 
-## 7. Docs map
+## 7. Docs map (this surface)
 
-| Need | Public / brief | Private vault (operator) |
-|------|----------------|---------------------------|
-| Cold product residual | This file + authenticity extract | `docs/context/COLD_START.md` |
-| Session thrash | — | `docs/plans/YYYY-MM-DD-*.md` |
-| Full research catalog | — | `docs/research/INDEX.md` |
-| Gear / combat / tiles | crumbs below | `docs/research/game-knowledge/` |
-| Public flip | Decision **011** | export script |
+| Need | Where |
+|------|--------|
+| Token-light rules | This file |
+| Full agent rules | `AGENTS.md` |
+| Authenticity bar | `docs/research/authenticity-stance.md` |
+| Intentional non-auth | `docs/research/deviations.md` |
+| Fences / brand / thin public policy | `docs/decisions/` (004 · 009 · 010 · 011) |
+| Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` |
+| Deeper unit notes | **Open a GitHub issue** with a named unit (Decision **011**) |
 
-**Crumbs:** tele **next to** locs; gear matches setstat; no quest-critical give on residual.
+**Crumbs:** tele **next to** locs; gear matches setstat; no quest-critical give on residual claims.
 
 ---
 
 ## 8. Current focus (dated — update at milestones)
 
-**2026-08-09:** Flamtaer / Shades of Mort’ton **residual bar §2** — soft entry 50 → product rebuild → oil → remake → pyre/Loar → complete **85**. Honest FAIL on thrash; do not soft-green.  
-Public brand locked **Fairy Ring** (Decision **009**).
-
----
-
-## 9. Hard don’ts
-
-- Invent content or client ops  
-- Install bot/harness into pure Client-TS  
-- Push to LostCityRS without permission  
-- Claim residual PASS with soft stage setvars  
-- Dump private thrash logs as public “proof archive”  
-- Present as official Lost City or Jagex  
-
----
-
-## 9b. Maintainer disclaimer + contributions
-
-We **disclaim** that the project **is** authentic / original / complete today.  
-Good-faith PRs from **anyone** (humans and agents) welcome; declines need **clear rationale**.  
-See `CONTRIBUTING.md`.
-
----
-
-## 10. Need more context? Open an issue
-
-Thin public docs are for **tokens and practicality**, not a closed vault. Named unit + smell test (Decision **011**).
-
----
-
-*Maintainers: keep this file short. Bump §8 only at real milestones.*
+**2026-08-09:** Public thrash / evidence-backed PRs welcome under the accuracy bar. Content residual (e.g. Flamtaer / Shades of Mort’ton bar §2) continues — honest FAIL, no soft-green.  
+Brand: **Fairy Ring** (Decision **009**).

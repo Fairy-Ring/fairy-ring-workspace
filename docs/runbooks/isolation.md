@@ -151,5 +151,5 @@ If not → stop.
 
 - [`vendor-layout.md`](vendor-layout.md) — clones and remotes  
 - [`bootstrap.md`](bootstrap.md) — first start  
-- [`../context/COLD_START.md`](../context/COLD_START.md) — agent entry  
+- Root `AGENT_BRIEF.md` / `AGENTS.md` — agent entry  
 - Root [`AGENTS.md`](../../AGENTS.md), [`PLAN.md`](../../PLAN.md) §0  

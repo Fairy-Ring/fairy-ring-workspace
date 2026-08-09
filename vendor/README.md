@@ -11,8 +11,7 @@ These directories are **independent git clones**. The workspace product repo onl
 | `content/` | Period content | https://github.com/acfrazier/FR-content |
 | `engine/` | Engine-TS fork | https://github.com/acfrazier/FR-engine |
 | `client-ts/` | Pure Client-TS | https://github.com/acfrazier/FR-client-ts |
-| *(thin workspace)* | Docs + harness process | https://github.com/acfrazier/fairy-ring-workspace |
-| *(private vault)* | Full plans/research backup | https://github.com/acfrazier/FR-vault (**private**) |
+| *(this workspace)* | Docs + harness process | https://github.com/acfrazier/fairy-ring-workspace |
 
 **Never** present any of these as official LostCityRS.
 
@@ -37,7 +36,7 @@ Details: each `vendor/*/PROVENANCE.md` · workspace `docs/research/PROVENANCE-UP
 ## Clone layout
 
 ```bash
-export RS2_R377_ROOT=/path/to/fairy-ring-workspace   # or full vault clone
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 mkdir -p "$RS2_R377_ROOT/vendor"
 git clone -b rs2-r377 https://github.com/acfrazier/FR-content.git "$RS2_R377_ROOT/vendor/content"
 git clone -b rs2-r377 https://github.com/acfrazier/FR-engine.git "$RS2_R377_ROOT/vendor/engine"
@@ -54,8 +53,8 @@ git clone https://github.com/LostCityRS/Server.git "$RS2_R377_ROOT/vendor/Server
 **Policy:**
 
 - On experiment forks: LostCityRS `origin` push should stay **disabled**.  
-- Push work to **your** remotes (`private` / `origin` as configured).  
-- Each dirty tree has README / NOTICE / PROVENANCE.
+- Push work to **your** remotes as configured for this project.  
+- Each dirty tree has README / NOTICE / PROVENANCE when present.
 
 ## What is *not* in the workspace git
 

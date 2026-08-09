@@ -79,7 +79,7 @@ Harness currently has a **partial** port (`WalkAlong` + thin `exec/transportLoc`
 
 1. **Classic executor landed (2026-08-04):** `tools/harness/nav/browser/WalkExecutor.ts` + `exec/{transportLoc,doorCrossing,specialCrossing,questLock}.ts` + `shims/GameMessages.ts`. `walkTo` wires through full classic stack (no piecemeal WalkAlong hops). Plan: `docs/plans/2026-08-04-nav-full-executor-port.md`.  
 2. **Still forbidden:** inventing hop algorithms or one-off loc hardcodes in quest modules — fix data or extend `exec/*`.  
-3. **Gaps:** specialCrossing unlockQuest/Banking; live smoke Path ABC / TBWT wooden log still operator-owned.
+3. **Gaps:** specialCrossing unlockQuest/Banking; live smoke Path ABC / TBWT wooden log still open residual.
 ## Path paint (in scope now — debug)
 
 Upstream (both classic and v2): `PathPublish` + `pathScenePaint` / `pathOverlay` / `pathPaintTheme`.
@@ -89,7 +89,7 @@ Upstream (both classic and v2): `PathPublish` + `pathScenePaint` / `pathOverlay`
 | `PathPublish` | Session store; WalkExecutor sets active route | Port with WalkExecutor — free |
 | `pathScenePaint` | Tile quads into **game surface** post-world 3D | Need post-world draw hook on **harness client only** (rs2b0t: `BotClient.onAfterWorldRender`). **Not** pure Client-TS. |
 | `pathOverlay` | HTML hop labels / click outline | Mount on harness panel or `#game-stage` overlay |
-| `showNavPath` | Operator toggle | Default **on** for headed path-abc/nav smokes; env `NAV_PAINT=0` to disable |
+| `showNavPath` | Harness toggle | Default **on** for headed path-abc/nav smokes; env `NAV_PAINT=0` to disable |
 
 True z-buffer under models is out of scope (upstream says needs World inject). Object-hull hop highlight + path quads + labels are enough for “why did it walk there?”
 
@@ -115,7 +115,7 @@ Upstream rs2b0t nav is **actively settling** (stall ladder, door strikes, expans
 4. **Keep research-only** for bake-level issues (e.g. LocType multiloc op 77) — write-ups in `docs/research/nav-multiloc-collision.md`; do **not** maintain a parallel bake fork to push back into rs2b0t product.  
 5. **Tools-only patterns** (scene-ready seed, throttled sustain, stuck abort vs path-cost) may land in rs2b0t `tools/` independently; that is **not** a product nav port.
 
-**Operator cue:** when quest residual is blocked on walker thrash that upstream already fixed, open a short re-rip plan with **source commit + FAIL list + pack rebuild steps** — not “merge main nav.”
+**Cue:** when quest residual is blocked on walker thrash that upstream already fixed, open a short re-rip plan with **source commit + FAIL list + pack rebuild steps** — not “merge main nav.”
 
 ## Related
 

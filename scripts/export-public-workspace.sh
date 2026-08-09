@@ -95,24 +95,26 @@ for f in "${ROOT}"/docs/decisions/*.md; do
   copy_file "docs/decisions/$(basename "$f")"
 done
 
-# --- authenticity + provenance pins (allowed research extracts) ---
+# --- authenticity + provenance + deviations (allowed research extracts) ---
 copy_file "docs/research/authenticity-stance.md"
 copy_file "docs/research/PROVENANCE-UPSTREAM-PINS.md"
+copy_file "docs/research/deviations.md"
 
 # Optional short public README for docs/
 mkdir -p "${DEST}/docs"
 cat > "${DEST}/docs/README.md" <<'EOF'
-# Docs (public surface)
+# Docs (contributor surface)
 
-This public tree ships a **thin** documentation set only.
+This tree ships a **thin** documentation set only.
 
-| Included | Not included |
-|----------|----------------|
-| Decisions (fences, branding, public surface) | Session plans / thrash logs |
-| Authenticity stance | Full research corpus / readiness XL |
-| Root `AGENT_BRIEF.md` | Gap dumps, COLD_START, operator paths |
+| Included | Not included by default |
+|----------|-------------------------|
+| Decisions (fences, branding, thin surface) | Session thrash plans |
+| Authenticity stance | Full readiness XL / port dumps |
+| **Deviations log** | Gap dumps / private cold-start notes |
+| Root `AGENT_BRIEF.md` | Harness screenshot archives |
 
-**Private vault** (operator) holds the full process corpus. See Decision **011**.
+Need depth on a **named** unit? Open a GitHub issue — Decision **011**.
 EOF
 echo "  + docs/README.md (generated)"
 
@@ -164,23 +166,31 @@ for bad in docs/plans docs/gap docs/context docs/superpowers docs/research/CORPU
   fi
 done
 
-# Strip absolute laptop paths + legacy LC-rs2 brand crumbs (best-effort)
+# Strip absolute laptop paths + legacy brand crumbs + private-vault tailoring (best-effort)
 while IFS= read -r -d '' f; do
   # macOS sed; GNU sed: sed -i''
   sed -i '' \
-    -e 's|$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
-    -e 's|$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
-    -e 's|$RS2B2T_ENGINE_REF|$RS2B2T_ENGINE_REF|g' \
-    -e 's|$RS2_LIVE_SERVER_REF|$RS2_LIVE_SERVER_REF|g' \
-    -e 's|$RS2B0T_REF|$RS2B0T_REF|g' \
-    -e 's|export RS2_R377_ROOT=|export RS2_R377_ROOT=|g' \
-    -e 's|"$RS2_R377_ROOT"|"$RS2_R377_ROOT"|g' \
-    -e 's|\$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
-    -e 's|fairy-ring-workspace|fairy-ring-workspace|g' \
-    -e 's|fairy-ring-workspace|fairy-ring-workspace|g' \
-    -e 's|fairy-ring-workspace|fairy-ring-workspace|g' \
-    -e 's|rs2-r377|rs2-r377|g' \
-    -e 's|`RS2_R377_ROOT`|`RS2_R377_ROOT`|g' \
+    -e 's|/Users/acfrazier/experiments/LC-rs2-r377-2006-05-02|$RS2_R377_ROOT|g' \
+    -e 's|/Users/acfrazier/experiments/LC-rs2-r277-2006-05-02|$RS2_R377_ROOT|g' \
+    -e 's|/Users/acfrazier/code/rs2b2t-engine|$RS2B2T_ENGINE_REF|g' \
+    -e 's|/Users/acfrazier/experiments/Server|$RS2_LIVE_SERVER_REF|g' \
+    -e 's|/Users/acfrazier/experiments/rs2b0t|$RS2B0T_REF|g' \
+    -e 's|export LC377_ROOT=|export RS2_R377_ROOT=|g' \
+    -e 's|"$LC377_ROOT"|"$RS2_R377_ROOT"|g' \
+    -e 's|\$LC377_ROOT|$RS2_R377_ROOT|g' \
+    -e 's|LC-rs2-r377-2006-05-02|fairy-ring-workspace|g' \
+    -e 's|LC-rs2-r277-2006-05-02|fairy-ring-workspace|g' \
+    -e 's|rs2-r377-workspace|fairy-ring-workspace|g' \
+    -e 's|LC-rs2-r377|rs2-r377|g' \
+    -e 's|`LC377_ROOT`|`RS2_R377_ROOT`|g' \
+    -e 's|https://github.com/acfrazier/FR-vault|*(maintainer process backup — not required for contributors)*|g' \
+    -e 's|FR-vault (**private**)|maintainer process backup (not required)|g' \
+    -e 's|private vault|full process notes (if you maintain them)|g' \
+    -e 's|Private vault|Full process notes|g' \
+    -e 's|operator machine|maintainer machine|g' \
+    -e 's|operator call|maintainer call|g' \
+    -e 's|the operator|maintainers|g' \
+    -e 's|Operator / |Maintainer / |g' \
     "$f" 2>/dev/null || true
 done < <(find "${DEST}" -type f \( -name '*.md' -o -name '*.mjs' -o -name '*.ts' -o -name '*.sh' -o -name '*.js' \) -print0 2>/dev/null)
 
@@ -188,9 +198,9 @@ done < <(find "${DEST}" -type f \( -name '*.md' -o -name '*.mjs' -o -name '*.ts'
 {
   echo "# Public export manifest"
   echo
-  echo "Source private vault: (not recorded — fill at push time)"
+  echo "Source: contributor surface export (Decision 011)"
   echo "Generated: $(date -u +%Y-%m-%dT%H:%MZ)"
-  echo "Policy: Decision 011 — thin surface only"
+  echo "Policy: thin surface — authenticity, deviations, fences; no thrash dump"
   echo
   echo '```'
   (cd "${DEST}" && find . -type f | sort | head -500)
@@ -209,5 +219,5 @@ echo "  # Push to fairy-ring-workspace branch rs2-r377 (not main)."
 echo "  # main is the Fairy Ring hub stub only."
 echo "  # do NOT copy docs/plans or full research back in"
 echo
-echo "Still private (not exported): docs/plans, docs/research (except authenticity-stance),"
+echo "Not exported: docs/plans, full research corpus (except stance/deviations/pins),"
 echo "  docs/gap, docs/context, CORPUS_DIGEST, harness shots, vendor product trees"

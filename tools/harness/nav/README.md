@@ -2,12 +2,12 @@
 
 Port of rs2b0t world-walking for Fairy Ring (rev 377 focus). **One walker** — default `classic` (no tele inject).
 
-Upstream: `$RS2B0T_REF` `docs/NAV.md`, `docs/nav-v2/`.
+Upstream: rs2b0t tree (read-only ref if present) `docs/NAV.md`, `docs/nav-v2/`.
 
 ## Build collision pack
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 bun tools/harness/nav/tools/build-collision.ts \
   --engine "$RS2_R377_ROOT/vendor/engine" \
   --members true \
@@ -32,7 +32,7 @@ Tooling is adapted from rs2b0t `tools/nav/` into `tools/harness/nav/tools/`:
 | `derive-transports.sh` | runs stairs → ladders → enrich in order |
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 
 # 1) doors (map wall Open ops)
@@ -43,7 +43,7 @@ bash tools/harness/nav/tools/derive-transports.sh
 ```
 
 Defaults: `ENGINE_DIR=$RS2_R377_ROOT/vendor/engine`, `CONTENT_DIR=$RS2_R377_ROOT/vendor/content`,
-pack `$RS2_R377_ROOT/tools/harness/nav/out/collision.lcnav.gz`, data `$RS2_R377_ROOT/tools/harness/nav/data/`.
+pack `$LC377_ROOT/tools/harness/nav/out/collision.lcnav.gz`, data `$LC377_ROOT/tools/harness/nav/data/`.
 
 **Curated** ship/gangplank/shortcut rows stay in `transports.json` and are re-enriched against 377 maps (NPC ships have no locId — expected).
 

@@ -2,15 +2,15 @@
 
 **Lost City is a preservation project.** This workspace (**Fairy Ring**) exists to run and study **revision 377 (~May 2006)** content carefully — not to invent a private-server flavoured rewrite.
 
-**Do not underestimate the accuracy bar.** LC people (and this operator) will reject “close enough.” That fussiness is why the work is worth doing. Harness thrash is allowed; **lying about purity is not.**
+**Do not underestimate the accuracy bar.** LC-style accuracy readers (and this project) will reject “close enough.” That fussiness is why the work is worth doing. Harness thrash is allowed; **lying about purity is not.**
 
-### Product vs toys (operator promise)
+### Product vs toys
 
 | | Pure product | Toys |
 |--|--------------|------|
 | Paths | `vendor/client-ts`, `vendor/engine`, `vendor/content` | `tools/harness/**`, later `vendor/rs2b0t` |
 | Bar | Defendable to LC accuracy reviewers | Iterate fast; label soft proofs |
-| Bridge | Research + deviations + plans under `docs/` | Smokes may reference docs; docs must not only live in chat |
+| Bridge | Research + `docs/research/deviations.md` + durable notes | Smokes may reference docs; docs must not only live in chat |
 
 Full wording: `AGENTS.md` § The promise · Decision 004 rule 8.
 
@@ -24,7 +24,7 @@ Full wording: `AGENTS.md` § The promise · Decision 004 rule 8.
 5. **Anarchy / bot / rs2b2t patches** are out of scope until the human asks; they are not “377 authenticity.”
 6. **Soft harness proofs** (give remains, mid-quest tele, force-pass stages) never reclassify product as “verified for LC” — document or do not claim.
 7. **Config unit before thrash:** when porting a quest/minigame, forward-port **obj/npc/loc behavioral params** from the ladder source onto 377 names **before** multi-minute smokes. Missing `next_obj_stage` / loc stage chains / NPC timers look like script crashes; they are pack holes. See [`port-quest-config-unit-first-377.md`](port-quest-config-unit-first-377.md).
-8. **Stage-write bar (2026-08-08):** a claimed quest/skill stage is **PASS only if live `.rs2` wrote that stage.** Soft `setvar` of the *claimed* stage is **DIRTY**, not proof. Cite ladder: [`historical-run-dirt-inventory.md`](historical-run-dirt-inventory.md). Hub: [`../plans/2026-08-08-promise-cleanup.md`](../plans/2026-08-08-promise-cleanup.md).
+8. **Stage-write bar (2026-08-08):** a claimed quest/skill stage is **PASS only if live `.rs2` wrote that stage.** Soft `setvar` of the *claimed* stage is **DIRTY**, not proof. Soft harness thrash is logged in [`deviations.md`](deviations.md) when kept.
 9. **Soft-entry residual bar (highest standard — 2026-08-08):** Once a mid-gate is soft-entered (e.g. `setvar` quest to N **once** at thrash start), the path **N → target** must run **e2e without further quest progress cheats**.  
    | Allowed host | Forbidden as “product residual PASS” |
    |--------------|--------------------------------------|
@@ -173,7 +173,7 @@ A stack you can log into and **observe** behaviour so humans can **find and fix 
 
 ## Related
 
-- `docs/gap/000-baseline.md` — known holes  
-- `docs/runbooks/playable.md` / `docs/context/operator-tldr.md`  
-- `docs/research/deviations.md`  
-- `PLAN.md`  
+- `docs/research/deviations.md` — intentional non-auth log (public surface)  
+- `docs/runbooks/playable.md` — when present  
+- `AGENTS.md` / `AGENT_BRIEF.md` — working rules  
+

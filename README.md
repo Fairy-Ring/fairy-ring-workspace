@@ -56,12 +56,12 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 
 | Included | Not included |
 |----------|----------------|
-| Plans, research, gap analysis, runbooks *(full vault)* / thin process docs *(public export)* | Full `vendor/content` / engine / client clones |
+| Thin process docs: brief, decisions, authenticity stance, **deviations log** | Full session plans / thrash dumps |
 | Test harness under `tools/harness/` (Decision 004 fence) | OpenRS2 cache / packed server data **in git** |
 | Automation scripts, isolation helpers | Live 274 / production worlds |
-| Authenticity stance, residual bar, branding decisions | A claim that rev 377 work is already complete |
+| Pointers to separate content / engine / client-ts remotes | A claim that rev 377 work is already complete |
 
-**Honest mid-gates over green bars.** Soft thrash is labeled; residual PASS means live `.rs2` wrote the stage (see `docs/research/authenticity-stance.md`).
+**Honest mid-gates over green bars.** Soft thrash is labeled in [`docs/research/deviations.md`](docs/research/deviations.md); residual PASS means live `.rs2` wrote the stage (see [`docs/research/authenticity-stance.md`](docs/research/authenticity-stance.md)).
 
 ## Start here
 
@@ -69,27 +69,25 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 |----------|------|
 | **Agents (token-light)** | **[`AGENT_BRIEF.md`](AGENT_BRIEF.md)** first |
 | **Agents (rules)** | **[`AGENTS.md`](AGENTS.md)** |
-| **Humans** | This README · [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`NOTICE.md`](NOTICE.md) |
-| **Operator / full vault** | [`docs/context/COLD_START.md`](docs/context/COLD_START.md) · [`docs/context/AGENTS-OPERATOR.md`](docs/context/AGENTS-OPERATOR.md) |
-| **Rules / fences** | [`docs/decisions/`](docs/decisions/) (004 · **009** · **011**) |
+| **Humans / contributors** | This README · [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`NOTICE.md`](NOTICE.md) |
+| **Rules / fences** | [`docs/decisions/`](docs/decisions/) (004 · **009** · **010** · **011**) |
+| **Intentional non-auth** | [`docs/research/deviations.md`](docs/research/deviations.md) |
 
-**Public vs private docs:** most session plans and the full research corpus stay **private** (Decision **011**). Public open is a **thin export** + this surface — not a thrash-log dump.
+This GitHub tree is the **contributor surface** (Decision **011**): enough to clone, bootstrap, thrash, and open evidence-backed PRs — not a dump of every private research note.
 
 **Want more on a specific unit?** Open a **GitHub issue** (humans or agents) naming the quest/skill/client bug. Scoped extract if it passes the smell test — Decision **011**.
 
 ```bash
-export RS2_R377_ROOT=/path/to/fairy-ring   # or your clone root
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 bash scripts/snapshot-status.sh   # if vendors present
 ```
-
-Historical paths may still use older folder names; treat them as the same root when present.
 
 ## Bootstrap (clone → vendors → cache → run)
 
 Like Lost City’s Server layout: **this repo is the shell**; companions and cache are fetched separately. **Cache blobs are never in git.**
 
-1. **Clone this workspace** (thin public surface or full private vault).  
+1. **Clone this workspace** (branch `rs2-r377` for the rev‑377 surface).  
 2. **Clone vendors** under `vendor/` (content + engine + client-ts). See [`vendor/README.md`](vendor/README.md).  
 3. **Cache (download yourself):** OpenRS2 **id 657** = RS2 **build 377** — public on the internet. Guide: [`cache/README.md`](cache/README.md). Helper: `bash scripts/fetch-openrs2-cache.sh`.  
    - **Pitfall:** OpenRS2 path `/caches/runescape/377/` is **OSRS 2014**, not rev 377. Always use **657**.  
@@ -119,9 +117,8 @@ Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decis
 
 ## Status
 
-Workspace remotes may be private or public; **visibility is not a content-complete claim.**  
-**Horizon:** public thrash (Issues/PRs open) **before** content-complete — show work so far under an honest incomplete disclaimer.  
-**Public brand is Fairy Ring** (rev **377** surface is current focus, not a brand lock).
+**Visibility is not a content-complete claim.** Work is incomplete and imperfect; contributions welcome under the accuracy bar.  
+**Public brand is Fairy Ring** (rev **377** is the current focus, not a brand lock).
 
 **Maintainer disclaimer:** we do **not** assert that this stack **is** authentic, original, or complete. Mistakes (human and agent) happen. **Contributions from all** are welcome in good faith — no PR dismissed without clear rationale. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 

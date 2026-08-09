@@ -1,8 +1,8 @@
 # Public export manifest
 
-Source private vault: (not recorded — fill at push time)
-Generated: 2026-08-09T20:17Z
-Policy: Decision 011 — thin surface only
+Source: contributor surface export (Decision 011)
+Generated: 2026-08-09T20:25Z
+Policy: thin surface — authenticity, deviations, fences; no thrash dump
 
 ```
 ./.github/ISSUE_TEMPLATE/bug-report.md
@@ -24,6 +24,7 @@ Policy: Decision 011 — thin surface only
 ./docs/decisions/011-public-docs-surface-and-agent-brief.md
 ./docs/README.md
 ./docs/research/authenticity-stance.md
+./docs/research/deviations.md
 ./docs/research/PROVENANCE-UPSTREAM-PINS.md
 ./docs/runbooks/client-ts.md
 ./docs/runbooks/harness.md
