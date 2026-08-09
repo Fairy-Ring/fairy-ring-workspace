@@ -121,7 +121,7 @@ Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decis
 **Visibility is not a content-complete claim.** Work is incomplete and imperfect.  
 **Public brand is Fairy Ring** (rev **377** is the current focus, not a brand lock).
 
-**PR accept bar:** **Issues** welcome now. **PRs are not merged / accepted until content-complete** (maintainer call). Discussion and evidence still welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+**PRs / review:** **Issues** welcome. **Merge is not promised** — maintainer focus is content-complete; a PR may wait or never land unless someone has time to review it properly. That may change if the project gains contributors. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 **Maintainer disclaimer:** we do **not** assert that this stack **is** authentic, original, or complete. Mistakes (human and agent) happen.
 

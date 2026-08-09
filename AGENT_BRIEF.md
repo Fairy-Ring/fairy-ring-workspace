@@ -120,5 +120,5 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 
 ## 8. Current focus (dated — update at milestones)
 
-**2026-08-09:** Public open to **show work**; **Issues** welcome. **PRs not accepted/merged until content-complete** (maintainer call). Content residual continues — honest FAIL, softpass is process stage.  
+**2026-08-09:** Public open to **show work**; **Issues** welcome. **PR merge unpromised** — maintainer focus is content-complete; review/merge only if bandwidth. May change if contribs grow. Softpass = process stage.  
 Brand: **Fairy Ring** (Decision **009**).

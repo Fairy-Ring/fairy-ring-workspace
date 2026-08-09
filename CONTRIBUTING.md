@@ -23,21 +23,22 @@ As maintainer we **do not claim** that this project **is** authentic, original, 
 - **What we look for:** does it improve the project (accuracy, honesty, tooling, docs) under the bar — not who authored it.  
 - **AI PRs:** same rules as human PRs; disclose if you want; honesty about soft thrash still required.
 
-### PR accept policy (maintainer bar — 2026-08-09)
+### PR / review policy (honest — 2026-08-09)
 
-| Phase | Issues | PRs open for discussion? | **Merge / accept** |
-|-------|--------|---------------------------|--------------------|
-| **Now → content-complete** | **Yes** (bugs, context, discussion) | Optional (evidence welcome) | **No** — default **not accepted** |
-| **After content-complete** (maintainer call) | Yes | Yes | **Yes** — evidence bar still applies |
+**Maintainer focus is content-complete** under the authenticity bar. That is the priority, not a PR queue.
 
-Until that call:
+| | |
+|--|--|
+| **Issues** | Welcome (bugs, context, discussion). Prefer proof-rich reports. |
+| **PRs** | Welcome as proposals / evidence. **Merge is not promised.** |
+| **Merge** | **Maybe** — only if a maintainer has time to review and the change is clearly good under the bar. Silence ≠ rejection forever. |
+| **Do not expect** | Fast review, review at all, or merge before content-complete work allows bandwidth. |
 
-- Prefer **issues** with repro / proof (see bug template).  
-- A PR may be opened as a **proposal or evidence dump**, but do **not** expect merge.  
-- Maintainers will not merge product/docs PRs solely to be polite — the bar is **content-complete first**, then accept well-evidenced work.  
-- Bugfix PRs without human-reviewable proof are not reviewed either (see below).
+This may **loosen over time** if the project gains contributors or the maintainer bandwidth changes — no hard calendar. Until then, treat merge as best-effort, not a service level.
 
-This is **not** “no one may look.” Public thrash and discussion are welcome; **merge** waits on content-complete.
+- Prefer **issues** with repro / proof (see bug template) over drive-by PR spam.  
+- Bugfix PRs without human-reviewable proof will not be reviewed (see below).  
+- Soft-greens sold as residual authenticity, invent, harness hooks in pure Client-TS, or pushes aimed at `LostCityRS/*` still fail the bar.
 
 ## Before you open a PR (or issue)
 
@@ -127,9 +128,9 @@ Do not point experiments at live 274 production trees.
 | **Docs / research** | Sources + ladder; product non-auth → `deviations.md`; soft mids → `softpass.md`; deep unit notes via issue if not in-tree |
 | **Harness** | Label soft vs residual; no claim of pure product authenticity |
 | **Content / client / engine** | Cite oracle (Client-Java 377, content scripts); ship as vendor patches or clear SHAs |
-| **Bugfix PRs** | **Not merged** pre–content-complete; **not reviewed** without **sufficient proof for human review** (repro, stage/var or run id, log/shot, soft vs residual honesty, expected vs actual). Prefer the bug **issue** template. |
-| **Product / docs PRs** | **Not accepted** until content-complete maintainer call (see above). |
-| **QoL client ideas** | Decision 010 — after content-complete + public debug/improve phase |
+| **Bugfix PRs** | **Not reviewed** without **sufficient proof for human review** (repro, stage/var or run id, log/shot, soft vs residual honesty, expected vs actual). Prefer the bug **issue** template. Merge still unpromised (see above). |
+| **Product / docs PRs** | Merge **maybe** if review time exists; default expectation is **none** while content-complete is the focus. |
+| **QoL client ideas** | Decision 010 — late; not the current focus |
 
 ## Communication
 
