@@ -12,14 +12,15 @@
 | | |
 |--|--|
 | **Name** | **Fairy Ring** |
-| **Era** | Historical RuneScape revision **377** (~2 May 2006) |
-| **Relation** | **Derivation** of open Lost City / LostCityRS work — **not** official LC, not endorsed by LC or Jagex |
+| **Long horizon** | Pre-EOC / pre-RS3 **RS2-era** preservation (same *goal* family as LC; different *method*) |
+| **This tree** | Focus **rev 377** (~May 2006) — current focus, **not** brand lock |
+| **Relation** | **Derivation** of open Lost City / LostCityRS work — **not** official LC |
 | **This workspace** | Process + harness toys + docs (private: full; public: thin) |
-| **Product trees** | Separate remotes: content, engine, client-ts (git branch may still be `rs2-r377`) |
+| **Product trees** | Separate remotes: content, engine, client-ts (branch labels may still say `rs2-r377`) |
 
-Do not present as “Lost City,” “LC,” or “RS2 product.” See `NOTICE.md` and Decision **009**.
+Do not present as “Lost City,” “LC,” or a Jagex product. See `NOTICE.md` and Decision **009**.
 
-**Purpose:** original period game is not fully recoverable; use every good tool (**including AI**) so something honest is **playable in human time** and can **outlast** us. Not a completeness stamp.
+**Purpose:** original not fully recoverable; use every good tool (**including AI**) so honest stacks are **playable in human time** and can **outlast** us. Not a completeness stamp.
 
 ---
 

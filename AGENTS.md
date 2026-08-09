@@ -1,6 +1,7 @@
 # Agent entrypoint — Fairy Ring
 
-**Brand:** **Fairy Ring** — independent work toward historical **rev 377** (~May 2006).  
+**Brand:** **Fairy Ring** — independent pre-EOC **RS2-era** preservation (method differs from Lost City; long horizon similar).  
+**This tree’s focus:** historical **rev 377** (~May 2006) — not a permanent brand lock to one revision.  
 **Derived from** Lost City / LostCityRS open work — **not** official Lost City.  
 **Start here for agents:** [`AGENT_BRIEF.md`](AGENT_BRIEF.md) (token-light). This file is the rule set.
 

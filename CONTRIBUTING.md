@@ -2,7 +2,8 @@
 
 Thanks for interest. This repo is the **workspace process layer**, not a full playable dump.
 
-**Brand:** **Fairy Ring** — independent project **derived from** Lost City open-source work; **not** official Lost City. Era target: historical **rev 377** (~May 2006). See [NOTICE](NOTICE.md) · Decision **009**.
+**Brand:** **Fairy Ring** — independent project **derived from** Lost City open-source work; **not** official Lost City.  
+Long horizon: pre-EOC RS2-era preservation; **this tree** focuses **rev 377** (~May 2006). See [NOTICE](NOTICE.md) · Decision **009**.
 
 ## Maintainer disclaimer (read this first)
 

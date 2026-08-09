@@ -9,12 +9,14 @@
 
 ## Decision
 
-1. **Public brand: Fairy Ring.**  
+1. **Public brand: Fairy Ring (not locked to one revision).**  
    - **Product / project name:** **Fairy Ring**  
-   - **Era target (not the brand string):** historical **RuneScape revision 377** (~2 May 2006; Return of the Wise Old Man era)  
-   - **Why this name:** thematic extension of Lost City / Zanaris / fairy-network lore — rings move you between places; this project moves careful work between tools, humans, and a living playable stack. Generic compound; not “RS2”, not “LC”, not “Wise Old Man”.  
-   - **GitHub targets (at rename/flip):** `fairy-ring` (thin workspace), `fairy-ring-content`, `fairy-ring-engine`, `fairy-ring-client` (or `…-client-ts`). Legacy names (`LC-rs2-*`, `rs2-r377-*`) may remain on remotes until rename.  
-   - **Technical branch name** on vendor forks may stay `rs2-r377` until a deliberate branch rename — that is a **git label**, not the public brand.
+   - **Long horizon (shared with Lost City’s *goal*, not their *method*):** careful historical preservation of **RS2-era** RuneScape **up to the EOC / RS3 boundary** — era-true stacks, honest residuals, no invent.  
+   - **This workspace / current focus:** **revision 377** (~2 May 2006; Return of the Wise Old Man era) is the **active tree**, not the permanent brand identity. Later Fairy Ring work may target other pre-EOC revisions under the same name.  
+   - **Why this name:** thematic extension of Lost City / Zanaris / fairy-network lore — rings move you between places and times; this project moves careful work between tools, humans, and living playable stacks. Generic compound; not “RS2”, not “LC”, not “Wise Old Man”.  
+   - **Method (differs from LC):** isolation, mid-gates, residual bar, open AI-as-tool, thin public surface + private vault — without dunking LC process (see §5).  
+   - **GitHub targets (at rename/flip):** `fairy-ring` (thin workspace), `fairy-ring-content`, `fairy-ring-engine`, `fairy-ring-client` (or `…-client-ts`). Legacy names may remain until rename.  
+   - **Technical branch names** (e.g. `rs2-r377`) label a **revision line**, not the public brand.
 
 2. **Brand distance from Lost City and Jagex.**  
    - Do **not** present as official Lost City, LostCityRS, or “the” LC 377 tree.  
@@ -55,16 +57,18 @@
 ## Rationale
 
 - “Fairy Ring” continues a Lost City / Zanaris *metaphor* without using LC or RS2 as the product name.  
+- Same **preservation horizon** as LC (RS2 until EOC/RS3); different **method** (tools, isolation, residual honesty, AI-as-tool).  
+- Brand must not freeze the project at a single revision number — 377 is the active focus of *this* tree.  
 - LC accuracy people will correctly reject brand confusion with LostCityRS.  
-- Trademark posture: prefer invented/generic thematic names over RS2/WOM product titles (not legal advice).  
+- Trademark posture: prefer thematic names over RS2/WOM product titles (not legal advice).  
 - AI disclosure + mortal-time purpose match how the work is actually done.
 
 ---
 
 ## Checklist when going public
 
-- [x] Public name **Fairy Ring** locked (2026-08-09)  
-- [x] Drop **LC** / **rs2-r377** as *public brand* (technical branch/legacy remotes may lag)  
+- [x] Public name **Fairy Ring** locked (2026-08-09); **not** brand-locked to rev 377 only  
+- [x] Drop **LC** / **rs2-*** as *public brand* (technical branch/legacy remotes may lag)  
 - [ ] GitHub **repo rename** to `fairy-ring*` for launch units  
 - [x] NOTICE + derivation + AI disclosure  
 - [x] Vendor README/NOTICE brand pass (follow-up same session as needed)  

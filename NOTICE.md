@@ -6,7 +6,8 @@ It is **not** a complete license for any game asset or Lost City source tree.
 
 ## Independent project, derived from Lost City
 
-**Fairy Ring** is an independent preservation / engineering experiment targeting historical **revision 377** (~May 2006).
+**Fairy Ring** is an independent preservation / engineering project for careful **pre-EOC / pre-RS3 (RS2-era)** RuneScape.  
+**This workspace** currently focuses on historical **revision 377** (~May 2006); the brand is **not** locked to that single revision.
 
 It is a **derivation** of open work from **Lost City / LostCityRS** (and related community projects): we use and extend those codebases and ideas under their licenses, with our own process, residual bar, and branding.
 

@@ -1,15 +1,16 @@
 # Fairy Ring
 
-**Independent** engineering workspace for a careful historical **RuneScape revision 377** stack (~2 May 2006 — Return of the Wise Old Man era): honest residual proofs, docs discipline, and a pure client/content accuracy bar.
+**Independent** engineering for careful historical **pre-EOC / pre-RS3** RuneScape (RS2-era) preservation: honest residual proofs, docs discipline, and pure client/content accuracy.
 
 | | |
 |--|--|
 | **Public name** | **Fairy Ring** |
-| **Era** | Rev **377** / ~May 2006 |
+| **Long horizon** | RS2-era preservation **up to EOC / RS3** — same *goal* family as Lost City; different *method* |
+| **This tree’s focus** | **Rev 377** / ~May 2006 (Return of the Wise Old Man era) — **current standing**, not the brand ceiling |
 | **This repo** | Workspace **process**: docs, harness toys, scripts |
 | **Not this repo** | Full game content, engine, or cache blobs |
 
-Why *Fairy Ring*: thematic — rings link distant places. This project links careful tools (including AI), humans, and a living playable stack. It is **not** “Lost City,” not “RS2,” not an official Jagex or LostCityRS product.
+Why *Fairy Ring*: rings link distant places (and times). This project links careful tools (including AI), humans, and living playable stacks. It is **not** “Lost City,” not a Jagex product name, not an official LostCityRS release.
 
 ## Derived from Lost City — not Lost City
 
@@ -20,8 +21,8 @@ This project is a **derivation** of open work from **Lost City / LostCityRS** (E
 | We are | We are not |
 |--------|------------|
 | Independent Fairy Ring experiment | Official **Lost City** / **LostCityRS** |
-| Users and extenders of LC-style stacks | Endorsed by LC or Jagex |
-| Clear about provenance ([NOTICE](NOTICE.md)) | “The” LC 377 tree |
+| Same long preservation *horizon* as LC (pre-EOC RS2) | Endorsed by LC or Jagex; “the” LC method or tree |
+| Clear about provenance ([NOTICE](NOTICE.md)) | Brand frozen forever at one revision number |
 
 We also work with **rs2b0t / rs2b2t** tooling and ideas. On *this* fence the bot/harness is a **means to an end** (prove rev‑377 content carefully) — not an add-on product for an already-complete 274 world. See Decision **004**.
 
@@ -31,9 +32,11 @@ See [`docs/decisions/009-branding-attribution-and-upstream.md`](docs/decisions/0
 
 ## Purpose
 
-The original period game is not fully recoverable as a pure object. We still work carefully.
+We share Lost City’s eventual *aim* — preserve RS2-era RuneScape carefully until the EOC/RS3 line — not necessarily their *process*.
 
-We use every good tool — **including AI** — so something honest and playable can exist **in human time** (to enjoy while we are here) and **outlast** a single contributor. That is **not** a completeness or perfect-authenticity claim.
+The original is not fully recoverable as a pure object. We still work carefully. We use every good tool — **including AI** — so honest, playable stacks can exist **in human time** (to enjoy while we are here) and **outlast** a single contributor. That is **not** a completeness or perfect-authenticity claim.
+
+**Fairy Ring** is the project. **377** is where this workspace stands in the ring *today*.
 
 ## AI use (explicit)
 
