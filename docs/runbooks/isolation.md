@@ -9,12 +9,12 @@
 
 | Path | Why |
 |------|-----|
-| `/Users/acfrazier/experiments/Server` | Live Lost City setup (~274) |
-| `/Users/acfrazier/experiments/Server/engine` | Live engine |
-| `/Users/acfrazier/experiments/Server/content` | Live content |
-| `/Users/acfrazier/code/rs2b2t-engine` | Live engine tip (same family as Server/engine) |
-| `/Users/acfrazier/experiments/rs2b0t` | Live bot client |
-| `/Users/acfrazier/code/rs2b2t-engine-old` | Ignore |
+| `$LIVE_SERVER_REF (read-only 274, if present)` | Live Lost City setup (~274) |
+| `$LIVE_SERVER_REF (read-only 274, if present)/engine` | Live engine |
+| `$LIVE_SERVER_REF (read-only 274, if present)/content` | Live content |
+| `$RS2B2T_ENGINE_REF (read-only, if present)` | Live engine tip (same family as Server/engine) |
+| `$RS2B0T_REF (read-only, if present)` | Live bot client |
+| `$RS2B2T_ENGINE_REF (read-only, if present)-old` | Ignore |
 
 **Allowed:** read-only reference (diff, inspect configs, copy *into* this workspace).  
 **Forbidden:** `git checkout`, commits, `npm install`, `npm start`, editing configs, installing global deps “for” those trees as part of this project.
@@ -55,8 +55,8 @@ Keep `LOGIN_SERVER` / `FRIEND_SERVER` / `LOGGER_SERVER` **false** for simple sin
 Apply / refresh:
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 bash scripts/apply-isolation-config.sh
 # Ensure .env matches (apply script updates world.json + server.json;
 # recreate .env if missing — see below)
@@ -87,10 +87,10 @@ Confirm defaults in code: `vendor/engine/src/util/Environment.ts`
 ```bash
 # Must be under LC377_ROOT
 pwd
-# → .../LC-rs2-r377-2006-05-02/...
+# → .../rs2-r377-workspace/...
 
 # Before start: confirm no accidental cd into live trees
-echo "$PWD" | grep -E 'LC-rs2-r377-2006-05-02' || echo "WRONG TREE"
+echo "$PWD" | grep -E 'rs2-r377-workspace' || echo "WRONG TREE"
 ```
 
 ### 4.2 Snapshot script
@@ -101,7 +101,7 @@ bash scripts/snapshot-status.sh
 
 Expect:
 
-- Vendor paths only under `$LC377_ROOT/vendor/`  
+- Vendor paths only under `$RS2_R377_ROOT/vendor/`  
 - Ports **8891 / 43595 / 8899** and rev **377** in printed configs  
 - No requirement to touch live Server
 
@@ -119,8 +119,8 @@ lsof -nP -iTCP:8899 -sTCP:LISTEN
 
 ```bash
 # Live trees must stay clean of your experiment commits
-git -C /Users/acfrazier/experiments/Server status -sb
-git -C /Users/acfrazier/code/rs2b2t-engine status -sb
+git -C $LIVE_SERVER_REF (read-only 274, if present) status -sb
+git -C $RS2B2T_ENGINE_REF (read-only, if present) status -sb
 
 # Work only shows under vendor clones here:
 git -C vendor/engine status -sb

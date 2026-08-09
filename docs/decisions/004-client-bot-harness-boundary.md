@@ -59,7 +59,7 @@
 
 - Extracting “pure encoder modules” out of `doAction` “for unit tests” if that restructures the Java method map without a Java cite.
 - Synthetic mouse-only smoke as the long-term agent loop (keyboard login on canvas is fragile; attach + `client.login` is the rs2b0t pattern).
-- Editing live `/Users/acfrazier/experiments/rs2b0t` for this workspace.
+- Editing live `read-only rs2b0t tree (if present)` for this workspace.
 
 ## Related
 

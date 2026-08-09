@@ -1,10 +1,28 @@
 # Public export manifest
 
 Source private vault: (not recorded — fill at push time)
-Generated: 2026-08-09T19:18Z
+Generated: 2026-08-09T19:22Z
 Policy: Decision 011 — thin surface only
 
 ```
+./.git/config
+./.git/description
+./.git/HEAD
+./.git/hooks/applypatch-msg.sample
+./.git/hooks/commit-msg.sample
+./.git/hooks/fsmonitor-watchman.sample
+./.git/hooks/post-update.sample
+./.git/hooks/pre-applypatch.sample
+./.git/hooks/pre-commit.sample
+./.git/hooks/pre-merge-commit.sample
+./.git/hooks/pre-push.sample
+./.git/hooks/pre-rebase.sample
+./.git/hooks/pre-receive.sample
+./.git/hooks/prepare-commit-msg.sample
+./.git/hooks/push-to-checkout.sample
+./.git/hooks/sendemail-validate.sample
+./.git/hooks/update.sample
+./.git/info/exclude
 ./.github/ISSUE_TEMPLATE/context-request.md
 ./AGENT_BRIEF.md
 ./AGENTS.md

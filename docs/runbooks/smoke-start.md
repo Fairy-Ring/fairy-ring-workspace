@@ -11,8 +11,8 @@
 ## Steps
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 
 # 1) Isolation env
 bash scripts/apply-isolation-config.sh

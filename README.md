@@ -66,13 +66,13 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 **Want more on a specific unit?** Open a **GitHub issue** (humans or agents) naming the quest/skill/client bug. We will share a **scoped** extract if it passes the smell test (brand, residual honesty, no invent, scrubbed paths) — see Decision **011**.
 
 ```bash
-# Preferred env name (legacy alias: LC377_ROOT)
+# Preferred env name (legacy alias still accepted: LC377_ROOT)
 export RS2_R377_ROOT=/path/to/rs2-r377-workspace   # your clone root
 cd "$RS2_R377_ROOT"
 bash scripts/snapshot-status.sh   # if vendors present
 ```
 
-Historical docs may still say `LC377_ROOT` or old directory names; treat them as the same root.
+Historical docs may still say `RS2_R377_ROOT` or old directory names; treat them as the same root.
 
 ## Bootstrap (clone → vendors → cache → run)
 

@@ -38,8 +38,8 @@ No game content is authored here. This runbook is clone / build / deploy / confi
 Re-clone if missing:
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 git clone --branch 289 --single-branch \
   https://github.com/LostCityRS/Client-TS.git vendor/client-ts
 cd vendor/client-ts
@@ -96,8 +96,8 @@ Do **not** install into or start the live `Server` / `rs2b0t` trees for this pro
 ## 4. Install & build
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT/vendor/client-ts"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT/vendor/client-ts"
 
 bun install
 bun run build          # production: minify + drop console → out/
@@ -160,8 +160,8 @@ Engine (`vendor/engine/src/web.ts`):
 **Preferred path (scripted):** build Client-TS and copy into `vendor/engine/public/client/`.
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 chmod +x scripts/deploy-client-ts.sh   # once
 bash scripts/deploy-client-ts.sh
 ```
@@ -191,18 +191,18 @@ http://127.0.0.1:81/rs2.html
 ### 6.1 Manual copy (equivalent to script)
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT/vendor/client-ts" && bun run build
-mkdir -p "$LC377_ROOT/vendor/engine/public/client"
-cp "$LC377_ROOT/vendor/client-ts/out/client.js" \
-   "$LC377_ROOT/vendor/client-ts/out/client.js.map" \
-   "$LC377_ROOT/vendor/client-ts/out/ondemandworker.js" \
-   "$LC377_ROOT/vendor/client-ts/out/ondemandworker.js.map" \
-   "$LC377_ROOT/vendor/client-ts/out/tinymidipcm.wasm" \
-   "$LC377_ROOT/vendor/engine/public/client/"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT/vendor/client-ts" && bun run build
+mkdir -p "$RS2_R377_ROOT/vendor/engine/public/client"
+cp "$RS2_R377_ROOT/vendor/client-ts/out/client.js" \
+   "$RS2_R377_ROOT/vendor/client-ts/out/client.js.map" \
+   "$RS2_R377_ROOT/vendor/client-ts/out/ondemandworker.js" \
+   "$RS2_R377_ROOT/vendor/client-ts/out/ondemandworker.js.map" \
+   "$RS2_R377_ROOT/vendor/client-ts/out/tinymidipcm.wasm" \
+   "$RS2_R377_ROOT/vendor/engine/public/client/"
 # MIDI soundfont (required for tinymidipcm; deploy-client-ts.sh copies if found):
 # Prefer: client-ts/out/SCC1_Florestan.sf2, else reference Server trees, else keep existing.
-# Manual: cp /path/to/SCC1_Florestan.sf2 "$LC377_ROOT/vendor/engine/public/client/"
+# Manual: cp /path/to/SCC1_Florestan.sf2 "$RS2_R377_ROOT/vendor/engine/public/client/"
 ```
 
 Upstream Server menu “Build Web Client” does the equivalent:
@@ -236,8 +236,8 @@ Hard-refresh after HTML changes (cache).
 ### 6.3 Start engine (reminder)
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 bash scripts/apply-isolation-config.sh
 # engine .env must have WEB_PORT=81 NODE_PORT=43595 NODE_ID=37 ENGINE_REVISION=377
 cd vendor/engine
@@ -290,7 +290,7 @@ Oracle for protocol/UI: `vendor/client-java` branch **377** + `vendor/engine` 37
 ## 9. Isolation / policy reminders
 
 - Writable tree only under this workspace.  
-- Do **not** checkout or run clients from `/Users/acfrazier/experiments/Server`, `rs2b0t`, or `rs2b2t-engine` for this project.  
+- Do **not** checkout or run clients from `$LIVE_SERVER_REF (read-only 274, if present)`, `rs2b0t`, or `rs2b2t-engine` for this project.  
 - Ports: web **81**, game **43595**, management **8899**, node **37**, rev **377**.  
 - Authenticity: port from Java 377 / early sources — no invented content (`docs/research/authenticity-stance.md`).
 
@@ -320,8 +320,8 @@ Headless Chromium opens the deployed shell, collects console + pageerrors, waits
 Playwright lives under **`tools/client-smoke/`** — not in live `rs2b0t` / `Server`, and not required inside `vendor/client-ts` for builds.
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT/tools/client-smoke"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT/tools/client-smoke"
 npm install
 npx playwright install chromium
 ```
@@ -337,8 +337,8 @@ npx playwright install chromium
 Start engine if needed:
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 bash scripts/apply-isolation-config.sh
 cd vendor/engine && npm start
 # leave running; do not stop live 43594
@@ -347,8 +347,8 @@ cd vendor/engine && npm start
 ### 11.3 Run smoke
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 node scripts/smoke-client-ts.mjs
 # or: cd tools/client-smoke && npm run smoke
 ```

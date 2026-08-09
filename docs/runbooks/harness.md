@@ -23,8 +23,8 @@ Multiple agents may run **274 Server**, **rs2b0t desktop**, and **this r377 tree
 | Do | Do not |
 |----|--------|
 | `bash scripts/kill-harness-smoke.sh` | `pkill -f playwright` / `pkill -f playwright-harness-profile` |
-| Match **absolute path** under `LC377_ROOT` in cmdline | `lsof -t -iTCP:43595 \| xargs kill` without checking which tree owns it |
-| Kill Chromium only if `user-data-dir=…/LC-rs2-r377…/.tmp/playwright-harness-profile` | Touch port **43594** or `experiments/Server` |
+| Match **absolute path** under `RS2_R377_ROOT` in cmdline | `lsof -t -iTCP:43595 \| xargs kill` without checking which tree owns it |
+| Kill Chromium only if `user-data-dir=…/rs2-r377-workspace…/.tmp/playwright-harness-profile` | Touch port **43594** or `experiments/Server` |
 | Leave `rs2b0t` Electron alone | Kill by short script name alone (`run.mjs`) |
 
 Isolation ports for **this** tree only: web **81**, game **43595**, management **8899**.
@@ -173,14 +173,14 @@ Harness turns **run on** automatically while scripts run (Decision 005 pattern).
 Does **not** invent a second toggle — uses existing `actions.setRun` / controls com_5.
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=$RS2_R377_ROOT
 # pure client (freeze / human play)
-cd "$LC377_ROOT/vendor/client-ts" && bun run build:dev
+cd "$RS2_R377_ROOT/vendor/client-ts" && bun run build:dev
 cp out/client.js out/client.js.map out/ondemandworker.js out/tinymidipcm.wasm \
   ../engine/public/client/
 
 # harness client (smokes) — use bun (Bun.build)
-cd "$LC377_ROOT" && bun tools/harness/build-client.mjs
+cd "$RS2_R377_ROOT" && bun tools/harness/build-client.mjs
 # basemap bake only: bun tools/harness/map/build-basemap.ts
 # skip bake: SKIP_BASEMAP_BAKE=1 bun tools/harness/build-client.mjs
 # copies attach + wasm + SF2; keep ondemandworker next to harness-client:
@@ -190,7 +190,7 @@ cp vendor/engine/public/client/ondemandworker.js* vendor/engine/public/harness/ 
 ## Run smokes
 
 ```bash
-cd "$LC377_ROOT"
+cd "$RS2_R377_ROOT"
 # All of these are headed unless HEADLESS=1
 node tools/harness/login-walk-smoke.mjs
 node tools/harness/cheat-paths-smoke.mjs
@@ -208,7 +208,7 @@ node tools/harness/login-walk-smoke.mjs --base 'http://127.0.0.1:81/rs2.html?har
 `freshAccount()` leaves `data/players/main/<user>.sav` (and optional SQLite `account` rows when `LOGIN_SERVER=true`). Wipe junk logins:
 
 ```bash
-cd "$LC377_ROOT"
+cd "$RS2_R377_ROOT"
 bash scripts/cleanup-test-accounts.sh           # dry-run (default)
 bash scripts/cleanup-test-accounts.sh --apply   # delete
 # only some prefixes:

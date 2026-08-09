@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stop only LC-rs2-r377 harness Playwright smokes — never other projects.
+# Stop only rs2-r377 harness Playwright smokes — never other projects.
 #
 # SAFE: matches absolute path under this repo only.
 # UNSAFE (do not use from agents):
@@ -62,7 +62,7 @@ kill_matching() {
     local cmd
     cmd=$(ps -p "$pid" -o command= 2>/dev/null || true)
     case "$cmd" in
-      *LC-rs2-r377*|*LC-rs2-r277*|*"$ROOT"*|*"$ROOT_REAL"*)
+      *rs2-r377*|*LC-rs2-r277*|*"$ROOT"*|*"$ROOT_REAL"*)
         case "$cmd" in
           *path-abc-smoke*|*script/run.mjs*|*quest-*-smoke.mjs*|*tools/harness/*-smoke.mjs*)
             echo "kill $label pid=$pid :: $cmd"

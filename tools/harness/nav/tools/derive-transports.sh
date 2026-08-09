@@ -1,5 +1,5 @@
 #!/bin/sh
-# Regenerate transport graph data for LC-rs2-r377 from this engine + content.
+# Regenerate transport graph data for rs2-r377 from this engine + content.
 #
 # Order matches rs2b0t tools/nav/derive-transports.sh:
 #   1. derive-stairs.ts  → stairEdges.json (stairs.rs2 + generic ladder locs)
@@ -9,7 +9,7 @@
 # doors.json is separate (derive-doors.ts) — re-run when wall locs move.
 #
 # Usage (from repo root):
-#   export LC377_ROOT=$RS2_R377_ROOT
+#   export RS2_R377_ROOT=$RS2_R377_ROOT
 #   bash tools/harness/nav/tools/derive-transports.sh
 #   # optional: also doors
 #   bun tools/harness/nav/tools/derive-doors.ts

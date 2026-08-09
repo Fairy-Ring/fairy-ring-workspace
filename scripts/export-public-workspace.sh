@@ -164,16 +164,24 @@ for bad in docs/plans docs/gap docs/context docs/superpowers docs/research/CORPU
   fi
 done
 
-# Strip absolute laptop paths from exported markdown (best-effort)
-if command -v rg >/dev/null 2>&1; then
-  while IFS= read -r -d '' f; do
-    # macOS sed
-    sed -i '' \
-      -e 's|$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
-      -e 's|$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
-      "$f" 2>/dev/null || true
-  done < <(find "${DEST}" -type f \( -name '*.md' -o -name '*.mjs' -o -name '*.ts' -o -name '*.sh' \) -print0 2>/dev/null)
-fi
+# Strip absolute laptop paths + legacy LC-rs2 brand crumbs (best-effort)
+while IFS= read -r -d '' f; do
+  # macOS sed; GNU sed: sed -i''
+  sed -i '' \
+    -e 's|$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
+    -e 's|$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
+    -e 's|$RS2B2T_ENGINE_REF|$RS2B2T_ENGINE_REF|g' \
+    -e 's|$RS2_LIVE_SERVER_REF|$RS2_LIVE_SERVER_REF|g' \
+    -e 's|$RS2B0T_REF|$RS2B0T_REF|g' \
+    -e 's|export RS2_R377_ROOT=|export RS2_R377_ROOT=|g' \
+    -e 's|"$RS2_R377_ROOT"|"$RS2_R377_ROOT"|g' \
+    -e 's|\$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
+    -e 's|rs2-r377-workspace|rs2-r377-workspace|g' \
+    -e 's|rs2-r377-workspace|rs2-r377-workspace|g' \
+    -e 's|rs2-r377|rs2-r377|g' \
+    -e 's|`RS2_R377_ROOT`|`RS2_R377_ROOT`|g' \
+    "$f" 2>/dev/null || true
+done < <(find "${DEST}" -type f \( -name '*.md' -o -name '*.mjs' -o -name '*.ts' -o -name '*.sh' -o -name '*.js' \) -print0 2>/dev/null)
 
 # Manifest
 {

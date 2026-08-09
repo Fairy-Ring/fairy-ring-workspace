@@ -31,9 +31,8 @@ for candidate in \
   "$CLIENT/out/$SF2_NAME" \
   "$ROOT/assets/$SF2_NAME" \
   "$ROOT/vendor/assets/$SF2_NAME" \
-  "/Users/acfrazier/experiments/Server/engine/public/client/$SF2_NAME" \
-  "/Users/acfrazier/code/rs2b2t-engine/public/client/$SF2_NAME" \
-  "/Users/acfrazier/code/Server/engine/public/client/$SF2_NAME"
+  ${LIVE_SERVER_REF:+$LIVE_SERVER_REF/engine/public/client/$SF2_NAME} \
+  ${RS2B2T_ENGINE_REF:+$RS2B2T_ENGINE_REF/public/client/$SF2_NAME}
 do
   if [[ -f "$candidate" && "$candidate" != "$SF2_DEST" ]]; then
     cp -f "$candidate" "$SF2_DEST"

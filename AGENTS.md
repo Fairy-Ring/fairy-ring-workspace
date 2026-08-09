@@ -8,7 +8,7 @@ Env root (either name):
 
 ```bash
 export RS2_R377_ROOT=/path/to/rs2-r377-workspace
-# export LC377_ROOT="$RS2_R377_ROOT"   # legacy alias in older docs
+# export RS2_R377_ROOT="$RS2_R377_ROOT"   # legacy alias in older docs
 cd "$RS2_R377_ROOT"
 ```
 

@@ -1,6 +1,6 @@
 /**
  * Derive stair/ladder edges from content stairs.rs2 + map ladders → stairEdges.json.
- * Port of rs2b0t tools/nav/derive-stairs.ts for LC-rs2-r377 (paths + imports adapted).
+ * Port of rs2b0t tools/nav/derive-stairs.ts for rs2-r377 (paths + imports adapted).
  *
  * Stage 1 of derive-transports.sh (then derive-ladders.py, enrich-transports.py).
  */

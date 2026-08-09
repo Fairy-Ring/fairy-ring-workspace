@@ -89,7 +89,7 @@ Vendor public remotes (content/engine/client-ts): **README + NOTICE + LICENSE on
 | `docs/context/COLD_START.md` · `operator-tldr.md` · full `DOC_MAP` | Operator-dense; paths; current residual pointers |
 | Full `AGENTS.md` as written | Can stay private **or** ship a slim public `AGENTS.md` that only points at `AGENT_BRIEF` |
 | `docs/superpowers/` · harness shots · cache-parity bins | Already gitignored |
-| Absolute `/Users/acfrazier/...` archives | Never need public scrub if never shipped |
+| Absolute laptop paths in private plans | Never need public scrub if never shipped (export sed also rewrites) |
 
 ### Implementation options (pick one at flip)
 

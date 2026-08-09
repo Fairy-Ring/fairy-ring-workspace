@@ -66,7 +66,7 @@ We **do not mind sharing** — thin defaults are for token cost and noise, not s
 
 ```bash
 export RS2_R377_ROOT=/path/to/rs2-r377-workspace   # preferred
-# export LC377_ROOT="$RS2_R377_ROOT"               # legacy alias still used in older docs
+# export RS2_R377_ROOT="$RS2_R377_ROOT"               # legacy alias still used in older docs
 cd "$RS2_R377_ROOT"
 
 # 1) This workspace (already cloned)
@@ -103,7 +103,7 @@ Do not point experiments at live 274 production trees.
 - **Never** `git push` to `LostCityRS/*` without explicit permission.  
 - **Never** present this project as official Lost City / “LC.”  
 - **Never** commit cache blobs (OpenRS2 downloads stay local; see `cache/README.md`), `.env`, PEM private keys, or harness screenshot dumps.  
-- Use **`$RS2_R377_ROOT`** (or legacy `$LC377_ROOT`) in new docs; avoid personal laptop paths in cold-start material.  
+- Use **`$RS2_R377_ROOT`** (or legacy `$RS2_R377_ROOT`) in new docs; avoid personal laptop paths in cold-start material.  
 - Residual / mid-gate smokes: one soft stage setvar at entry is OK when labeled; mid-path quest setvar / quest-critical give = **DIRTY**.
 
 ## PR expectations

@@ -26,8 +26,8 @@ No game content is authored here — this runbook only covers build/run/connect 
 Re-clone if missing:
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 git clone --branch 377 --single-branch \
   https://github.com/LostCityRS/Client-Java.git vendor/client-java
 ```
@@ -83,8 +83,8 @@ Do **not** point this client at the live 274 stack unless you intentionally want
 ## 4. Build
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT/vendor/client-java"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT/vendor/client-java"
 
 ./gradlew jar          # → build/libs/rs2client.jar
 # optional:
@@ -122,10 +122,10 @@ Revision is **not** a CLI flag: hardcoded as `signlink.clientversion = 377` and 
 
 ```bash
 # Terminal A — engine already configured for NODE_PORT=43595
-cd "$LC377_ROOT/vendor/engine" && npm start
+cd "$RS2_R377_ROOT/vendor/engine" && npm start
 
 # Terminal B — Java client
-cd "$LC377_ROOT/vendor/client-java"
+cd "$RS2_R377_ROOT/vendor/client-java"
 ./gradlew run --args="37 1 highmem members 32"
 ```
 
@@ -142,7 +142,7 @@ That matches `vendor/Server/start.js` “Run Java Client” for non-225 revs.
 ### 5.3 Jar launch
 
 ```bash
-cd "$LC377_ROOT/vendor/client-java"
+cd "$RS2_R377_ROOT/vendor/client-java"
 ./gradlew jar
 java -cp build/libs/rs2client.jar jagex2.client.Client 37 1 highmem members 32
 ```
@@ -205,7 +205,7 @@ So **no client edit is required** for login against the current engine keypair.
 ### 6.3 If keys are regenerated
 
 ```bash
-cd "$LC377_ROOT/vendor/engine"
+cd "$RS2_R377_ROOT/vendor/engine"
 # generates data/config/{public,private}.pem and prints TS-style n/e:
 npx tsx tools/server/rsa.ts
 # (or whatever npm script wraps that file in your branch)

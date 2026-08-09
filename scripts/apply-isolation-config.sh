@@ -22,7 +22,7 @@ fi
 mkdir -p "${ENGINE_DIR}/data/config"
 
 cat > "${ENV_FILE}" <<'EOF'
-# Isolation config for LC-rs2-r377 — Java client portOffset=1
+# Isolation config for rs2-r377 — Java client portOffset=1
 # HTTP = 80+1=81, game = 43594+1=43595. Do not set WEB_PORT=8891.
 
 EASY_STARTUP=true

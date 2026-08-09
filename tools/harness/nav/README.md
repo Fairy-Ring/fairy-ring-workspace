@@ -2,14 +2,14 @@
 
 Port of rs2b0t world-walking for LC-rs2 r377. **One walker** — default `classic` (no tele inject).
 
-Upstream: `/Users/acfrazier/experiments/rs2b0t` `docs/NAV.md`, `docs/nav-v2/`.
+Upstream: `$RS2B0T_REF` `docs/NAV.md`, `docs/nav-v2/`.
 
 ## Build collision pack
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=$RS2_R377_ROOT
 bun tools/harness/nav/tools/build-collision.ts \
-  --engine "$LC377_ROOT/vendor/engine" \
+  --engine "$RS2_R377_ROOT/vendor/engine" \
   --members true \
   --no-verify
 # → tools/harness/nav/out/collision.lcnav(.gz)
@@ -32,8 +32,8 @@ Tooling is adapted from rs2b0t `tools/nav/` into `tools/harness/nav/tools/`:
 | `derive-transports.sh` | runs stairs → ladders → enrich in order |
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-cd "$LC377_ROOT"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+cd "$RS2_R377_ROOT"
 
 # 1) doors (map wall Open ops)
 bun tools/harness/nav/tools/derive-doors.ts
@@ -42,8 +42,8 @@ bun tools/harness/nav/tools/derive-doors.ts
 bash tools/harness/nav/tools/derive-transports.sh
 ```
 
-Defaults: `ENGINE_DIR=$LC377_ROOT/vendor/engine`, `CONTENT_DIR=$LC377_ROOT/vendor/content`,
-pack `$LC377_ROOT/tools/harness/nav/out/collision.lcnav.gz`, data `$LC377_ROOT/tools/harness/nav/data/`.
+Defaults: `ENGINE_DIR=$RS2_R377_ROOT/vendor/engine`, `CONTENT_DIR=$RS2_R377_ROOT/vendor/content`,
+pack `$RS2_R377_ROOT/tools/harness/nav/out/collision.lcnav.gz`, data `$RS2_R377_ROOT/tools/harness/nav/data/`.
 
 **Curated** ship/gangplank/shortcut rows stay in `transports.json` and are re-enriched against 377 maps (NPC ships have no locId — expected).
 

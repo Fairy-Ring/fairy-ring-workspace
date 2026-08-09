@@ -169,14 +169,14 @@ Never force-push or PR accidental AI dumps to LostCityRS.
 ## 5. Verify remotes and SHAs
 
 ```bash
-export LC377_ROOT=$RS2_R377_ROOT
-bash "$LC377_ROOT/scripts/snapshot-status.sh"
+export RS2_R377_ROOT=$RS2_R377_ROOT
+bash "$RS2_R377_ROOT/scripts/snapshot-status.sh"
 
 for d in engine content Server client-java; do
   echo "=== vendor/$d ==="
-  git -C "$LC377_ROOT/vendor/$d" remote -v
-  git -C "$LC377_ROOT/vendor/$d" status -sb
-  git -C "$LC377_ROOT/vendor/$d" log -1 --oneline
+  git -C "$RS2_R377_ROOT/vendor/$d" remote -v
+  git -C "$RS2_R377_ROOT/vendor/$d" status -sb
+  git -C "$RS2_R377_ROOT/vendor/$d" log -1 --oneline
 done
 ```
 

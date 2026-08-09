@@ -12,7 +12,7 @@
  * Public: `openWorldMapPicker({ level?, x?, z? })` → `{ x, z, level } | null`
  * Also `WorldMapPicker.open()` for rs2b0t-shaped callers.
  *
- * @see /Users/acfrazier/experiments/rs2b0t/src/bot/ui/WorldMapPicker.ts
+ * @see $RS2B0T_REF/src/bot/ui/WorldMapPicker.ts
  */
 import { ensureNav, getFinder } from '../nav/browser/NavigatorMain.ts';
 import type { PathFinder } from '../nav/PathFinder.ts';

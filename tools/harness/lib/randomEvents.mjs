@@ -1,7 +1,7 @@
 /**
  * Thin rs2b0t RandomEvents port for 377 harness (Node + Playwright).
  *
- * Source of truth (read-only): `/Users/acfrazier/experiments/rs2b0t/src/bot/api/RandomEvents.ts`
+ * Source of truth (read-only): `$RS2B0T_REF/src/bot/api/RandomEvents.ts`
  * + `eventEvade.ts`. Decision 004: toys only — never into vendor/client-ts.
  *
  * Wave 1: dialog · pick (Strange plant) · hostile evade/attack · lamp/box noop log.

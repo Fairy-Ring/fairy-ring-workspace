@@ -6,13 +6,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-echo "=== LC-rs2 r377 snapshot ==="
+echo "=== rs2-r377 snapshot ==="
 echo "date:    $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "root:    $ROOT"
 echo "cwd:     $(pwd)"
-if [[ "$ROOT" != $RS2_R377_ROOT ]]; then
-  echo "WARN: root is not the canonical LC377 path" >&2
-fi
 echo
 
 print_repo() {
@@ -120,9 +117,9 @@ echo
 
 echo "--- forbidden live trees (must not be CWD) ---"
 for p in \
-  /Users/acfrazier/experiments/Server \
-  /Users/acfrazier/code/rs2b2t-engine \
-  /Users/acfrazier/experiments/rs2b0t
+  ${LIVE_SERVER_REF:-} \
+  ${RS2B2T_ENGINE_REF:-} \
+  ${RS2B0T_REF:-}
 do
   if [[ "$PWD" == "$p"* ]]; then
     echo "  FAIL: cwd is under $p"

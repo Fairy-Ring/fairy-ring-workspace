@@ -42,7 +42,7 @@ Per **Decision 004** (client pure; bot later in `vendor/rs2b0t`):
 | **Later (bot product)** | Merge into `vendor/rs2b0t` when vendored; harness becomes a thin consumer |
 
 - **Never** import nav into `vendor/client-ts`.
-- Read-only reference: `/Users/acfrazier/experiments/rs2b0t` (do not commit there for this project).
+- Read-only reference: `read-only rs2b0t tree (if present)` (do not commit there for this project).
 
 ## Why not keep patching `walkToward`
 
