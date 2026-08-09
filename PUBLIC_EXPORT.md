@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-09T20:53Z
+Generated: 2026-08-09T21:12Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -27,6 +27,21 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/authenticity-stance.md
 ./docs/research/deviations.md
 ./docs/research/PROVENANCE-UPSTREAM-PINS.md
+./docs/research/runescript/_opcode_census_measure.py
+./docs/research/runescript/failures.md
+./docs/research/runescript/layout.md
+./docs/research/runescript/living-notes.md
+./docs/research/runescript/opcode-usage-census.md
+./docs/research/runescript/overview.md
+./docs/research/runescript/pack-and-prove.md
+./docs/research/runescript/paths.md
+./docs/research/runescript/patterns.md
+./docs/research/runescript/README.md
+./docs/research/runescript/residuals-inbox.md
+./docs/research/runescript/runtime.md
+./docs/research/runescript/syntax.md
+./docs/research/runescript/triggers.md
+./docs/research/runescript/types.md
 ./docs/research/softpass.md
 ./docs/runbooks/client-ts.md
 ./docs/runbooks/harness.md

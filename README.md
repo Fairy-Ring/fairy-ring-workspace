@@ -73,6 +73,7 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 | **Rules / fences** | [`docs/decisions/`](docs/decisions/) (004 · **009** · **010** · **011**) |
 | **Intentional non-auth** | [`docs/research/deviations.md`](docs/research/deviations.md) |
 | **Soft mids / not-yet-e2e** | [`docs/research/softpass.md`](docs/research/softpass.md) |
+| **RuneScript manual** | [`docs/research/runescript/README.md`](docs/research/runescript/README.md) |
 
 This GitHub tree is the **contributor surface** (Decision **011**): enough to clone, bootstrap, thrash, and open evidence-backed PRs — not a dump of every private research note.
 

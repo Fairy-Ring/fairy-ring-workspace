@@ -285,6 +285,17 @@ copy_file "docs/research/PROVENANCE-UPSTREAM-PINS.md"
 copy_file "docs/research/deviations.md"
 copy_file "docs/research/softpass.md"
 
+# RuneScript first-principles manual (public — language/runtime, not thrash logs)
+if [[ -d "${ROOT}/docs/research/runescript" ]]; then
+  mkdir -p "${STAGE}/docs/research/runescript"
+  rsync -a \
+    --exclude '.DS_Store' \
+    --exclude '**/__pycache__/**' \
+    --exclude '*.pyc' \
+    "${ROOT}/docs/research/runescript/" "${STAGE}/docs/research/runescript/"
+  echo "  + docs/research/runescript/ (manual)"
+fi
+
 mkdir -p "${STAGE}/docs"
 cp -a "${ROOT}/docs/export/README.md" "${STAGE}/docs/README.md"
 echo "  + docs/README.md (from docs/export/README.md — edit that file in vault)"

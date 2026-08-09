@@ -43,6 +43,7 @@ Session thrash can stay private process. The **public surface** still carries th
 | `docs/research/authenticity-stance.md` | Accuracy bar |
 | **`docs/research/deviations.md`** | Intentional product/platform non-auth |
 | **`docs/research/softpass.md`** | Soft mids / not-yet-e2e process ledger |
+| **`docs/research/runescript/**`** | RuneScript first-principles manual |
 | `docs/research/PROVENANCE-UPSTREAM-PINS.md` | Upstream SHAs |
 | Thin `docs/runbooks/*` | Bootstrap / isolation / harness |
 | `tools/harness/**` | Toys (no shot dumps) |

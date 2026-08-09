@@ -110,6 +110,7 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 | Authenticity bar | `docs/research/authenticity-stance.md` |
 | Intentional non-auth | `docs/research/deviations.md` |
 | Soft mids / not-yet-e2e | `docs/research/softpass.md` |
+| RuneScript language/runtime | `docs/research/runescript/README.md` |
 | Fences / brand / thin public policy | `docs/decisions/` (004 · 009 · 010 · 011) |
 | Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` |
 | Deeper unit notes | **Open a GitHub issue** with a named unit (Decision **011**) |

@@ -102,6 +102,7 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 | Authenticity | `docs/research/authenticity-stance.md` |
 | Intentional non-auth | `docs/research/deviations.md` |
 | Soft mids / not-yet-e2e | `docs/research/softpass.md` |
+| RuneScript language/runtime | `docs/research/runescript/README.md` |
 | Decisions | `docs/decisions/` |
 | Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` · vendor `PROVENANCE.md` |
 | Cache download | `cache/README.md` |
