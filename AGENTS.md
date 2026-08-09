@@ -103,7 +103,7 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 | Decisions | `docs/decisions/` | same |
 | Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` | + each vendor `PROVENANCE.md` |
 | Cache download | `cache/README.md` | same |
-| Operator cold resume | — | `docs/context/COLD_START.md` · `docs/context/AGENTS-OPERATOR.md` |
+| Operator cold resume | — | `docs/context/COLD_START.md` · horizon `docs/plans/2026-08-09-horizon-public-then-content.md` · `docs/context/AGENTS-OPERATOR.md` |
 | Session thrash / gap | — | `docs/plans/` · `docs/gap/` · game-knowledge corpus |
 
 **Public thin export does not ship** full `docs/plans`, research corpus, or gap dumps (Decision **011**). Request scoped context via GitHub issues — see `CONTRIBUTING.md`.

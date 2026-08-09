@@ -114,7 +114,8 @@ Do not point experiments at live 274 production trees.
 | **Docs / research** | Sources + ladder; link from `docs/research/INDEX.md` if new unit (private vault) or brief extract (public) |
 | **Harness** | Label soft vs residual; no claim of pure product authenticity |
 | **Content / client / engine** | Cite oracle (Client-Java 377, content scripts); ship as vendor patches or clear SHAs |
-| **QoL client ideas** | Decision 010 — deferred until after content-complete / public debug phase |
+| **Bugfix PRs** | **Will not be reviewed** without **sufficient proof for human review** (repro steps, stage/var or run id, log path and/or headed shot, soft vs residual honesty, expected vs actual). Prefer filing the bug template first. |
+| **QoL client ideas** | Decision 010 — deferred until after public open + content thrash / pure freeze + debug/improve phase |
 | **Any good-faith fix** | Reviewed; decline only with **clear rationale** (see maintainer disclaimer) |
 
 ## Communication

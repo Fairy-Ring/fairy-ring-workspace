@@ -78,20 +78,21 @@ Examples of **in-scope QoL** (illustrative, not a ship list): click-to-center co
    - Smokes that claim product authenticity run **pure or harness-on-pure**, not QoL defaults.  
    - Branding: Fairy Ring; not “official LC”; credit LC / period RS / tooling (009).
 
-8. **When to start QoL code (timeline — operator, 2026-08-09).**  
-   **Definitely after content complete.** Explicitly **after public**, in a phase that is **accepting debug / improve PRs** — not during private residual thrash, not as a parallel track to fill content gaps.
+8. **When to start QoL code (timeline — operator, 2026-08-09; horizon update same day).**  
+   **Public open does not wait on content-complete** (see [`2026-08-09-horizon-public-then-content.md`](../plans/2026-08-09-horizon-public-then-content.md)).  
+   **QoL code** still waits for a **later** debug/improve phase — not as a parallel track to fill content gaps, and not as the ship client at flip.
 
    | Order | Milestone | QoL code? |
    |-------|-----------|-----------|
-   | 1 | Pure client + content residual under promise bar | **No** |
-   | 2 | Content-complete enough to **go public** | **No** — pure is the ship |
-   | 3 | Public project **accepting debug / improve PRs** | **Then** scaffold QoL as optional artifact |
+   | 1 | **Public open** (thin surface + vendors; Issues/PRs; show work so far) | **No** — pure + harness are the ship |
+   | 2 | **Content-complete thrash** under residual bar (may run in public) | **No** |
+   | 3 | Public **debug / improve PR** phase (evidence bar) | **Then** scaffold QoL as optional artifact |
    | 4 | First QoL pack (compass center, map, shift-drop, menu swap, …) | Under PR review; never default “the” period client |
 
    Prerequisites before first QoL code:
 
-   - Content-complete + public gate passed (operator call).  
-   - Pure labeled freeze SHA still the authenticity oracle.  
+   - Public gate passed (operator flip).  
+   - Content-complete thrash far enough that pure freeze SHA is a deliberate authenticity oracle (operator call).  
    - Scaffold: second entry + inject/fork pipeline + QoL deviation ledger.  
    - CI/docs: authenticity smokes stay pure; QoL is opt-in.
 
@@ -136,7 +137,7 @@ Prefer **inject / thin overlay** over forever-diverging full `Client.ts` copy wh
 - Bot = eventual full tooling path; **more power to you**.  
 - QoL = 30+ / RSI-aware happy medium; compass center, world map, shift-drop, etc., without breaking period content function; **more power to you**.  
 - Purpose is **choice**, not a single orthodoxy of how you sit at the keyboard.  
-- Timeline for QoL **code**: after content complete; after public; debug/improve PR phase.
+- Timeline for QoL **code**: after public open; after content-complete thrash / pure freeze call; debug/improve PR phase.
 
 ---
 
@@ -151,5 +152,5 @@ Prefer **inject / thin overlay** over forever-diverging full `Client.ts` copy wh
 
 ## When QoL graduates from deferred
 
-Only after **content complete → public → debug/improve PR phase** (see §8).  
+Only after **public → content-complete thrash / pure freeze → debug/improve PR phase** (see §8).  
 Then open a plan under `docs/plans/` with freeze SHA, artifact path, first feature list, and a `docs/research/qol-deviations.md` (or rows in `deviations.md`) before any code lands.

@@ -1,10 +1,11 @@
 # Public export manifest
 
 Source private vault: (not recorded — fill at push time)
-Generated: 2026-08-09T19:53Z
+Generated: 2026-08-09T20:17Z
 Policy: Decision 011 — thin surface only
 
 ```
+./.github/ISSUE_TEMPLATE/bug-report.md
 ./.github/ISSUE_TEMPLATE/context-request.md
 ./AGENT_BRIEF.md
 ./AGENTS.md

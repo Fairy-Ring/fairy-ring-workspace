@@ -157,16 +157,21 @@ Optional later: **`docs/research/CORPUS_DIGEST.md`** (private) = slightly longer
 
 ## Checklist before public flip (docs surface)
 
+**Horizon:** public thrash **before** content-complete — [`../plans/2026-08-09-horizon-public-then-content.md`](../plans/2026-08-09-horizon-public-then-content.md).
+
 - [x] Choose export option **B-style** + `scripts/export-public-workspace.sh` (2026-08-09; dry-run OK)  
 - [x] Author **`AGENT_BRIEF.md`**  
 - [x] Private **`docs/research/CORPUS_DIGEST.md`** for denser local agents  
 - [x] Confirm public tree has **no** `docs/plans/`, **no** full research dump, **no** harness-shots (dry-run)  
 - [x] README “Start here” points to brief + CONTRIBUTING, not COLD_START  
-- [ ] CONTRIBUTING updated: public vs private process docs  
+- [x] CONTRIBUTING: public vs private + bugfix proof bar (2026-08-09)  
 - [x] Thin export remote: `acfrazier/fairy-ring-workspace` **private** for review (2026-08-09)  
+- [x] Bugfix issue template (proof for human review) — **2026-08-09**  
+
 - [ ] Operator review; then visibility public (+ vendors) on call  
 - [x] Vendor READMEs already thin (done 2026-08-09)  
 - [ ] Never claim public docs = full authenticity proof archive  
+
 
 ---
 

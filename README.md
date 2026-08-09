@@ -1,5 +1,3 @@
-> **Revision workspace branch `rs2-r377`.** Project hub on [`main`](https://github.com/acfrazier/fairy-ring-workspace/tree/main).
-
 # Fairy Ring
 
 **Independent** engineering for careful historical **pre-EOC / pre-RS3** RuneScape (RS2-era) preservation: honest residual proofs, docs discipline, and pure client/content accuracy.
@@ -111,7 +109,7 @@ docs/                 bridge: what worked, failed, SHAs, deviations
 ```
 
 Details: [`docs/decisions/004-client-bot-harness-boundary.md`](docs/decisions/004-client-bot-harness-boundary.md).  
-Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decisions/010-qol-client-runelite-style.md) — **after** content-complete / public debug phase.
+Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decisions/010-qol-client-runelite-style.md) — after **public open** and content thrash / pure freeze, in a debug/improve PR phase (not the ship client at flip).
 
 ## License
 
@@ -122,7 +120,8 @@ Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decis
 ## Status
 
 Workspace remotes may be private or public; **visibility is not a content-complete claim.**  
-GitHub names may still use legacy identifiers until rename; **public brand is Fairy Ring.**
+**Horizon:** public thrash (Issues/PRs open) **before** content-complete — show work so far under an honest incomplete disclaimer.  
+**Public brand is Fairy Ring** (rev **377** surface is current focus, not a brand lock).
 
 **Maintainer disclaimer:** we do **not** assert that this stack **is** authentic, original, or complete. Mistakes (human and agent) happen. **Contributions from all** are welcome in good faith — no PR dismissed without clear rationale. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
