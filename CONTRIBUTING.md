@@ -78,14 +78,17 @@ mkdir -p vendor
 # git clone … vendor/client-ts
 # See vendor/README.md for pin layout used by the operator.
 
-# 3) Cache (not committed): OpenRS2 rev 377 / id 657 per docs/runbooks/
+# 3) Cache — download yourself; NEVER commit blobs
+#    OpenRS2 id 657 = RS2 build 377 (NOT openrs2 path …/377/ — that is OSRS)
+#    Links + layout: cache/README.md
+bash scripts/fetch-openrs2-cache.sh   # optional helper → cache/openrs2-377/
 
 # 4) Isolation / snapshot
 bash scripts/apply-isolation-config.sh   # if present
 bash scripts/snapshot-status.sh
 
 # 5) Engine pack + start (from vendor/engine; load that tree’s .env)
-# cd "$RS2_R377_ROOT/vendor/engine" && npm run build && npm start
+# cd "$RS2_R377_ROOT/vendor/engine" && npm install && npm start
 
 # 6) Harness client (headed by default)
 # bun tools/harness/build-client.mjs
@@ -99,7 +102,7 @@ Do not point experiments at live 274 production trees.
 
 - **Never** `git push` to `LostCityRS/*` without explicit permission.  
 - **Never** present this project as official Lost City / “LC.”  
-- **Never** commit cache blobs, `.env`, PEM private keys, or harness screenshot dumps.  
+- **Never** commit cache blobs (OpenRS2 downloads stay local; see `cache/README.md`), `.env`, PEM private keys, or harness screenshot dumps.  
 - Use **`$RS2_R377_ROOT`** (or legacy `$LC377_ROOT`) in new docs; avoid personal laptop paths in cold-start material.  
 - Residual / mid-gate smokes: one soft stage setvar at entry is OK when labeled; mid-path quest setvar / quest-critical give = **DIRTY**.
 

@@ -42,7 +42,7 @@ This project **uses AI** (coding agents and related tools) in day-to-day work. T
 ## What is *not* in this git tree
 
 - Full **content**, **engine**, and **client** clones (live under `vendor/` on disk; own remotes)  
-- **OpenRS2 / packed cache** binaries  
+- **OpenRS2 / packed cache** binaries — **download yourself** (public: OpenRS2 id **657** for rev 377); see [`cache/README.md`](cache/README.md). We guide; we do not ship blobs.  
 - **Harness screenshot dumps** and ephemeral agent scratch (`docs/superpowers/`, `harness-shots/`)  
 
 Those components, when used, keep their own licenses and IP notices (e.g. Lost City Content README: assets are Jagex IP, included for historical preservation in *that* project’s distribution model).

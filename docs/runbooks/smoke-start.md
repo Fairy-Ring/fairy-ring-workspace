@@ -5,7 +5,8 @@
 - Node.js **24+**
 - Clones at `vendor/engine` + `vendor/content`
 - Isolation `.env` applied (see `isolation.md`)
-- Ports 8891 / 8899 / 43595 free
+- Ports **81** / **8899** / **43595** free (isolation layout)
+- Optional local OpenRS2 cache under `cache/openrs2-377/` — **download**, never commit (`cache/README.md`, OpenRS2 id **657**)
 
 ## Steps
 

@@ -163,7 +163,8 @@ Optional later: **`docs/research/CORPUS_DIGEST.md`** (private) = slightly longer
 - [x] Confirm public tree has **no** `docs/plans/`, **no** full research dump, **no** harness-shots (dry-run)  
 - [x] README “Start here” points to brief + CONTRIBUTING, not COLD_START  
 - [ ] CONTRIBUTING updated: public vs private process docs  
-- [ ] Real public remote populated from export (not just /tmp dry-run)  
+- [x] Thin export remote: `acfrazier/rs2-r377-workspace` **private** for review (2026-08-09)  
+- [ ] Operator review; then visibility public (+ vendors) on call  
 - [x] Vendor READMEs already thin (done 2026-08-09)  
 - [ ] Never claim public docs = full authenticity proof archive  
 

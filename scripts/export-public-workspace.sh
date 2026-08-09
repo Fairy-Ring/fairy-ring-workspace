@@ -62,6 +62,8 @@ copy_dir_filtered() {
     --exclude '.git/' \
     --exclude 'node_modules/' \
     --exclude '.tmp/' \
+    --exclude '.DS_Store' \
+    --exclude '**/.DS_Store' \
     --exclude '*.png' \
     --exclude '*.jpg' \
     --exclude '*.webp' \
@@ -142,6 +144,12 @@ fi
 if [[ -f "${ROOT}/vendor/README.md" ]]; then
   mkdir -p "${DEST}/vendor"
   copy_file "vendor/README.md"
+fi
+
+# --- cache guide only (no blobs; gitignore keeps zips out of vault git) ---
+if [[ -f "${ROOT}/cache/README.md" ]]; then
+  mkdir -p "${DEST}/cache"
+  copy_file "cache/README.md"
 fi
 
 # --- GitHub issue templates (public invite for scoped context) ---

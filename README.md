@@ -73,13 +73,16 @@ bash scripts/snapshot-status.sh   # if vendors present
 
 Historical docs may still say `LC377_ROOT` or old directory names; treat them as the same root.
 
-## Bootstrap (cannot run from this repo alone)
+## Bootstrap (clone → vendors → cache → run)
 
-1. **Clone this workspace.**  
-2. **Clone engine + content + client-ts** under `vendor/` (**Lost City** upstream and/or your forks). See [`vendor/README.md`](vendor/README.md).  
-3. **Cache:** OpenRS2 revision **377** / cache id **657** (or your documented pipeline) — never commit blobs here.  
-4. **Pack + start engine** from `vendor/engine` with isolation ports (web **81**, game **43595** in our local layout — see runbooks).  
-5. **Client:** pure play `rs2.html`; harness `harness.html` after `bun tools/harness/build-client.mjs`.
+Like Lost City’s Server layout: **this repo is the shell**; scripts pull companions and config. **Cache blobs are never in git.**
+
+1. **Clone this workspace** (thin public surface or full private vault).  
+2. **Clone vendors** under `vendor/` (content + engine + client-ts on branch `rs2-r377`). See [`vendor/README.md`](vendor/README.md).  
+3. **Cache (download yourself):** OpenRS2 **id 657** = RS2 **build 377** — public on the internet; **not** redistributed from this repo. Guide + links: [`cache/README.md`](cache/README.md). Helper: `bash scripts/fetch-openrs2-cache.sh`.  
+   - **Pitfall:** OpenRS2 path `/caches/runescape/377/` is **OSRS 2014**, not rev 377. Always use **657**.  
+4. **Isolation + start:** `bash scripts/apply-isolation-config.sh` then `cd vendor/engine && npm install && npm start` (web **81**, game **43595**).  
+5. **Client:** pure play via engine `public/`; optional harness after `bun tools/harness/build-client.mjs`.
 
 Without matching vendor SHAs, mid-gate content may be missing on bare Lost City tips. That is expected.
 
