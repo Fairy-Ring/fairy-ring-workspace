@@ -4,16 +4,15 @@ These directories are **independent git clones**. The workspace product repo onl
 
 ## Launch-together
 
-**Workspace + content + engine + client-ts** open as companion remotes under brand **Fairy Ring** (not a monorepo dump of game trees).
+**Fairy Ring** companions (brand name; not a monorepo dump of game trees):
 
-| Path | Role | GitHub (target brand name) |
-|------|------|----------------------------|
-| `content/` | Period content | `acfrazier/rs2-r377-content` |
-| `engine/` | Engine-TS fork | `acfrazier/rs2-r377-engine` |
-| `client-ts/` | Pure Client-TS | `acfrazier/rs2-r377-client-ts` |
-| *(workspace)* | Docs + harness (thin) | `acfrazier/rs2-r377-workspace` |
-
-**Note:** Private remotes may still use a legacy `rs2-r377-*` GitHub name until rename at public flip. Same trees; brand is **Fairy Ring**.
+| Path | Role | GitHub |
+|------|------|--------|
+| `content/` | Period content | https://github.com/acfrazier/FR-content |
+| `engine/` | Engine-TS fork | https://github.com/acfrazier/FR-engine |
+| `client-ts/` | Pure Client-TS | https://github.com/acfrazier/FR-client-ts |
+| *(thin workspace)* | Docs + harness process | https://github.com/acfrazier/fairy-ring-workspace |
+| *(private vault)* | Full plans/research backup | https://github.com/acfrazier/FR-vault (**private**) |
 
 **Never** present any of these as official LostCityRS.
 
@@ -23,38 +22,26 @@ These directories are **independent git clones**. The workspace product repo onl
 |------|------------------|
 | content | `LostCityRS/Content@7d7719693100cc45ff187c12139e5b63b3ab21df` (`377-wip`) |
 | engine | `LostCityRS/Engine-TS@94fcfa2d2c2fc5812e6d448a5e4a04fd73879fd3` (`377-wip`) |
-| client-ts | `LostCityRS/Client-TS@bc4751da0748704307eef9e186015b08834fccf7` (`289`) |
+| client-ts | `LostCityRS/Client-TS@bc4751da0748704307eef9e186015b08834fccf7` (`289`) — branch label `rs2-r377` is this project’s 377-focus line |
 
 Details: each `vendor/*/PROVENANCE.md` · workspace `docs/research/PROVENANCE-UPSTREAM-PINS.md`.
 
+## Branches
+
+| Path | Working branch | Notes |
+|------|----------------|--------|
+| content | **`rs2-r377`** | From LC Content `377-wip` |
+| engine | **`rs2-r377`** | From LC Engine-TS `377-wip` |
+| client-ts | **`rs2-r377`** | From LC Client-TS **`289`** tip; behavioural oracle remains Client-Java 377 |
+
 ## Clone layout
 
-| Path | Local branch | Upstream `origin` (fetch only) |
-|------|--------------|--------------------------------|
-| `content/` | `rs2-r377` | LostCityRS/Content |
-| `engine/` | `rs2-r377` | LostCityRS/Engine-TS |
-| `client-ts/` | `rs2-r377` | LostCityRS/Client-TS |
-| `client-java/` (optional) | `377` | LostCityRS/Client-Java |
-| `Server/` (optional) | `main` | LostCityRS/Server |
-
-**Policy:**
-
-- `origin` push to LostCityRS should stay **disabled** on experiment forks.  
-- Push your work to **your** remotes only.  
-- Each dirty tree has its own README / NOTICE / PROVENANCE.
-
-### Bootstrap
-
 ```bash
-export RS2_R377_ROOT=/path/to/rs2-r377-workspace
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace   # or full vault clone
 mkdir -p "$RS2_R377_ROOT/vendor"
-# Prefer brand names once remotes are renamed; until then substitute your fork URLs:
-git clone -b rs2-r377 https://github.com/acfrazier/rs2-r377-content.git "$RS2_R377_ROOT/vendor/content" \
-  || git clone -b rs2-r377 https://github.com/acfrazier/rs2-r377-content.git "$RS2_R377_ROOT/vendor/content"
-git clone -b rs2-r377 https://github.com/acfrazier/rs2-r377-engine.git "$RS2_R377_ROOT/vendor/engine" \
-  || git clone -b rs2-r377 https://github.com/acfrazier/rs2-r377-engine.git "$RS2_R377_ROOT/vendor/engine"
-git clone -b rs2-r377 https://github.com/acfrazier/rs2-r377-client-ts.git "$RS2_R377_ROOT/vendor/client-ts" \
-  || git clone -b rs2-r377 https://github.com/acfrazier/rs2-r377-client-ts.git "$RS2_R377_ROOT/vendor/client-ts"
+git clone -b rs2-r377 https://github.com/acfrazier/FR-content.git "$RS2_R377_ROOT/vendor/content"
+git clone -b rs2-r377 https://github.com/acfrazier/FR-engine.git "$RS2_R377_ROOT/vendor/engine"
+git clone -b rs2-r377 https://github.com/acfrazier/FR-client-ts.git "$RS2_R377_ROOT/vendor/client-ts"
 ```
 
 Optional clean refs from Lost City upstream (read-only research):
@@ -64,8 +51,12 @@ git clone -b 377 https://github.com/LostCityRS/Client-Java.git "$RS2_R377_ROOT/v
 git clone https://github.com/LostCityRS/Server.git "$RS2_R377_ROOT/vendor/Server"
 ```
 
-Live 274 production trees (if any on your machine) stay **read-only reference** — not under this `vendor/` layout for day-to-day work.
+**Policy:**
+
+- On experiment forks: LostCityRS `origin` push should stay **disabled**.  
+- Push work to **your** remotes (`private` / `origin` as configured).  
+- Each dirty tree has README / NOTICE / PROVENANCE.
 
 ## What is *not* in the workspace git
 
-Full content/engine/client history is **not** in the workspace product repo — only this index README. That keeps the public unit docs/process-sized while vendor forks open as companions.
+Full content/engine/client history is **not** in the workspace product repo — only this index README.

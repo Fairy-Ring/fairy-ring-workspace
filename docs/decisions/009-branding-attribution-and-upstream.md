@@ -15,7 +15,10 @@
    - **This workspace / current focus:** **revision 377** (~2 May 2006; Return of the Wise Old Man era) is the **active tree**, not the permanent brand identity. Later Fairy Ring work may target other pre-EOC revisions under the same name.  
    - **Why this name:** thematic extension of Lost City / Zanaris / fairy-network lore — rings move you between places and times; this project moves careful work between tools, humans, and living playable stacks. Generic compound; not “RS2”, not “LC”, not “Wise Old Man”.  
    - **Method (differs from LC):** isolation, mid-gates, residual bar, open AI-as-tool, thin public surface + private vault — without dunking LC process (see §5).  
-   - **GitHub targets (at rename/flip):** `fairy-ring` (thin workspace), `fairy-ring-content`, `fairy-ring-engine`, `fairy-ring-client` (or `…-client-ts`). Legacy names may remain until rename.  
+   - **GitHub (renamed 2026-08-09, still private until flip):**  
+     - thin: `fairy-ring-workspace`  
+     - vault: `FR-vault` (private)  
+     - product: `FR-content`, `FR-engine`, `FR-client-ts`  
    - **Technical branch names** (e.g. `rs2-r377`) label a **revision line**, not the public brand.
 
 2. **Brand distance from Lost City and Jagex.**  
@@ -37,13 +40,14 @@
    Prefer NOTICE + accurate SHAs over marketing.
 
 5. **Best tool for the job.**  
-   Whatever advances honest rev‑377 work: LC branches, deob, harness, agents, media.  
+   Whatever advances honest **pre-EOC** work (this tree: rev 377): LC branches, deob, harness, agents, media.  
    Speed vs upstream is a **side effect**, not a dunk on LC process.
 
 6. **Purpose (operator intent — public-safe).**  
    The original period game is not fully recoverable as a pure object; we still work carefully.  
-   Use every good tool — **including AI** — so a playable, honest stack can exist **in human time** (something to enjoy while we are here) and **outlast** a single contributor.  
-   That is **not** a claim of completeness or perfect authenticity.
+   Use every good tool — **including AI** — so playable, honest **pre-EOC** stacks can exist **in human time** (enjoy while we are here) and **outlast** a single contributor.  
+   That is **not** a claim of completeness or perfect authenticity.  
+   **Fairy Ring** is the project; **377** is where this workspace stands in the ring *today*.
 
 7. **License (when public).**  
    Respect upstream licenses on vendored LC-originated trees. Do **not** relicense LC code as original Fairy Ring invention. Workspace docs/harness may be MIT separately.
@@ -69,7 +73,8 @@
 
 - [x] Public name **Fairy Ring** locked (2026-08-09); **not** brand-locked to rev 377 only  
 - [x] Drop **LC** / **rs2-*** as *public brand* (technical branch/legacy remotes may lag)  
-- [ ] GitHub **repo rename** to `fairy-ring*` for launch units  
+- [x] GitHub **repo rename** — `fairy-ring-workspace` + `FR-{vault,content,engine,client-ts}` (2026-08-09)  
+- [ ] **Visibility public** on launch units only (not vault) — after operator final review
 - [x] NOTICE + derivation + AI disclosure  
 - [x] Vendor README/NOTICE brand pass (follow-up same session as needed)  
 - [x] Thin export + AGENT_BRIEF (Decision **011**)  
