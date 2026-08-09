@@ -220,16 +220,26 @@ for f in README.md AGENT_BRIEF.md AGENTS.md NOTICE.md LICENSE CONTRIBUTING.md; d
 done
 
 cat > "${STAGE}/.gitignore" <<'EOF'
+# --- deps / secrets / runtime ---
 node_modules/
+**/node_modules/
 .tmp/
 .env
+**/.env
+**/.env.local
 *.pem
+*.log
+*.sav
+
+# --- private process (must not land here) ---
 docs/plans/
 docs/gap/
 docs/context/
 docs/superpowers/
 docs/research/CORPUS_DIGEST.md
 **/harness-shots/
+
+# --- cache / full vendor trees (clone separately) ---
 cache/openrs2-*/
 cache/unpacked/
 vendor/content/
@@ -237,6 +247,30 @@ vendor/engine/
 vendor/client-ts/
 vendor/Server/
 vendor/client-java*/
+
+# --- OS / editor / junk ---
+.DS_Store
+**/.DS_Store
+._*
+**/__MACOSX/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+*.tmp
+*.temp
+.idea/
+.vscode/
+*.code-workspace
+.fleet/
+.history/
+*.sublime-project
+*.sublime-workspace
 EOF
 echo "  + .gitignore (public thin)"
 
