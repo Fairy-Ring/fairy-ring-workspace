@@ -9,22 +9,37 @@
 | | Pure product | Toys |
 |--|--------------|------|
 | Paths | `vendor/client-ts`, `vendor/engine`, `vendor/content` | `tools/harness/**`, later `vendor/rs2b0t` |
-| Bar | Defendable to LC accuracy reviewers | Iterate fast; label soft proofs |
-| Bridge | Research + `docs/research/deviations.md` + durable notes | Smokes may reference docs; docs must not only live in chat |
+| Bar | Defendable to LC accuracy readers | Iterate fast; **label** soft mids |
+| Bridge | Research + [`deviations.md`](deviations.md) + [`softpass.md`](softpass.md) | Smokes may reference docs; docs must not only live in chat |
 
-Full wording: `AGENTS.md` § The promise · Decision 004 rule 8.
+## Process stages (soft-pass is not failure)
+
+Soft mid thrash is a **normal stage of the process**, not a moral fail. You still implement varps/varbits, pack params, and prove the client **displays and branches** on those stages.
+
+```text
+1. Config / varp / script unit → pack
+2. Soft mid (softpass.md) → stage N drives content + client correctly
+3. Residual / HARD e2e → claimed span without progress cheats
+```
+
+| Ledger | What goes there |
+|--------|-----------------|
+| **[`softpass.md`](softpass.md)** | Soft entry, soft deps, thrash that is **not yet e2e** for the full path |
+| **[`deviations.md`](deviations.md)** | **Intentional** product/platform non-auth we **keep** (isolation ports, IF id remaps, candidate rates, tele-stubs in content) |
+
+**Misclaim (still wrong):** selling soft `setvar` of the *claimed* stage as residual authenticity, or omitting a softpass row when a mid is soft.
 
 ## Rules for agents and humans
 
-1. **Do not invent content.** No new quests, drops, mechanics, messages, or “QoL” that did not exist in the target era unless the human explicitly accepts a logged deviation.  
-   **Client track:** do not invent client behaviour either — **exact port of Client-Java 377** to TS (`docs/research/client-strategy-377.md`).
+1. **Do not invent content.** No new quests, drops, mechanics, messages, or “QoL” that did not exist in the target era unless the human explicitly accepts a logged **deviation**.  
+   **Client track:** do not invent client behaviour either — **exact port of Client-Java 377** to TS (research notes when present).
 2. **Follow the research source ladder** (below). Higher rungs beat lower ones.
-3. **Every intentional non-authentic change** goes in `docs/research/deviations.md` (ports, isolation, debug cheats — not fake game design).
+3. **Intentional product non-auth** → [`deviations.md`](deviations.md). **Soft mids / not-yet-e2e** → [`softpass.md`](softpass.md).
 4. **Missing triggers / stubs:** leave incomplete or finish from research — do not invent filler dialogue/loot to silence `no trigger for …`.
 5. **Anarchy / bot / rs2b2t patches** are out of scope until the human asks; they are not “377 authenticity.”
-6. **Soft harness proofs** (give remains, mid-quest tele, force-pass stages) never reclassify product as “verified for LC” — document or do not claim.
+6. Soft harness prep never reclassifies product as “period-complete” for the skipped span — it **does** count as process progress when labeled and when product under test is real.
 7. **Config unit before thrash:** when porting a quest/minigame, forward-port **obj/npc/loc behavioral params** from the ladder source onto 377 names **before** multi-minute smokes. Missing `next_obj_stage` / loc stage chains / NPC timers look like script crashes; they are pack holes. See [`port-quest-config-unit-first-377.md`](port-quest-config-unit-first-377.md).
-8. **Stage-write bar (2026-08-08):** a claimed quest/skill stage is **PASS only if live `.rs2` wrote that stage.** Soft `setvar` of the *claimed* stage is **DIRTY**, not proof. Soft harness thrash is logged in [`deviations.md`](deviations.md) when kept.
+8. **Stage-write bar (2026-08-08):** a claimed quest/skill stage is **residual/HARD PASS only if live `.rs2` wrote that stage.** Soft `setvar` of the *claimed* stage alone is not that claim — log the mid under softpass and keep working the product path.
 9. **Soft-entry residual bar (highest standard — 2026-08-08):** Once a mid-gate is soft-entered (e.g. `setvar` quest to N **once** at thrash start), the path **N → target** must run **e2e without further quest progress cheats**.  
    | Allowed host | Forbidden as “product residual PASS” |
    |--------------|--------------------------------------|
@@ -32,7 +47,7 @@ Full wording: `AGENTS.md` § The promise · Decision 004 rule 8.
    | Tele between proof beats (commute) | Give **quest-specific** critical items (remains, keys, sacred oil, quest scrolls, brother-complete seeds…) |
    | Give **generic** prep (food, steel/adamant kit, coins, plain logs/tinder if not the quest product under test) | Host-seed brother/complete stages; soft reseed of overlay vars that hide pack holes |
 
-   **If residual cannot finish under this bar, it is a product/code problem to debug** — not an acceptable soft thrash. Label partial runs honestly; do not green-bar them as residual complete.
+   **If residual cannot finish under this bar, it is a product/code problem to debug.** Soft mids earlier in the ladder remain valid process stages; do not green-bar the residual span as complete.
 
 ## Research source ladder (prefer top → bottom)
 
@@ -173,7 +188,8 @@ A stack you can log into and **observe** behaviour so humans can **find and fix 
 
 ## Related
 
-- `docs/research/deviations.md` — intentional non-auth log (public surface)  
+- `docs/research/deviations.md` — intentional product/platform non-auth  
+- `docs/research/softpass.md` — soft mids / not-yet-e2e process ledger  
 - `docs/runbooks/playable.md` — when present  
 - `AGENTS.md` / `AGENT_BRIEF.md` — working rules  
 

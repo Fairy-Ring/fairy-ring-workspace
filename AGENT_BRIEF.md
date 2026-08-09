@@ -33,7 +33,9 @@ Do not present as “Lost City,” “LC,” or a Jagex product. See `NOTICE.md`
 - **Do not invent** content, client handlers, or “close enough” dialogue/loot.  
 - **PASS** for a quest/skill stage means **live `.rs2` wrote that stage** — not host `setvar` of the claimed stage.  
 - Residual bar: one soft `setvar` entry → e2e with setstat/generic only; honest **FAIL**, no soft green.  
-- Soft thrash (give sacred oil, force multi bits, etc.) is **DIRTY** if sold as authenticity — log keepers in `docs/research/deviations.md`.
+- Soft mids are a **process stage** (varps/client still real work) — log in `docs/research/softpass.md`.  
+- Soft thrash sold as residual authenticity is a **misclaim** — not the same as having a soft mid.  
+- Intentional product non-auth → `docs/research/deviations.md`.
 
 Full stance: `docs/research/authenticity-stance.md`.
 
@@ -107,6 +109,7 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 | Full agent rules | `AGENTS.md` |
 | Authenticity bar | `docs/research/authenticity-stance.md` |
 | Intentional non-auth | `docs/research/deviations.md` |
+| Soft mids / not-yet-e2e | `docs/research/softpass.md` |
 | Fences / brand / thin public policy | `docs/decisions/` (004 · 009 · 010 · 011) |
 | Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` |
 | Deeper unit notes | **Open a GitHub issue** with a named unit (Decision **011**) |

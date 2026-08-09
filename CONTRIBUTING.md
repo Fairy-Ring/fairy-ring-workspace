@@ -57,7 +57,7 @@ Thin defaults are for **token cost and noise**, not secrecy.
 
 | Change | Where |
 |--------|--------|
-| Rules / brief / deviations | Root + `docs/decisions/` + `docs/research/{authenticity-stance,deviations}.md` |
+| Rules / brief / authenticity | Root + decisions + `authenticity-stance` + **`deviations`** + **`softpass`** |
 | Harness smokes / thrash / prep toys | `tools/harness/` only |
 | Content / engine / pure client | Separate vendor trees — **not** mixed into pure Client-TS as harness hooks |
 | Soft-pass “make CI green” that skips live `.rs2` | **Rejected** for product claims |
@@ -110,7 +110,7 @@ Do not point experiments at live 274 production trees.
 
 | Kind | Expectation |
 |------|-------------|
-| **Docs / research** | Sources + ladder; intentional non-auth → `docs/research/deviations.md`; deep unit notes via issue if not in-tree |
+| **Docs / research** | Sources + ladder; product non-auth → `deviations.md`; soft mids → `softpass.md`; deep unit notes via issue if not in-tree |
 | **Harness** | Label soft vs residual; no claim of pure product authenticity |
 | **Content / client / engine** | Cite oracle (Client-Java 377, content scripts); ship as vendor patches or clear SHAs |
 | **Bugfix PRs** | **Will not be reviewed** without **sufficient proof for human review** (repro steps, stage/var or run id, log path and/or headed shot, soft vs residual honesty, expected vs actual). Prefer filing the bug template first. |

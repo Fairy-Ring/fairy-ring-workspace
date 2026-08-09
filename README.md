@@ -61,7 +61,7 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 | Automation scripts, isolation helpers | Live 274 / production worlds |
 | Pointers to separate content / engine / client-ts remotes | A claim that rev 377 work is already complete |
 
-**Honest mid-gates over green bars.** Soft thrash is labeled in [`docs/research/deviations.md`](docs/research/deviations.md); residual PASS means live `.rs2` wrote the stage (see [`docs/research/authenticity-stance.md`](docs/research/authenticity-stance.md)).
+**Honest mid-gates over green bars.** Soft mids are a **process stage** ([`docs/research/softpass.md`](docs/research/softpass.md)); intentional product non-auth is [`docs/research/deviations.md`](docs/research/deviations.md). Residual PASS means live `.rs2` wrote the stage ([`docs/research/authenticity-stance.md`](docs/research/authenticity-stance.md)).
 
 ## Start here
 
@@ -72,6 +72,7 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 | **Humans / contributors** | This README · [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`NOTICE.md`](NOTICE.md) |
 | **Rules / fences** | [`docs/decisions/`](docs/decisions/) (004 · **009** · **010** · **011**) |
 | **Intentional non-auth** | [`docs/research/deviations.md`](docs/research/deviations.md) |
+| **Soft mids / not-yet-e2e** | [`docs/research/softpass.md`](docs/research/softpass.md) |
 
 This GitHub tree is the **contributor surface** (Decision **011**): enough to clone, bootstrap, thrash, and open evidence-backed PRs — not a dump of every private research note.
 

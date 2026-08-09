@@ -38,7 +38,8 @@ Session thrash can stay private process. The **public surface** still carries th
 | `AGENT_BRIEF.md` · `AGENTS.md` | Token-light + full agent rules |
 | `docs/decisions/*` | Product fences (004 · 009 · 010 · 011, …) |
 | `docs/research/authenticity-stance.md` | Accuracy bar |
-| **`docs/research/deviations.md`** | Intentional non-auth + labeled soft thrash |
+| **`docs/research/deviations.md`** | Intentional product/platform non-auth |
+| **`docs/research/softpass.md`** | Soft mids / not-yet-e2e process ledger |
 | `docs/research/PROVENANCE-UPSTREAM-PINS.md` | Upstream SHAs |
 | Thin `docs/runbooks/*` | Bootstrap / isolation / harness |
 | `tools/harness/**` | Toys (no shot dumps) |
@@ -100,5 +101,5 @@ Session thrash can stay private process. The **public surface** still carries th
 
 - Decision **009** — branding  
 - `docs/research/authenticity-stance.md`  
-- `docs/research/deviations.md`  
+- `docs/research/deviations.md` · `docs/research/softpass.md`  
 - `CONTRIBUTING.md` · `AGENT_BRIEF.md`

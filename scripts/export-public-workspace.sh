@@ -85,6 +85,32 @@ for f in \
   copy_file "${f}"
 done
 
+# Public-safe gitignore (never leave DEST without one — thin replace drops remote .git only)
+if [[ -f "${ROOT}/.gitignore" ]]; then
+  # Prefer a curated public ignore if present later; for now write explicit thin ignores
+  :
+fi
+cat > "${DEST}/.gitignore" <<'EOF'
+node_modules/
+.tmp/
+.env
+*.pem
+docs/plans/
+docs/gap/
+docs/context/
+docs/superpowers/
+docs/research/CORPUS_DIGEST.md
+**/harness-shots/
+cache/openrs2-*/
+cache/unpacked/
+vendor/content/
+vendor/engine/
+vendor/client-ts/
+vendor/Server/
+vendor/client-java*/
+EOF
+echo "  + .gitignore (public thin)"
+
 # PLAN.md is operator-dense — omit from thin public export (Decision 011).
 # Full private COLD_START / AGENTS-OPERATOR are NOT exported.
 
@@ -99,6 +125,7 @@ done
 copy_file "docs/research/authenticity-stance.md"
 copy_file "docs/research/PROVENANCE-UPSTREAM-PINS.md"
 copy_file "docs/research/deviations.md"
+copy_file "docs/research/softpass.md"
 
 # Optional short public README for docs/
 mkdir -p "${DEST}/docs"
@@ -111,7 +138,7 @@ This tree ships a **thin** documentation set only.
 |----------|-------------------------|
 | Decisions (fences, branding, thin surface) | Session thrash plans |
 | Authenticity stance | Full readiness XL / port dumps |
-| **Deviations log** | Gap dumps / private cold-start notes |
+| **Deviations** + **softpass** ledgers | Gap dumps / private cold-start notes |
 | Root `AGENT_BRIEF.md` | Harness screenshot archives |
 
 Need depth on a **named** unit? Open a GitHub issue — Decision **011**.

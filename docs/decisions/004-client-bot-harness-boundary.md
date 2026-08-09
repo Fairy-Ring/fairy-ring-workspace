@@ -40,7 +40,7 @@
 
 8. **Audience split (2026-08-05).**  
    - **Product (Client-TS / Engine / Content):** purity bar is **LC-grade accuracy**. Document for people who will reject “it mostly worked.”  
-   - **Toys (harness / eventual rs2b0t):** play however you like **without** contaminating product trees; soft proofs must be labeled in `docs/research/deviations.md` (or PR/smoke headers), never sold as period truth.  
+   - **Toys (harness / eventual rs2b0t):** play however you like **without** contaminating product trees; soft mids → `docs/research/softpass.md`; intentional product non-auth → `docs/research/deviations.md`; never sold as residual-complete without the bar.  
    - **Docs are the bridge** — not chat.
 
 9. **Harness may outgrow a typical bot-script corpus (2026-08-08).**  

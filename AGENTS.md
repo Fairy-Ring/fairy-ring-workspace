@@ -24,9 +24,9 @@ cd "$RS2_R377_ROOT"
 1. **Do not invent** content, client handlers, dialogue, or loot.  
 2. **Research ladder** (top → bottom): period cache/pack → Client-Java 377 → period media → other LC branches (prefer era-check / 274) → **OSRS last resort** (not RS3).  
 3. **PASS** for a quest/skill stage means **live `.rs2` wrote that stage** — not host `setvar` of the claimed stage.  
-4. Residual bar: one soft entry setvar → e2e with setstat/generic only; honest **FAIL**, no soft green.  
-5. Soft thrash (`give` quest-critical items, mid setvar multi, etc.) is **DIRTY** if sold as authenticity.  
-6. Intentional non-auth: **`docs/research/deviations.md`** (or label in the PR/smoke header).
+4. Residual bar: one soft entry setvar → e2e with setstat/generic only; honest **FAIL** on the residual span, no false green.  
+5. Soft mids are a **process stage** (still implement varps/client behaviour) — log in **`docs/research/softpass.md`**. Misclaim = selling soft as residual complete.  
+6. Intentional product non-auth: **`docs/research/deviations.md`**.
 
 Full stance: `docs/research/authenticity-stance.md`.
 
@@ -101,6 +101,7 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 | Rules (this file) | **`AGENTS.md`** |
 | Authenticity | `docs/research/authenticity-stance.md` |
 | Intentional non-auth | `docs/research/deviations.md` |
+| Soft mids / not-yet-e2e | `docs/research/softpass.md` |
 | Decisions | `docs/decisions/` |
 | Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` · vendor `PROVENANCE.md` |
 | Cache download | `cache/README.md` |
@@ -127,7 +128,7 @@ This surface does **not** ship full session plans or the entire research corpus.
 
 ### Documentation
 
-- Intentional non-auth → **`docs/research/deviations.md`** same turn.  
+- Intentional non-auth → **`docs/research/deviations.md`**; soft mids → **`docs/research/softpass.md`** same turn.  
 - Durable facts → research notes or PR description.  
 - Never leave the only copy of a learning in chat.
 

@@ -1,12 +1,13 @@
 # Public export manifest
 
 Source: contributor surface export (Decision 011)
-Generated: 2026-08-09T20:25Z
+Generated: 2026-08-09T20:28Z
 Policy: thin surface — authenticity, deviations, fences; no thrash dump
 
 ```
 ./.github/ISSUE_TEMPLATE/bug-report.md
 ./.github/ISSUE_TEMPLATE/context-request.md
+./.gitignore
 ./AGENT_BRIEF.md
 ./AGENTS.md
 ./cache/README.md
@@ -26,6 +27,7 @@ Policy: thin surface — authenticity, deviations, fences; no thrash dump
 ./docs/research/authenticity-stance.md
 ./docs/research/deviations.md
 ./docs/research/PROVENANCE-UPSTREAM-PINS.md
+./docs/research/softpass.md
 ./docs/runbooks/client-ts.md
 ./docs/runbooks/harness.md
 ./docs/runbooks/isolation.md
