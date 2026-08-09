@@ -1,0 +1,68 @@
+# LC-rs2 r377 workspace product repo
+# Track: docs (durable), tools, scripts, PLAN, AGENTS
+# Do NOT track: vendor clones, cache blobs, playwright profiles, shot spam
+
+# --- Dependencies ---
+node_modules/
+**/node_modules/
+.bun/
+package-lock.json
+bun.lock
+bun.lockb
+
+# --- Vendor clones (own git remotes; never commit full trees) ---
+/vendor/*
+!/vendor/README.md
+
+# --- Cache / runtime blobs ---
+cache/
+!cache/README.md
+!cache/**/README.md
+!cache/**/.gitkeep
+.tmp/
+*.log
+*.sav
+db.sqlite
+db.sqlite-*
+
+# --- Jagex / cache archive dumps (never in product workspace git) ---
+# Local-only parity artifacts (see docs/plans/cache-parity/README.md).
+# Full game assets: vendor/content only (separate LC-style repo).
+docs/plans/cache-parity/**/*.bin
+docs/plans/cache-parity/**/*.dat
+docs/plans/cache-parity/**/*.idx
+**/*.http.bin
+**/ts-fetch_*.bin
+
+# --- Secrets ---
+**/*.pem
+**/.env
+**/.env.local
+!**/.env.example
+!**/*.pem.example
+
+# --- Research binaries (optional local) ---
+research/jars/
+research/deob/
+research/media/
+
+# --- Ephemeral docs / agent dumps ---
+docs/superpowers/
+docs/plans/harness-shots/
+docs/**/*.png
+docs/**/*.jpg
+docs/**/*.webp
+
+# --- Harness generated / heavy rebuildables ---
+tools/harness/nav/out/
+tools/harness/nav/node_modules/
+tools/harness/nav/data/.bak-pre-377-derive/
+tools/harness/.generated/
+tools/client-smoke/node_modules/
+vendor/engine/public/harness/collision.lcnav.gz
+
+# --- OS / editor ---
+.DS_Store
+*.swp
+.idea/
+.vscode/
