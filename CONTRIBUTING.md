@@ -1,8 +1,8 @@
-# Contributing — rs2-r377 workspace
+# Contributing — Fairy Ring workspace
 
 Thanks for interest. This repo is the **workspace process layer**, not a full playable dump.
 
-**Brand:** **rs2-r377** — independent project **derived from** Lost City open-source work; **not** official Lost City. See [NOTICE](NOTICE.md).
+**Brand:** **Fairy Ring** — independent project **derived from** Lost City open-source work; **not** official Lost City. Era target: historical **rev 377** (~May 2006). See [NOTICE](NOTICE.md) · Decision **009**.
 
 ## Maintainer disclaimer (read this first)
 

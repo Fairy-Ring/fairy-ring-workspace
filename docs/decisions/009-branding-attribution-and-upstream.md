@@ -1,78 +1,76 @@
 # Decision 009 — Branding, attribution, and upstream relationship
 
 **Date:** 2026-08-06  
-**Status:** accepted (cement early; apply if/when public)  
+**Updated:** 2026-08-09 — public brand locked **Fairy Ring**  
+**Status:** accepted  
 **Audience:** operators, agents, future contributors, LC / rs2b2t readers  
 
 ---
 
 ## Decision
 
-1. **Brand distance from Lost City.**  
-   If/when this workspace becomes a **public open-source** repo (at latest when r377 is feature-complete enough to share; earlier only if others want to bang on it), we **do not** present as official Lost City, LostCityRS, or “the” LC 377 tree.  
-   - Use **this project’s own name**: **rs2-r377** (workspace repo target: `rs2-r377-workspace` — rename from any legacy `LC-rs2-*` identifier at public launch).  
-   - **Do not** use the **LC** prefix in public brand (reads as “Lost City product”).  
-   - State clearly that the stack is a **derivation** of Lost City open-source work (Engine/Content/Server lineage), **not** official Lost City.  
-   - Do **not** use Lost City logos, “LostCityRS org” framing, or language that implies LC endorsement.  
-   - Private GitHub under the operator is fine for backup; public launch gets a clear “independent experiment / derived from LC” README blurb.
+1. **Public brand: Fairy Ring.**  
+   - **Product / project name:** **Fairy Ring**  
+   - **Era target (not the brand string):** historical **RuneScape revision 377** (~2 May 2006; Return of the Wise Old Man era)  
+   - **Why this name:** thematic extension of Lost City / Zanaris / fairy-network lore — rings move you between places; this project moves careful work between tools, humans, and a living playable stack. Generic compound; not “RS2”, not “LC”, not “Wise Old Man”.  
+   - **GitHub targets (at rename/flip):** `fairy-ring` (thin workspace), `fairy-ring-content`, `fairy-ring-engine`, `fairy-ring-client` (or `…-client-ts`). Legacy names (`LC-rs2-*`, `rs2-r377-*`) may remain on remotes until rename.  
+   - **Technical branch name** on vendor forks may stay `rs2-r377` until a deliberate branch rename — that is a **git label**, not the public brand.
 
-2. **Related ecosystems (no brand appropriation; no distancing disclaimer).**  
-   Maintainers also contribute in **Lost City** and **rs2b0t / rs2b2t** spaces. Public docs **credit** those projects as related work and tooling.  
-   - Do **not** present rs2-r377 as “the” LC product or as official rs2b2t infrastructure.  
-   - Do **not** add a special “not affiliated with rs2b2t / N64Jive unless they adopt” disclaimer — unnecessary distance. Cross-pollination is expected.  
-   - On *this* fence: bot/harness is a **means to prove rev‑377 content**, not an add-on client for an already-complete 274 world (Decision **004**).  
-   - Do not speak *for* other projects’ roadmaps; still welcome shared patches both ways.
+2. **Brand distance from Lost City and Jagex.**  
+   - Do **not** present as official Lost City, LostCityRS, or “the” LC 377 tree.  
+   - Do **not** use the **LC** prefix or Lost City logos as our brand.  
+   - State clearly: **derivation** of Lost City open-source work — **not** official Lost City.  
+   - **RuneScape** and related marks are Jagex’s; we describe the era, we do not claim their brand.  
+   - Avoid public product titles built on **RS2**, **OSRS**, **Wise Old Man / WOM**, or **Zanaris** as the *name* (lore may appear in prose).
 
-3. **Shoulders of giants (mandatory acknowledgment).**  
-   This stack stands on prior human (and now agent) labor, including but not limited to:  
-   - **Lost City / LostCityRS** — Engine-TS, Content, Server shell, research culture  
-   - **Period RuneScape** (Jagex 2004–2006 era) — the thing being preserved  
-   - **OpenRS2** and cache/community archaeology  
-   - **rs2b0t / rs2b2t** — bot/adapter patterns, nav, questers (tools we use and contribute to; fence still applies)  
-   - **Every contributor** who filed authenticity fixes, ports, and docs — including work some call “irrelevant”  
-   - **AI tools / coding agents** used **openly** on this path — same as any other tool: disclose in public README/NOTICE; credit process without anthropomorphic brand claims or “AI-washed” authenticity  
+3. **Related ecosystems (credit, don’t appropriate).**  
+   Maintainers also contribute in **Lost City** and **rs2b0t / rs2b2t** spaces. Public docs **credit** those projects.  
+   - Do **not** present Fairy Ring as “the” LC product or as official rs2b2t infrastructure.  
+   - No special “not affiliated with rs2b2t unless they adopt” disclaimer — cross-pollination is expected.  
+   - On *this* fence: bot/harness is a **means to prove rev‑377 content** (Decision **004**), not a 274 complete-world product layer.  
+   - Do not speak *for* other projects’ roadmaps.
 
-   Prefer a short **NOTICE / ACKNOWLEDGEMENTS** (and README section when public) over empty legal boilerplate.  
-   Prefer **accurate technical provenance** (branch SHAs, port audits) over marketing.
+4. **Shoulders of giants (mandatory acknowledgment).**  
+   Non-exhaustive: Lost City / LostCityRS; period RuneScape (Jagex); OpenRS2; rs2b0t / rs2b2t; human contributors; **AI tools / coding agents** used openly as tools (not authenticity oracles).  
+   Prefer NOTICE + accurate SHAs over marketing.
 
-4. **Best tool for the job.**  
-   Use whatever advances **accurate rev 377** and honest proofs: LC branches, deob clients, harness, agents, media.  
-   Speed vs upstream is a **side effect**, not a dunk: if we move faster, document *why* (isolation, mid-gates, docs discipline) without trash-talking LC process. Different goals, different routes.
+5. **Best tool for the job.**  
+   Whatever advances honest rev‑377 work: LC branches, deob, harness, agents, media.  
+   Speed vs upstream is a **side effect**, not a dunk on LC process.
 
-5. **License (when public).**  
-   Choose a license compatible with how we reuse LC-originated trees (respect upstream licenses on vendored code).  
-   **Do not** relicense Lost City code as if it were original here. Workspace docs/harness may be licensed separately from vendor trees if needed — spell that out at launch.
+6. **Purpose (operator intent — public-safe).**  
+   The original period game is not fully recoverable as a pure object; we still work carefully.  
+   Use every good tool — **including AI** — so a playable, honest stack can exist **in human time** (something to enjoy while we are here) and **outlast** a single contributor.  
+   That is **not** a claim of completeness or perfect authenticity.
 
-6. **Completeness disclaimer + open contributions (2026-08-09).**  
-   Maintainers **disclaim** that the stack **is** authentic, original, or complete as a finished product. Visibility or mid-gate PASSes are not a completeness stamp.  
-   **Contributions from all** (humans and agents) are welcome in **good faith**. No good-faith PR is dismissed without a **clear rationale**. Mistakes are expected; the accuracy bar still applies (no invent, no soft-green authenticity). Full text: `CONTRIBUTING.md`.
+7. **License (when public).**  
+   Respect upstream licenses on vendored LC-originated trees. Do **not** relicense LC code as original Fairy Ring invention. Workspace docs/harness may be MIT separately.
+
+8. **Completeness disclaimer + open contributions.**  
+   We **disclaim** that the stack **is** authentic, original, or complete today.  
+   Good-faith PRs from **all** (humans and agents) welcome; declines need **clear rationale**. Full text: `CONTRIBUTING.md`.
 
 ---
 
 ## Rationale
 
-- LC accuracy people will correctly reject brand confusion.  
-- Operator has no guaranteed community buy-in yet; private vault first.  
-- Erasing provenance would be dishonest and self-defeating for a preservation project.  
-- AI/agents and thrash tools are part of how work gets done and must be **disclosed**, not hidden; product purity is still the accuracy bar (`authenticity-stance`, Decision 004, AGENTS promise).  
-- Claiming “already authentic/complete” would chill fixes; disclaiming completeness invites good-faith contributions from everyone.
+- “Fairy Ring” continues a Lost City / Zanaris *metaphor* without using LC or RS2 as the product name.  
+- LC accuracy people will correctly reject brand confusion with LostCityRS.  
+- Trademark posture: prefer invented/generic thematic names over RS2/WOM product titles (not legal advice).  
+- AI disclosure + mortal-time purpose match how the work is actually done.
 
 ---
 
 ## Checklist when going public
 
-- [x] Branding pass: public name **rs2-r377**; drop **LC** prefix; derivation stated (README/NOTICE 2026-08-09)  
-- [ ] GitHub **repo rename** off legacy `LC-rs2-*` when flipping public (**workspace + content + engine + client-ts**)  
-- [x] NOTICE (Lost City as primary upstream derivation; OpenRS2; rs2b0t/rs2b2t; contributors)  
-- [x] Explicit “not affiliated with LostCityRS” + derivation language  
-- [x] Explicit **AI use** disclosure (README + NOTICE; agents as tools, not authenticity oracle)  
-- [x] License (MIT workspace) + vendor license notes  
-- [x] Vendor **content / engine / client-ts** README + NOTICE (launch-together, 2026-08-09)  
-- [x] Remove or scrub accidental LC trademark/logo assets (none in tree)  
-- [x] **Docs surface:** thin public export + token-light brief — Decision **011** (2026-08-09); full plans/research stay private  
-- [ ] Implement Decision 011 export + land `AGENT_BRIEF.md` before flip  
-- [ ] Point private remotes policy (still never push to LostCityRS without explicit permission) — restate at flip  
-- [ ] GH descriptions for all four repos at flip
+- [x] Public name **Fairy Ring** locked (2026-08-09)  
+- [x] Drop **LC** / **rs2-r377** as *public brand* (technical branch/legacy remotes may lag)  
+- [ ] GitHub **repo rename** to `fairy-ring*` for launch units  
+- [x] NOTICE + derivation + AI disclosure  
+- [x] Vendor README/NOTICE brand pass (follow-up same session as needed)  
+- [x] Thin export + AGENT_BRIEF (Decision **011**)  
+- [ ] GH descriptions at flip: Fairy Ring; rev 377; derived from Lost City; not official LC/Jagex  
+- [ ] Never push to LostCityRS without permission — restate at flip  
 
 ---
 
@@ -81,5 +79,4 @@
 - `docs/research/authenticity-stance.md`  
 - `docs/decisions/004-client-bot-harness-boundary.md`  
 - `docs/decisions/011-public-docs-surface-and-agent-brief.md`  
-- `docs/context/collaboration-and-git.md`  
-- `AGENTS.md` § promise + GitHub backup  
+- `AGENTS.md` · `AGENT_BRIEF.md` · `README.md`  

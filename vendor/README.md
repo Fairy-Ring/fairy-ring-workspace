@@ -1,10 +1,10 @@
-# Vendor clones (rs2-r377)
+# Vendor clones (Fairy Ring)
 
 These directories are **independent git clones**. The workspace product repo only tracks **this** README (not the full trees).
 
 ## Launch-together
 
-**Workspace + content + engine + client-ts** open as companion remotes under brand **rs2-r377** (not a monorepo dump of game trees).
+**Workspace + content + engine + client-ts** open as companion remotes under brand **Fairy Ring** (not a monorepo dump of game trees).
 
 | Path | Role | GitHub (target brand name) |
 |------|------|----------------------------|
@@ -13,7 +13,7 @@ These directories are **independent git clones**. The workspace product repo onl
 | `client-ts/` | Pure Client-TS | `acfrazier/rs2-r377-client-ts` |
 | *(workspace)* | Docs + harness (thin) | `acfrazier/rs2-r377-workspace` |
 
-**Note:** Private remotes may still use a legacy `rs2-r377-*` GitHub name until rename at public flip. Same trees; brand is **rs2-r377**.
+**Note:** Private remotes may still use a legacy `rs2-r377-*` GitHub name until rename at public flip. Same trees; brand is **Fairy Ring**.
 
 **Never** present any of these as official LostCityRS.
 

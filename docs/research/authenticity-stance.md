@@ -1,6 +1,6 @@
 # Authenticity stance (non-negotiable)
 
-**Lost City is a preservation project.** This workspace (**rs2-r377**) exists to run and study **revision 377 (~May 2006)** content faithfully — not to invent a private-server flavoured rewrite.
+**Lost City is a preservation project.** This workspace (**Fairy Ring**) exists to run and study **revision 377 (~May 2006)** content carefully — not to invent a private-server flavoured rewrite.
 
 **Do not underestimate the accuracy bar.** LC people (and this operator) will reject “close enough.” That fussiness is why the work is worth doing. Harness thrash is allowed; **lying about purity is not.**
 

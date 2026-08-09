@@ -1,14 +1,13 @@
-# Agent entrypoint — rs2-r377
+# Agent entrypoint — Fairy Ring
 
-**Brand:** **rs2-r377** — independent rev‑**377** (~May 2006) stack.  
+**Brand:** **Fairy Ring** — independent work toward historical **rev 377** (~May 2006).  
 **Derived from** Lost City / LostCityRS open work — **not** official Lost City.  
 **Start here for agents:** [`AGENT_BRIEF.md`](AGENT_BRIEF.md) (token-light). This file is the rule set.
 
-Env root (either name):
+Env root:
 
 ```bash
-export RS2_R377_ROOT=/path/to/rs2-r377-workspace
-# export RS2_R377_ROOT="$RS2_R377_ROOT"   # legacy alias in older docs
+export RS2_R377_ROOT=/path/to/fairy-ring   # clone root (folder name may vary)
 cd "$RS2_R377_ROOT"
 ```
 
@@ -155,4 +154,5 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 
 ---
 
-*Operators with the full private vault: also read `docs/context/AGENTS-OPERATOR.md` and `docs/context/COLD_START.md`.*
+*Operators with the full private vault: also read `docs/context/AGENTS-OPERATOR.md` and `docs/context/COLD_START.md`.*  
+*Public brand is **Fairy Ring** (Decision **009**); git branch names may still say `rs2-r377`.*

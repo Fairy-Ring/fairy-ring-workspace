@@ -1,4 +1,4 @@
-# rs2-r377 — agent brief (token-light)
+# Fairy Ring — agent brief (token-light)
 
 **Audience:** coding agents and humans who must not load the full private corpus.  
 **Size target:** ~1.5–3k tokens. **Lossy on purpose.**  
@@ -11,13 +11,15 @@
 
 | | |
 |--|--|
-| **Name** | **rs2-r377** |
-| **Era** | RuneScape revision **377** (~2 May 2006) |
+| **Name** | **Fairy Ring** |
+| **Era** | Historical RuneScape revision **377** (~2 May 2006) |
 | **Relation** | **Derivation** of open Lost City / LostCityRS work — **not** official LC, not endorsed by LC or Jagex |
 | **This workspace** | Process + harness toys + docs (private: full; public: thin) |
-| **Product trees** | Separate remotes: content, engine, client-ts (branch `rs2-r377`) |
+| **Product trees** | Separate remotes: content, engine, client-ts (git branch may still be `rs2-r377`) |
 
-Do not present as “Lost City” or “LC product.” See `NOTICE.md` and Decision **009**.
+Do not present as “Lost City,” “LC,” or “RS2 product.” See `NOTICE.md` and Decision **009**.
+
+**Purpose:** original period game is not fully recoverable; use every good tool (**including AI**) so something honest is **playable in human time** and can **outlast** us. Not a completeness stamp.
 
 ---
 
@@ -33,7 +35,7 @@ Do not present as “Lost City” or “LC product.” See `NOTICE.md` and Decis
 - Residual bar: one soft `setvar` entry → e2e with setstat/generic only; honest **FAIL**, no soft green.  
 - Soft thrash (give sacred oil, force multi bits, etc.) is **DIRTY** if sold as authenticity.
 
-Full stance (private or extract): `docs/research/authenticity-stance.md`.
+Full stance: `docs/research/authenticity-stance.md`.
 
 ---
 
@@ -43,22 +45,23 @@ Full stance (private or extract): `docs/research/authenticity-stance.md`.
 vendor/client-ts/   pure 1:1 Java 377 → TS — no harness hooks
 vendor/content/     period RuneScript / configs
 vendor/engine/      server + pack
-tools/harness/      smokes, thrash, prep cheats — not purity claims
+tools/harness/      smokes, thrash, prep — not purity claims
 ```
 
-- Client oracle = **Client-Java 377**, not Client-TS 289, not the harness.  
-- Bot = **harness-first** for r377 proofs; full rs2b0t later, separate tree.  
-- Never push experiment work to `LostCityRS/*` without explicit permission.
+- Client oracle = **Client-Java 377**, not Client-TS 289.  
+- Bot/harness is a **means** to prove r377 content — not a 274 “complete world” product layer.  
+- **Never** push experiment work to `LostCityRS/*` without explicit permission.  
+- Harness **headed** by default (`HEADLESS=1` only for CI/batch).
 
 ---
 
 ## 4. Bootstrap (high level)
 
 ```bash
-export RS2_R377_ROOT=/path/to/workspace   # legacy docs may say LC377_ROOT
-# clone workspace + vendor content/engine/client-ts (rs2-r377)
+export RS2_R377_ROOT=/path/to/fairy-ring   # clone root; legacy env names may appear in old notes
+# clone content, engine, client-ts → vendor/
 # cache: download yourself — OpenRS2 id 657 = RS2 build 377 (NOT path …/377/)
-# bash scripts/fetch-openrs2-cache.sh   → cache/openrs2-377/  (never commit)
+# bash scripts/fetch-openrs2-cache.sh
 bash scripts/apply-isolation-config.sh
 cd vendor/engine && npm start
 ```
@@ -69,7 +72,7 @@ cd vendor/engine && npm start
 | Game TCP (Java client) | **43595** |
 | Management | **8899** |
 
-Browser TS uses **WS on web port**, not TCP 43595. Details: private runbooks.  
+Browser TS uses **WS on web port**, not TCP 43595.  
 **Cache guide:** `cache/README.md` — public OpenRS2 links; **no blobs in git**.
 
 ---
@@ -78,7 +81,7 @@ Browser TS uses **WS on web port**, not TCP 43595. Details: private runbooks.
 
 Prefer top → bottom:
 
-1. Period cache / pack (OpenRS2 657)  
+1. Period cache / pack (OpenRS2 **657**)  
 2. Decompiled Client-Java 377  
 3. Period media (~2005–mid-2006)  
 4. Other LC branches (**prefer 274 / era-check** over inventing)  
@@ -92,34 +95,28 @@ RuneScript **language** semantics: **@JagexAsh** posts are authoritative for how
 
 ## 6. AI use
 
-AI/coding agents are **tools** (research, thrash, draft patches). Humans own authenticity claims and what ships. Disclose AI on public README/NOTICE. The model is not an oracle for residual PASS.
+AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Same bar for agent-authored PRs.
 
 ---
 
-## 7. Docs map (what to open when)
+## 7. Docs map
 
 | Need | Public / brief | Private vault (operator) |
 |------|----------------|---------------------------|
 | Cold product residual | This file + authenticity extract | `docs/context/COLD_START.md` |
-| Session thrash / FAIL archaeology | — | `docs/plans/YYYY-MM-DD-*.md` |
+| Session thrash | — | `docs/plans/YYYY-MM-DD-*.md` |
 | Full research catalog | — | `docs/research/INDEX.md` |
-| Gear / combat floors / tiles | One-liners below | `docs/research/game-knowledge/` |
-| Idle while smoke runs | — | `docs/plans/idle-research-queue.md` |
-| Public flip | Decision **011** | export script (not full vault) |
+| Gear / combat / tiles | crumbs below | `docs/research/game-knowledge/` |
+| Public flip | Decision **011** | export script |
 
-**Game-knowledge crumbs (not full corpus):**
-
-- Tele **next to** locs, not onto them (temple courtyard vs altar).  
-- Prep: setstat + generic gear matching combat floor; no quest-critical give on residual.  
-- Anchors live in private `anchors-*.md` (e.g. workman **2655,3592** for Viking).
+**Crumbs:** tele **next to** locs; gear matches setstat; no quest-critical give on residual.
 
 ---
 
 ## 8. Current focus (dated — update at milestones)
 
-**2026-08-09:** Flamtaer / Shades of Mort’ton **residual bar §2** — soft `morttonquest=50` once → product rebuild → oil → pyre/remains → complete **85**. First oil product proven; remake-after-clearinv and Loar/pyre thrash still harness-sensitive. Mesbox open-then-settext product fix landed. **Do not** soft-green complete.
-
-Next product after residual green: content-breadth backlog (private plans). QoL client (Decision **010**) only after content-complete + public + debug phase.
+**2026-08-09:** Flamtaer / Shades of Mort’ton **residual bar §2** — soft entry 50 → product rebuild → oil → remake → pyre/Loar → complete **85**. Honest FAIL on thrash; do not soft-green.  
+Public brand locked **Fairy Ring** (Decision **009**).
 
 ---
 
@@ -130,30 +127,22 @@ Next product after residual green: content-breadth backlog (private plans). QoL 
 - Push to LostCityRS without permission  
 - Claim residual PASS with soft stage setvars  
 - Dump private thrash logs as public “proof archive”  
-- Confuse this project with official Lost City  
+- Present as official Lost City or Jagex  
 
 ---
 
 ## 9b. Maintainer disclaimer + contributions
 
-We **disclaim** that the project **is** authentic / original / complete today — the bar is a **goal**, not a finished stamp.  
-Humans and agents err. **Good-faith PRs from anyone** are welcome; declines come with **clear rationale**, not silence.  
-Same bar for AI-authored patches. Details: `CONTRIBUTING.md`.
+We **disclaim** that the project **is** authentic / original / complete today.  
+Good-faith PRs from **anyone** (humans and agents) welcome; declines need **clear rationale**.  
+See `CONTRIBUTING.md`.
 
 ---
 
 ## 10. Need more context? Open an issue
 
-Thin public docs are for **tokens and practicality**, not a closed vault.
-
-| Do | Don’t |
-|----|--------|
-| Open a GitHub **issue** naming the **unit** (quest, skill, client bug, residual claim) | Demand a full private plans dump |
-| Ask for product path, SHAs, readiness, known DIRTY/SEG labels | Ask for soft-green authenticity without labels |
-| Agents may open issues too | Post secrets, cache blobs, or laptop paths |
-
-Maintainers **pattern-match** → run a **smell test** (brand, residual bar, scope, hygiene, no invent) → share a **scoped** extract (comment / short note). Details: Decision **011** § *On-request context*.
+Thin public docs are for **tokens and practicality**, not a closed vault. Named unit + smell test (Decision **011**).
 
 ---
 
-*Maintainers: keep this file short. Put depth in the private vault. Bump §8 only at real milestones.*
+*Maintainers: keep this file short. Bump §8 only at real milestones.*

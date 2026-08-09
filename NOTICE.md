@@ -1,4 +1,4 @@
-# NOTICE — rs2-r377 workspace
+# NOTICE — Fairy Ring workspace
 
 This file is attribution and provenance for the **workspace** repository
 (`docs/`, `tools/harness/`, `scripts/`, top-level project files).  
@@ -6,7 +6,7 @@ It is **not** a complete license for any game asset or Lost City source tree.
 
 ## Independent project, derived from Lost City
 
-**rs2-r377** is an independent preservation / engineering experiment.
+**Fairy Ring** is an independent preservation / engineering experiment targeting historical **revision 377** (~May 2006).
 
 It is a **derivation** of open work from **Lost City / LostCityRS** (and related community projects): we use and extend those codebases and ideas under their licenses, with our own process, residual bar, and branding.
 
