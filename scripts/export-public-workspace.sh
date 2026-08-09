@@ -77,17 +77,16 @@ copy_dir_filtered() {
 for f in \
   README.md \
   AGENT_BRIEF.md \
+  AGENTS.md \
   NOTICE.md \
   LICENSE \
   CONTRIBUTING.md \
-  PLAN.md \
   ; do
   copy_file "${f}"
 done
 
-# Slim AGENTS: if present, copy — consumers should prefer AGENT_BRIEF.
-# Full private COLD_START is NOT exported.
-copy_file "AGENTS.md"
+# PLAN.md is operator-dense — omit from thin public export (Decision 011).
+# Full private COLD_START / AGENTS-OPERATOR are NOT exported.
 
 # --- decisions (fences only; all small) ---
 mkdir -p "${DEST}/docs/decisions"

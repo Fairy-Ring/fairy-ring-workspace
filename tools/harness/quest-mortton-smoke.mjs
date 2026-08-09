@@ -1291,9 +1291,42 @@ try {
         if (s >= 70 && s < 80) {
           // Residual: get Loar remains via kill + ground Take (no give)
           if (residualMode) {
+            // cleanup9: pyre kit free:0 → takeGround "ok" but remains never enter inv.
+            // Free slots once before hunt (generic prep only — no give remains).
+            if (remainsHuntTicks === 0) {
+              const free = await page.evaluate(() => {
+                const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+                return {
+                  free: 28 - inv.length,
+                  names: inv.map(i => i?.name).filter(Boolean)
+                };
+              });
+              console.log('[quest-mortton] residual remains inv before hunt', JSON.stringify(free));
+              if ((free?.free ?? 0) < 3) {
+                await cheatQuiet(page, '~clearinv', 500);
+                await giveItems(page, [
+                  ['logs', 4],
+                  ['tinderbox', 1],
+                  ['lobster', 8],
+                  ['steel_scimitar', 1],
+                  ['steel_platebody', 1],
+                  ['steel_platelegs', 1]
+                ]).catch(() => {});
+                const after = await page.evaluate(() => {
+                  const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+                  return { free: 28 - inv.length, names: inv.map(i => i?.name).filter(Boolean) };
+                });
+                console.log(
+                  '[quest-mortton] residual remains: clearinv+lean combat kit',
+                  JSON.stringify(after)
+                );
+              }
+            }
             const hasRem = await page.evaluate(() => {
               const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
-              return inv.some(i => /loar remains|shade remains/i.test(String(i?.name ?? '')));
+              return inv.some(i =>
+                /loar.*remains|shade.*remains|remains.*loar/i.test(String(i?.name ?? ''))
+              );
             });
             if (!hasRem) {
               remainsHuntTicks++;
@@ -1417,7 +1450,26 @@ try {
               }, stickShade);
               if (take?.ok) {
                 stickShade = null;
-                console.log('[quest-mortton] residual: took Loar remains', take.how);
+                // Verify inv after take — takeGround can report ok with full inv (cleanup9)
+                await page.waitForTimeout(400);
+                const got = await page.evaluate(() => {
+                  const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+                  return {
+                    free: 28 - inv.length,
+                    rem: inv
+                      .filter(i => /remain/i.test(String(i?.name ?? '')))
+                      .map(i => i?.name),
+                    names: inv.map(i => i?.name).filter(Boolean).slice(0, 16)
+                  };
+                });
+                console.log(
+                  '[quest-mortton] residual: took Loar remains',
+                  take.how,
+                  JSON.stringify(got)
+                );
+                if (!(got?.rem?.length > 0) && (got?.free ?? 0) < 1) {
+                  console.log('[quest-mortton] WARN: take ok but no remains + inv full — free slots');
+                }
               } else if (take?.how === 'attack' || take?.how === 'walk-attack') {
                 if (take.wx != null && take.wz != null) {
                   stickShade = { name: take.name, wx: take.wx, wz: take.wz };

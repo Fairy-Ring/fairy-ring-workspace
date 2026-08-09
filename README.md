@@ -54,9 +54,10 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 
 | Audience | Path |
 |----------|------|
-| **Agents (token-light)** | **[`AGENT_BRIEF.md`](AGENT_BRIEF.md)** — prefer this over loading the full private corpus |
+| **Agents (token-light)** | **[`AGENT_BRIEF.md`](AGENT_BRIEF.md)** first |
+| **Agents (rules)** | **[`AGENTS.md`](AGENTS.md)** — generic; no laptop paths |
 | **Humans (public)** | This README · [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`NOTICE.md`](NOTICE.md) |
-| **Operator / full agents (private vault)** | [`docs/context/COLD_START.md`](docs/context/COLD_START.md) · [`AGENTS.md`](AGENTS.md) · research INDEX |
+| **Operator / full vault** | [`docs/context/COLD_START.md`](docs/context/COLD_START.md) · [`docs/context/AGENTS-OPERATOR.md`](docs/context/AGENTS-OPERATOR.md) |
 | **Rules / fences** | [`docs/decisions/`](docs/decisions/) (004 · 009 · **011** public docs surface) |
 | **Contributing** | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 
