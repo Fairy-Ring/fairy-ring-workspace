@@ -99,6 +99,8 @@ RuneScript **language** semantics: **@JagexAsh** posts are authoritative for how
 
 AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Same bar for agent-authored PRs.
 
+**Git:** small frequent **commits**; **public push** less often (batch slices). Silence on GH ≠ idle.
+
 ---
 
 ## 7. Docs map (this surface)

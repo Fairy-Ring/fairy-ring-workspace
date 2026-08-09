@@ -137,7 +137,8 @@ This surface does **not** ship full session plans or the entire research corpus.
 
 ### Git
 
-- Small, frequent commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …).  
+- **Commits stay frequent.** Small commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …) — same discipline as before public open. Chat is not a backup.  
+- **Push frequency can drop.** Now that remotes are public, do **not** push every unit. Batch coherent slices (or end of session) to public `fairy-ring-workspace` / FR-* so the public history stays readable. Private vault backup may still push more often than the public export.  
 - Never force-push shared branches unless maintainers explicitly ask.  
 - Never point `origin` at LostCityRS for experiment push.
 

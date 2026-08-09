@@ -121,6 +121,14 @@ Do not point experiments at live 274 production trees.
 - Use **`$RS2_R377_ROOT`** in new docs; avoid machine-specific absolute paths.  
 - Residual / mid-gate smokes: one soft stage setvar at entry is OK when labeled; mid-path quest setvar / quest-critical give = **DIRTY**.
 
+### Commit vs push (post-public)
+
+| | |
+|--|--|
+| **Commits** | Stay **small and frequent** — durable units of work, not chat. |
+| **Pushes to public remotes** | **Less frequent** — batch coherent slices so public history is readable. Silence on GH does not mean work stopped. |
+| **Private maintainer backups** | May push more often than the public export surface. |
+
 ## PR expectations
 
 | Kind | Expectation |

@@ -8,10 +8,10 @@ These directories are **independent git clones**. The workspace product repo onl
 
 | Path | Role | GitHub |
 |------|------|--------|
-| `content/` | Period content | https://github.com/acfrazier/FR-content |
-| `engine/` | Engine-TS fork | https://github.com/acfrazier/FR-engine |
-| `client-ts/` | Pure Client-TS | https://github.com/acfrazier/FR-client-ts |
-| *(this workspace)* | Docs + harness process | https://github.com/acfrazier/fairy-ring-workspace |
+| `content/` | Period content | https://github.com/Fairy-Ring/FR-content |
+| `engine/` | Engine-TS fork | https://github.com/Fairy-Ring/FR-engine |
+| `client-ts/` | Pure Client-TS | https://github.com/Fairy-Ring/FR-client-ts |
+| *(this workspace)* | Docs + harness process | https://github.com/Fairy-Ring/fairy-ring-workspace |
 
 **Never** present any of these as official LostCityRS.
 
@@ -38,9 +38,9 @@ Details: each `vendor/*/PROVENANCE.md` · workspace `docs/research/PROVENANCE-UP
 ```bash
 export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 mkdir -p "$RS2_R377_ROOT/vendor"
-git clone -b rs2-r377 https://github.com/acfrazier/FR-content.git "$RS2_R377_ROOT/vendor/content"
-git clone -b rs2-r377 https://github.com/acfrazier/FR-engine.git "$RS2_R377_ROOT/vendor/engine"
-git clone -b rs2-r377 https://github.com/acfrazier/FR-client-ts.git "$RS2_R377_ROOT/vendor/client-ts"
+git clone -b rs2-r377 https://github.com/Fairy-Ring/FR-content.git "$RS2_R377_ROOT/vendor/content"
+git clone -b rs2-r377 https://github.com/Fairy-Ring/FR-engine.git "$RS2_R377_ROOT/vendor/engine"
+git clone -b rs2-r377 https://github.com/Fairy-Ring/FR-client-ts.git "$RS2_R377_ROOT/vendor/client-ts"
 ```
 
 Optional clean refs from Lost City upstream (read-only research):
