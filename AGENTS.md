@@ -103,6 +103,8 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 | Intentional non-auth | `docs/research/deviations.md` |
 | Soft mids / not-yet-e2e | `docs/research/softpass.md` |
 | RuneScript language/runtime | `docs/research/runescript/README.md` |
+| Anchors / combat floors / prep | `docs/research/game-knowledge/` |
+| Pack/folder inventories + rubric | `docs/research/corpus/` |
 | Decisions | `docs/decisions/` |
 | Upstream SHAs | `docs/research/PROVENANCE-UPSTREAM-PINS.md` · vendor `PROVENANCE.md` |
 | Cache download | `cache/README.md` |

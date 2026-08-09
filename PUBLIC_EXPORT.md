@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-09T21:12Z
+Generated: 2026-08-09T21:18Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -25,7 +25,29 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/decisions/011-public-docs-surface-and-agent-brief.md
 ./docs/README.md
 ./docs/research/authenticity-stance.md
+./docs/research/corpus/inventory-274-vs-377-quest-delta.md
+./docs/research/corpus/inventory-289-vs-377-quest-delta.md
+./docs/research/corpus/inventory-377-areas.md
+./docs/research/corpus/inventory-377-engine-surface.md
+./docs/research/corpus/inventory-377-login-music-hooks.md
+./docs/research/corpus/inventory-377-multinpc-map.md
+./docs/research/corpus/inventory-377-pack-density.md
+./docs/research/corpus/inventory-377-playability-matrix.md
+./docs/research/corpus/inventory-377-quest-stages.md
+./docs/research/corpus/inventory-377-quest-trees.md
+./docs/research/corpus/inventory-377-skills-minigames.md
+./docs/research/corpus/README.md
+./docs/research/corpus/trust-but-verify.md
+./docs/research/corpus/verification-rubric.md
 ./docs/research/deviations.md
+./docs/research/game-knowledge/anchors-ape-atoll.md
+./docs/research/game-knowledge/anchors-isafdar.md
+./docs/research/game-knowledge/anchors-mort-myre.md
+./docs/research/game-knowledge/anchors-rellekka.md
+./docs/research/game-knowledge/combat-floors-377.md
+./docs/research/game-knowledge/harness-prep-and-gear.md
+./docs/research/game-knowledge/harness-tele-stand.md
+./docs/research/game-knowledge/README.md
 ./docs/research/PROVENANCE-UPSTREAM-PINS.md
 ./docs/research/runescript/_opcode_census_measure.py
 ./docs/research/runescript/failures.md

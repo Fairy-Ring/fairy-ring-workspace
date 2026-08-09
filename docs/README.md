@@ -7,7 +7,9 @@ This tree ships a **thin** documentation set only.
 | Decisions (fences, branding, thin surface) | Session thrash plans |
 | Authenticity stance | Full readiness XL / port dumps |
 | **Deviations** + **softpass** ledgers | Gap dumps / private cold-start notes |
-| **RuneScript manual** (`docs/research/runescript/`) | Session thrash plans |
+| **RuneScript manual** | Session thrash plans |
+| **Game knowledge** (anchors, combat floors, prep) | Verify-queue / re-measure choreography |
+| **Corpus inventories** + verification rubric | Full unit readiness XL |
 | Root `AGENT_BRIEF.md` | Harness screenshot archives |
 | Thin runbooks | |
 
@@ -24,8 +26,10 @@ Need depth on a **named** unit? Open a GitHub issue — Decision **011**.
 | [`runbooks/client-ts.md`](../runbooks/client-ts.md) | TS web client build/deploy |
 | [`runbooks/playable.md`](../runbooks/playable.md) | Java client against this engine |
 
-## RuneScript
+## Research hubs (this surface)
 
 | Start | |
 |-------|--|
-| [`research/runescript/README.md`](../research/runescript/README.md) | Manual hub + read order (@JagexAsh authority for language/runtime) |
+| [`research/runescript/README.md`](../research/runescript/README.md) | RuneScript manual (@JagexAsh for language/runtime) |
+| [`research/game-knowledge/README.md`](../research/game-knowledge/README.md) | Anchors, combat floors, harness prep |
+| [`research/corpus/README.md`](../research/corpus/README.md) | Measured inventories + verification rubric |

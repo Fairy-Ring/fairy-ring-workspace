@@ -94,6 +94,13 @@ require_vault_sources() {
       fi
       continue
     fi
+    if [[ "${rel}" == "docs/research/corpus/README.md" ]]; then
+      if [[ ! -f "${ROOT}/docs/export/corpus-README.md" ]]; then
+        echo "MISSING vault source: docs/export/corpus-README.md (feeds corpus/README.md)" >&2
+        missing=1
+      fi
+      continue
+    fi
     if [[ "${rel}" == ".gitignore" ]]; then
       continue
     fi
@@ -143,6 +150,13 @@ verify_stage() {
     echo "REFUSE: isolation.md still documents WEB_PORT=8891 (use 81)" >&2
     missing=1
   fi
+  # Private corpus ops must not leak
+  for private_corpus in verify-queue.md verify-log.md verification-audit-2026-08-08.md content-complete-planning.md; do
+    if [[ -e "${stage}/docs/research/corpus/${private_corpus}" ]]; then
+      echo "REFUSE: private corpus ops file leaked: ${private_corpus}" >&2
+      missing=1
+    fi
+  done
 
   if [[ "${missing}" -ne 0 ]]; then
     echo "REFUSE: export stage failed verification" >&2
@@ -295,6 +309,40 @@ if [[ -d "${ROOT}/docs/research/runescript" ]]; then
     "${ROOT}/docs/research/runescript/" "${STAGE}/docs/research/runescript/"
   echo "  + docs/research/runescript/ (manual)"
 fi
+
+# Game knowledge (anchors, combat floors, harness prep policy)
+if [[ -d "${ROOT}/docs/research/game-knowledge" ]]; then
+  mkdir -p "${STAGE}/docs/research/game-knowledge"
+  rsync -a \
+    --exclude '.DS_Store' \
+    "${ROOT}/docs/research/game-knowledge/" "${STAGE}/docs/research/game-knowledge/"
+  echo "  + docs/research/game-knowledge/"
+fi
+
+# Corpus public slice: inventories + method docs only (not verify-queue/log/audit)
+mkdir -p "${STAGE}/docs/research/corpus"
+cp -a "${ROOT}/docs/export/corpus-README.md" "${STAGE}/docs/research/corpus/README.md"
+echo "  + docs/research/corpus/README.md (from docs/export/corpus-README.md)"
+for f in \
+  trust-but-verify.md \
+  verification-rubric.md \
+  inventory-377-quest-trees.md \
+  inventory-377-playability-matrix.md \
+  inventory-377-skills-minigames.md \
+  inventory-377-quest-stages.md \
+  inventory-377-pack-density.md \
+  inventory-377-multinpc-map.md \
+  inventory-377-engine-surface.md \
+  inventory-377-login-music-hooks.md \
+  inventory-377-areas.md \
+  inventory-289-vs-377-quest-delta.md \
+  inventory-274-vs-377-quest-delta.md \
+  ; do
+  if [[ -f "${ROOT}/docs/research/corpus/${f}" ]]; then
+    cp -a "${ROOT}/docs/research/corpus/${f}" "${STAGE}/docs/research/corpus/${f}"
+    echo "  + docs/research/corpus/${f}"
+  fi
+done
 
 mkdir -p "${STAGE}/docs"
 cp -a "${ROOT}/docs/export/README.md" "${STAGE}/docs/README.md"

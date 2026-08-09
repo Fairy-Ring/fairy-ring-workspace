@@ -74,6 +74,8 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 | **Intentional non-auth** | [`docs/research/deviations.md`](docs/research/deviations.md) |
 | **Soft mids / not-yet-e2e** | [`docs/research/softpass.md`](docs/research/softpass.md) |
 | **RuneScript manual** | [`docs/research/runescript/README.md`](docs/research/runescript/README.md) |
+| **Game knowledge** | [`docs/research/game-knowledge/README.md`](docs/research/game-knowledge/README.md) |
+| **Pack/folder inventories** | [`docs/research/corpus/README.md`](docs/research/corpus/README.md) |
 
 This GitHub tree is the **contributor surface** (Decision **011**): enough to clone, bootstrap, thrash, and open evidence-backed PRs — not a dump of every private research note.
 
