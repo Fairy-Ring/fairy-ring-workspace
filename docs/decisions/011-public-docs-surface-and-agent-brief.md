@@ -16,6 +16,9 @@
    Humans or agents may open a **GitHub issue** for a **named** content/engine/client unit.  
    Maintainers may share a **scoped extract** after a smell test — not a wholesale dump of private process notes.
 
+5. **PR merge is off until content-complete** (maintainer bar, 2026-08-09).  
+   Issues and discussion are welcome from public open. External PRs are **not accepted/merged** until content-complete is called — then evidence bar still applies (`CONTRIBUTING.md`).
+
 ---
 
 ## Why

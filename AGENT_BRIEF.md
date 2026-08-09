@@ -120,5 +120,5 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 
 ## 8. Current focus (dated — update at milestones)
 
-**2026-08-09:** Public thrash / evidence-backed PRs welcome under the accuracy bar. Content residual (e.g. Flamtaer / Shades of Mort’ton bar §2) continues — honest FAIL, no soft-green.  
+**2026-08-09:** Public open to **show work**; **Issues** welcome. **PRs not accepted/merged until content-complete** (maintainer call). Content residual continues — honest FAIL, softpass is process stage.  
 Brand: **Fairy Ring** (Decision **009**).

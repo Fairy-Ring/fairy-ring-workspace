@@ -118,9 +118,11 @@ Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decis
 
 ## Status
 
-**Visibility is not a content-complete claim.** Work is incomplete and imperfect; contributions welcome under the accuracy bar.  
+**Visibility is not a content-complete claim.** Work is incomplete and imperfect.  
 **Public brand is Fairy Ring** (rev **377** is the current focus, not a brand lock).
 
-**Maintainer disclaimer:** we do **not** assert that this stack **is** authentic, original, or complete. Mistakes (human and agent) happen. **Contributions from all** are welcome in good faith — no PR dismissed without clear rationale. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+**PR accept bar:** **Issues** welcome now. **PRs are not merged / accepted until content-complete** (maintainer call). Discussion and evidence still welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+**Maintainer disclaimer:** we do **not** assert that this stack **is** authentic, original, or complete. Mistakes (human and agent) happen.
 
 **Never push experiment work to `LostCityRS/*` without explicit permission.**

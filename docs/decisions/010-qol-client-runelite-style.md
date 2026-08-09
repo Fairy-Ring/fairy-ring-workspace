@@ -84,9 +84,9 @@ Examples of **in-scope QoL** (illustrative, not a ship list): click-to-center co
 
    | Order | Milestone | QoL code? |
    |-------|-----------|-----------|
-   | 1 | **Public open** (thin surface + vendors; Issues/PRs) | **No** — pure + harness are the ship |
-   | 2 | **Content-complete thrash** under residual bar (may run in public) | **No** |
-   | 3 | **Debug / improve PR** phase (evidence bar) | **Then** scaffold QoL as optional artifact |
+   | 1 | **Public open** (thin surface + vendors; Issues; **no PR merge**) | **No** — pure + harness are the ship |
+   | 2 | **Content-complete thrash** under residual bar | **No** |
+   | 3 | **Accept PRs / debug-improve** phase (evidence bar) | **Then** scaffold QoL as optional artifact |
    | 4 | First QoL pack (compass center, map, shift-drop, menu swap, …) | Under PR review; never default “the” period client |
 
    Prerequisites before first QoL code:

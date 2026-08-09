@@ -21,17 +21,31 @@ As maintainer we **do not claim** that this project **is** authentic, original, 
 
 - **Who:** humans, coding agents, LC readers, newcomers — **all** welcome if the change is offered in **good faith**.  
 - **What we look for:** does it improve the project (accuracy, honesty, tooling, docs) under the bar — not who authored it.  
-- **Review promise:** **No good-faith PR will be dismissed without a clear rationale** (what fails the bar, what would make it acceptable, or why it is out of scope).  
-- **Not a free pass:** soft-greens sold as residual authenticity, inventing content, harness hooks in pure Client-TS, or pushes to `LostCityRS/*` still fail the bar — with **stated** reasons, not silence.  
-- **AI PRs:** same rules as human PRs (see above); disclose if you want; honesty about soft thrash still required.
+- **AI PRs:** same rules as human PRs; disclose if you want; honesty about soft thrash still required.
 
-## Before you open a PR
+### PR accept policy (maintainer bar — 2026-08-09)
+
+| Phase | Issues | PRs open for discussion? | **Merge / accept** |
+|-------|--------|---------------------------|--------------------|
+| **Now → content-complete** | **Yes** (bugs, context, discussion) | Optional (evidence welcome) | **No** — default **not accepted** |
+| **After content-complete** (maintainer call) | Yes | Yes | **Yes** — evidence bar still applies |
+
+Until that call:
+
+- Prefer **issues** with repro / proof (see bug template).  
+- A PR may be opened as a **proposal or evidence dump**, but do **not** expect merge.  
+- Maintainers will not merge product/docs PRs solely to be polite — the bar is **content-complete first**, then accept well-evidenced work.  
+- Bugfix PRs without human-reviewable proof are not reviewed either (see below).
+
+This is **not** “no one may look.” Public thrash and discussion are welcome; **merge** waits on content-complete.
+
+## Before you open a PR (or issue)
 
 1. Read [README](README.md), [NOTICE](NOTICE.md), and **[`AGENT_BRIEF.md`](AGENT_BRIEF.md)** (token-light rules).  
 2. Read the authenticity bar: [`docs/research/authenticity-stance.md`](docs/research/authenticity-stance.md).  
 3. Product purity fence: [`docs/decisions/004-client-bot-harness-boundary.md`](docs/decisions/004-client-bot-harness-boundary.md).  
-4. Prefer **honest FAIL / DIRTY labels** over soft greens sold as authenticity.  
-5. **AI is used here** (coding agents as tools). If you use AI on a PR, that is fine — same bar as human edits: no invent, cite sources, do not claim authenticity without residual/product evidence.
+4. Prefer **honest FAIL / softpass labels** over soft greens sold as authenticity.  
+5. **AI is used here** (coding agents as tools). Same bar as human edits: no invent, cite sources, do not claim authenticity without residual/product evidence.
 
 ## Docs on this surface (Decision 011)
 
@@ -113,9 +127,9 @@ Do not point experiments at live 274 production trees.
 | **Docs / research** | Sources + ladder; product non-auth → `deviations.md`; soft mids → `softpass.md`; deep unit notes via issue if not in-tree |
 | **Harness** | Label soft vs residual; no claim of pure product authenticity |
 | **Content / client / engine** | Cite oracle (Client-Java 377, content scripts); ship as vendor patches or clear SHAs |
-| **Bugfix PRs** | **Will not be reviewed** without **sufficient proof for human review** (repro steps, stage/var or run id, log path and/or headed shot, soft vs residual honesty, expected vs actual). Prefer filing the bug template first. |
-| **QoL client ideas** | Decision 010 — deferred until after public open + content thrash / pure freeze + debug/improve phase |
-| **Any good-faith fix** | Reviewed; decline only with **clear rationale** (see maintainer disclaimer) |
+| **Bugfix PRs** | **Not merged** pre–content-complete; **not reviewed** without **sufficient proof for human review** (repro, stage/var or run id, log/shot, soft vs residual honesty, expected vs actual). Prefer the bug **issue** template. |
+| **Product / docs PRs** | **Not accepted** until content-complete maintainer call (see above). |
+| **QoL client ideas** | Decision 010 — after content-complete + public debug/improve phase |
 
 ## Communication
 
