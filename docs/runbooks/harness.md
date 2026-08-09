@@ -24,7 +24,7 @@ Multiple agents may run **274 Server**, **rs2b0t desktop**, and **this r377 tree
 |----|--------|
 | `bash scripts/kill-harness-smoke.sh` | `pkill -f playwright` / `pkill -f playwright-harness-profile` |
 | Match **absolute path** under `RS2_R377_ROOT` in cmdline | `lsof -t -iTCP:43595 \| xargs kill` without checking which tree owns it |
-| Kill Chromium only if `user-data-dir=…/rs2-r377-workspace…/.tmp/playwright-harness-profile` | Touch port **43594** or `experiments/Server` |
+| Kill Chromium only if `user-data-dir=…/fairy-ring-workspace…/.tmp/playwright-harness-profile` | Touch port **43594** or `experiments/Server` |
 | Leave `rs2b0t` Electron alone | Kill by short script name alone (`run.mjs`) |
 
 Isolation ports for **this** tree only: web **81**, game **43595**, management **8899**.
@@ -244,7 +244,7 @@ With `LOGIN_SERVER=false`, the real clutter is `.sav` files under `vendor/engine
 | `waitSceneReady` fail | Logs `ingame` / `sceneState` / tile once, returns `false` |
 | `teleTo` | Retries; fails if tile OK but scene never reaches 2. **Stand next to the loc, not on it** (altars/walls often unwalkable) — [`game-knowledge/harness-tele-stand.md`](../research/game-knowledge/harness-tele-stand.md) |
 | `bash scripts/kill-harness-smoke.sh` | Kills **this tree only**: `quest-*-smoke.mjs`, path-abc, script/run, Chromium harness profile |
-| `bash scripts/kill-harness-smoke.sh --engine` | Also stop LC377 `vendor/engine` only (not live 274) |
+| `bash scripts/kill-harness-smoke.sh --engine` | Also stop this workspace’s `vendor/engine` only (not live 274) |
 
 **Agent rules:**
 

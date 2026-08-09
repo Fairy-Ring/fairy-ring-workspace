@@ -8,7 +8,7 @@
 Env root:
 
 ```bash
-export RS2_R377_ROOT=/path/to/fairy-ring   # clone root (folder name may vary)
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace   # @ branch rs2-r377 for this tree
 cd "$RS2_R377_ROOT"
 ```
 
@@ -79,7 +79,7 @@ Helper: `bash scripts/fetch-openrs2-cache.sh`.
 ## 4. Bootstrap (clone → run)
 
 ```bash
-export RS2_R377_ROOT=/path/to/rs2-r377-workspace
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 # 1) clone content, engine, client-ts → vendor/  (branch rs2-r377)
 # 2) bash scripts/fetch-openrs2-cache.sh          # optional local cache

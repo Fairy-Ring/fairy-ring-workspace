@@ -95,7 +95,7 @@ Vendor public remotes (content/engine/client-ts): **README + NOTICE + LICENSE on
 
 | Option | How | Pros | Cons |
 |--------|-----|------|------|
-| **A. Public export branch / second remote** | `rs2-r377-workspace-public` with sparse paths only | Clean; private vault untouched | Two remotes to push |
+| **A. Public export branch / second remote** | `fairy-ring-workspace` with sparse paths only | Clean; private vault untouched | Two remotes to push |
 | **B. Split at flip: thin public clone** | New repo populated by script from private | Clear boundary | Maintain export script |
 | **C. Same repo, `.publicinclude` + export CI** | Build public tree in CI | Automated | Easy to leak if misconfigured |
 
@@ -111,7 +111,7 @@ Vendor public remotes (content/engine/client-ts): **README + NOTICE + LICENSE on
 
 ### Required sections (stable outline)
 
-1. **What this is** — rs2-r377, rev 377, derivation of Lost City, not official LC  
+1. **What this is** — Fairy Ring, rev 377 focus, derivation of Lost City, not official LC  
 2. **Accuracy bar** — product vs toys; residual PASS = live stage write; no soft-green  
 3. **Architecture fence** — client pure / content / engine / harness toys (Decision 004)  
 4. **Bootstrap** — clone workspace + vendors + cache yourself; isolation ports  
@@ -163,7 +163,7 @@ Optional later: **`docs/research/CORPUS_DIGEST.md`** (private) = slightly longer
 - [x] Confirm public tree has **no** `docs/plans/`, **no** full research dump, **no** harness-shots (dry-run)  
 - [x] README “Start here” points to brief + CONTRIBUTING, not COLD_START  
 - [ ] CONTRIBUTING updated: public vs private process docs  
-- [x] Thin export remote: `acfrazier/rs2-r377-workspace` **private** for review (2026-08-09)  
+- [x] Thin export remote: `acfrazier/fairy-ring-workspace` **private** for review (2026-08-09)  
 - [ ] Operator review; then visibility public (+ vendors) on call  
 - [x] Vendor READMEs already thin (done 2026-08-09)  
 - [ ] Never claim public docs = full authenticity proof archive  
@@ -191,7 +191,7 @@ Optional later: **`docs/research/CORPUS_DIGEST.md`** (private) = slightly longer
 
 | Check | Pass if |
 |-------|---------|
-| **Brand** | rs2-r377 derivation language; not “official Lost City” |
+| **Brand** | Fairy Ring derivation language; not “official Lost City” |
 | **Bar** | Soft thrash labeled DIRTY/SEG; no invent; residual PASS only if live stage |
 | **Scope** | One unit or one bug class — not entire plans tree |
 | **Hygiene** | No passwords, tokens, private emails required; scrub `/Users/…` |

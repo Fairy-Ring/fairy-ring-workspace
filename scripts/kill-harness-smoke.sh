@@ -90,7 +90,7 @@ kill_matching() {
   done < <(pgrep -f "user-data-dir=$profile" 2>/dev/null || true)
 
   if [ "$found" -eq 0 ]; then
-    echo "no LC377 harness smoke processes matched"
+    echo "no Fairy Ring harness smoke processes matched"
   fi
 }
 
@@ -103,7 +103,7 @@ if [ "${1:-}" = "--engine" ]; then
     cmd=$(ps -p "$pid" -o command= 2>/dev/null || true)
     case "$cmd" in
       *"$ROOT/vendor/engine"*|*"$ROOT_REAL/vendor/engine"*)
-        echo "kill LC377 engine pid=$pid :: $cmd"
+        echo "kill Fairy Ring engine pid=$pid :: $cmd"
         kill "$pid" 2>/dev/null || true
         ;;
     esac

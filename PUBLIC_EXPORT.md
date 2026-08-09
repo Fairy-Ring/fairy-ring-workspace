@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source private vault: (not recorded — fill at push time)
-Generated: 2026-08-09T19:45Z
+Generated: 2026-08-09T19:50Z
 Policy: Decision 011 — thin surface only
 
 ```

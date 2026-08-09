@@ -5,7 +5,7 @@
 # GitHub remote. Does NOT rewrite private history. Does NOT flip visibility.
 #
 # Usage:
-#   bash scripts/export-public-workspace.sh /path/to/rs2-r377-workspace-public
+#   bash scripts/export-public-workspace.sh /path/to/fairy-ring-export
 #   DEST=/tmp/rs2-r377-public bash scripts/export-public-workspace.sh
 #
 # After export: cd DEST && git init/add/commit && push to public remote.
@@ -176,8 +176,9 @@ while IFS= read -r -d '' f; do
     -e 's|export RS2_R377_ROOT=|export RS2_R377_ROOT=|g' \
     -e 's|"$RS2_R377_ROOT"|"$RS2_R377_ROOT"|g' \
     -e 's|\$RS2_R377_ROOT|$RS2_R377_ROOT|g' \
-    -e 's|rs2-r377-workspace|rs2-r377-workspace|g' \
-    -e 's|rs2-r377-workspace|rs2-r377-workspace|g' \
+    -e 's|fairy-ring-workspace|fairy-ring-workspace|g' \
+    -e 's|fairy-ring-workspace|fairy-ring-workspace|g' \
+    -e 's|fairy-ring-workspace|fairy-ring-workspace|g' \
     -e 's|rs2-r377|rs2-r377|g' \
     -e 's|`RS2_R377_ROOT`|`RS2_R377_ROOT`|g' \
     "$f" 2>/dev/null || true
@@ -204,7 +205,8 @@ echo "    size:  $(du -sh "${DEST}" | awk '{print $1}')"
 echo
 echo "Next:"
 echo "  cd \"${DEST}\""
-echo "  # review tree; init git if needed; push to public remote"
+echo "  # Push to fairy-ring-workspace branch rs2-r377 (not main)."
+echo "  # main is the Fairy Ring hub stub only."
 echo "  # do NOT copy docs/plans or full research back in"
 echo
 echo "Still private (not exported): docs/plans, docs/research (except authenticity-stance),"

@@ -1,4 +1,4 @@
-# Upstream provenance pins (rs2-r377 forks)
+# Upstream provenance pins (Fairy Ring product forks, branch rs2-r377)
 
 **Date measured:** 2026-08-09  
 **Purpose:** Public-facing **where did this git tree come from** — full SHAs, not marketing.  

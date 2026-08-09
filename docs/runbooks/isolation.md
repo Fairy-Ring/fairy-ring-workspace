@@ -85,12 +85,12 @@ Confirm defaults in code: `vendor/engine/src/util/Environment.ts`
 ### 4.1 CWD and process tree
 
 ```bash
-# Must be under LC377_ROOT
+# Must be under RS2_R377_ROOT
 pwd
-# → .../rs2-r377-workspace/...
+# → .../fairy-ring-workspace/...
 
 # Before start: confirm no accidental cd into live trees
-echo "$PWD" | grep -E 'rs2-r377-workspace' || echo "WRONG TREE"
+echo "$PWD" | grep -E 'fairy-ring-workspace' || echo "WRONG TREE"
 ```
 
 ### 4.2 Snapshot script
