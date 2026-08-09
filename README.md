@@ -38,7 +38,7 @@ We share Lost City’s eventual *aim* — preserve RS2-era RuneScape carefully u
 
 The original is not fully recoverable as a pure object. We still work carefully. We use every good tool — **including AI** — so honest, playable stacks can exist **in human time** (to enjoy while we are here) and **outlast** a single contributor. That is **not** a completeness or perfect-authenticity claim.
 
-**Fairy Ring** is the project. **377** is where this workspace stands in the ring *today*.
+**Fairy Ring** is the project. **377** is where this workspace aims to be on the other side.
 
 ## AI use (explicit)
 

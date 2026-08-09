@@ -9,7 +9,7 @@
 # doors.json is separate (derive-doors.ts) — re-run when wall locs move.
 #
 # Usage (from repo root):
-#   export LC377_ROOT=/Users/acfrazier/experiments/LC-rs2-r377-2006-05-02
+#   export RS2_R377_ROOT=$RS2_R377_ROOT
 #   bash tools/harness/nav/tools/derive-transports.sh
 #   # optional: also doors
 #   bun tools/harness/nav/tools/derive-doors.ts

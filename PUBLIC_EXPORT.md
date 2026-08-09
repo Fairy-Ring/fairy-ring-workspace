@@ -1,8 +1,8 @@
 # Public export manifest
 
-Source: contributor surface export (Decision 011)
-Generated: 2026-08-09T20:28Z
-Policy: thin surface — authenticity, deviations, fences; no thrash dump
+Source of truth: vault tree (export is a copy, not a parallel product)
+Generated: 2026-08-09T20:41Z
+Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
 ./.github/ISSUE_TEMPLATE/bug-report.md

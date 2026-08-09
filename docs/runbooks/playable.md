@@ -26,7 +26,7 @@ No game content is authored here — this runbook only covers build/run/connect 
 Re-clone if missing:
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 git clone --branch 377 --single-branch \
   https://github.com/LostCityRS/Client-Java.git vendor/client-java
@@ -83,7 +83,7 @@ Do **not** point this client at the live 274 stack unless you intentionally want
 ## 4. Build
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT/vendor/client-java"
 
 ./gradlew jar          # → build/libs/rs2client.jar
@@ -232,7 +232,7 @@ Mismatch symptoms: engine path comments “RSA error” → reply opcode **6** (
 [ ] Title screen loads; create/login account if registration enabled
 [ ] Enter world, walk tiles
 [ ] If RSA fail (opcode 6): re-check private.pem vs LOGIN_RSAN/E
-[ ] Capture notes → docs/plans/YYYY-MM-DD-playable-java.md
+[ ] Capture notes → a short note / PR description
 ```
 
 ---

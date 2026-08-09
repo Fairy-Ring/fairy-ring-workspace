@@ -24,7 +24,7 @@ Multiple agents may run **274 Server**, **rs2b0t desktop**, and **this r377 tree
 |----|--------|
 | `bash scripts/kill-harness-smoke.sh` | `pkill -f playwright` / `pkill -f playwright-harness-profile` |
 | Match **absolute path** under `RS2_R377_ROOT` in cmdline | `lsof -t -iTCP:43595 \| xargs kill` without checking which tree owns it |
-| Kill Chromium only if `user-data-dir=…/fairy-ring-workspace…/.tmp/playwright-harness-profile` | Touch port **43594** or `experiments/Server` |
+| Kill Chromium only if `user-data-dir=…/$RS2_R377_ROOT/.tmp/playwright-harness-profile` | Touch another world's game port (e.g. stock 43594) |
 | Leave `rs2b0t` Electron alone | Kill by short script name alone (`run.mjs`) |
 
 Isolation ports for **this** tree only: web **81**, game **43595**, management **8899**.
@@ -233,7 +233,7 @@ With `LOGIN_SERVER=false`, the real clutter is `.sav` files under `vendor/engine
 
 ### Scene-1 hangs + smoke fail-fast
 
-`sceneState=1` while maps/versionlist load is normal for a few seconds after tele. **Stuck forever** is usually broken versionlist (model ver=0) — see `docs/plans/2026-08-05-scene-stuck-versionlist-zero.md`.
+`sceneState=1` while maps/versionlist load is normal for a few seconds after tele. **Stuck forever** is usually broken versionlist (model ver=0) — check versionlist / pack health.
 
 | Env / tool | Effect |
 |------------|--------|
@@ -252,7 +252,7 @@ With `LOGIN_SERVER=false`, the real clutter is `.sav` files under `vendor/engine
 2. Prefer step budgets over stacking long `waitSceneReady` in loops (maze).  
 3. Scene=1 forever → versionlist size check (live vs flat pack file).  
 
-Nav rip notes: `docs/plans/2026-08-06-nav-rip-failfast.md` (rs2b0t @ `2535397`).
+Nav rip: fail-fast on stuck thrash; rebuild collision pack if needed.
 
 ### Screenshots (evidence-only)
 
@@ -286,7 +286,7 @@ await harnessShot('chef-door-in-fail');  // api.ts
 await this.bot.shot('label');            // TaskBot
 ```
 
-Output: `docs/plans/harness-shots/<runId>/` (under gitignored `docs/`).
+Output: harness-shots under a gitignored dir (never commit dumps).
 
 ### Browser profile (ondemand cache)
 

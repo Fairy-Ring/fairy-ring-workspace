@@ -43,7 +43,7 @@ bash tools/harness/nav/tools/derive-transports.sh
 ```
 
 Defaults: `ENGINE_DIR=$RS2_R377_ROOT/vendor/engine`, `CONTENT_DIR=$RS2_R377_ROOT/vendor/content`,
-pack `$LC377_ROOT/tools/harness/nav/out/collision.lcnav.gz`, data `$LC377_ROOT/tools/harness/nav/data/`.
+pack `$RS2_R377_ROOT/tools/harness/nav/out/collision.lcnav.gz`, data `$RS2_R377_ROOT/tools/harness/nav/data/`.
 
 **Curated** ship/gangplank/shortcut rows stay in `transports.json` and are re-enriched against 377 maps (NPC ships have no locId — expected).
 

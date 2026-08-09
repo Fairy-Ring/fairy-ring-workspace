@@ -4,7 +4,7 @@
 **Client path:** `vendor/client-ts`  
 **Upstream:** https://github.com/LostCityRS/Client-TS  
 **Base branch used:** **`289`** (has `webclient: true` in Server `revInfo`; no upstream `377` TS branch)  
-**Private work branch:** **`rs2-r377`** (local only — do **not** push to LostCityRS)
+**Project work branch:** **`rs2-r377`** (local only — do **not** push to LostCityRS)
 
 No game content is authored here. This runbook is clone / build / deploy / config surface for the web client against **this** isolated 377 engine.
 
@@ -38,7 +38,7 @@ No game content is authored here. This runbook is clone / build / deploy / confi
 Re-clone if missing:
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 git clone --branch 289 --single-branch \
   https://github.com/LostCityRS/Client-TS.git vendor/client-ts
@@ -96,7 +96,7 @@ Do **not** install into or start the live `Server` / `rs2b0t` trees for this pro
 ## 4. Install & build
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT/vendor/client-ts"
 
 bun install
@@ -160,7 +160,7 @@ Engine (`vendor/engine/src/web.ts`):
 **Preferred path (scripted):** build Client-TS and copy into `vendor/engine/public/client/`.
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 chmod +x scripts/deploy-client-ts.sh   # once
 bash scripts/deploy-client-ts.sh
@@ -191,7 +191,7 @@ http://127.0.0.1:81/rs2.html
 ### 6.1 Manual copy (equivalent to script)
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT/vendor/client-ts" && bun run build
 mkdir -p "$RS2_R377_ROOT/vendor/engine/public/client"
 cp "$RS2_R377_ROOT/vendor/client-ts/out/client.js" \
@@ -236,7 +236,7 @@ Hard-refresh after HTML changes (cache).
 ### 6.3 Start engine (reminder)
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 bash scripts/apply-isolation-config.sh
 # engine .env must have WEB_PORT=81 NODE_PORT=43595 NODE_ID=37 ENGINE_REVISION=377
@@ -290,7 +290,7 @@ Oracle for protocol/UI: `vendor/client-java` branch **377** + `vendor/engine` 37
 ## 9. Isolation / policy reminders
 
 - Writable tree only under this workspace.  
-- Do **not** checkout or run clients from `$LIVE_SERVER_REF (read-only 274, if present)`, `rs2b0t`, or `rs2b2t-engine` for this project.  
+- Do **not** checkout or run clients from other local RS2 stacks you keep separate for this project.  
 - Ports: web **81**, game **43595**, management **8899**, node **37**, rev **377**.  
 - Authenticity: port from Java 377 / early sources — no invented content (`docs/research/authenticity-stance.md`).
 
@@ -300,9 +300,6 @@ Oracle for protocol/UI: `vendor/client-java` branch **377** + `vendor/engine` 37
 
 | Doc | Role |
 |-----|------|
-| [`docs/plans/2026-08-03-client-ts-scaffold.md`](../plans/2026-08-03-client-ts-scaffold.md) | M0 SHA, build result, config inventory |
-| [`docs/plans/2026-08-03-client-ts-m1.md`](../plans/2026-08-03-client-ts-m1.md) | M1 deploy status, HTTP checks, open items |
-| [`docs/plans/2026-08-03-playwright-smoke.md`](../plans/2026-08-03-playwright-smoke.md) | Playwright smoke run results |
 | [`docs/research/client-strategy-377.md`](../research/client-strategy-377.md) | Why TS is prioritized; M0–M5 |
 | [`docs/decisions/002-prioritize-ts-client.md`](../decisions/002-prioritize-ts-client.md) | ADR |
 | [`docs/runbooks/playable.md`](./playable.md) | Java client (oracle) |
@@ -320,7 +317,7 @@ Headless Chromium opens the deployed shell, collects console + pageerrors, waits
 Playwright lives under **`tools/client-smoke/`** — not in live `rs2b0t` / `Server`, and not required inside `vendor/client-ts` for builds.
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT/tools/client-smoke"
 npm install
 npx playwright install chromium
@@ -337,7 +334,7 @@ npx playwright install chromium
 Start engine if needed:
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 bash scripts/apply-isolation-config.sh
 cd vendor/engine && npm start
@@ -347,7 +344,7 @@ cd vendor/engine && npm start
 ### 11.3 Run smoke
 
 ```bash
-export RS2_R377_ROOT=$RS2_R377_ROOT
+export RS2_R377_ROOT=/path/to/fairy-ring-workspace
 cd "$RS2_R377_ROOT"
 node scripts/smoke-client-ts.mjs
 # or: cd tools/client-smoke && npm run smoke
@@ -385,4 +382,3 @@ SMOKE_USER=bot SMOKE_PASS=bot node scripts/smoke-client-ts.mjs
 | `scripts/smoke-client-ts.mjs` | Smoke entrypoint |
 | `tools/client-smoke/package.json` | Isolated `playwright` dep |
 | `vendor/engine/public/rs2.html` | Shell under test |
-| `docs/plans/2026-08-03-playwright-smoke.md` | Captured run output / verdict |

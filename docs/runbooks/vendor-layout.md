@@ -1,7 +1,7 @@
 # Runbook — vendor layout
 
 **Workspace:** `$RS2_R377_ROOT`  
-**Policy:** All clones live under `vendor/`. No symlinks into live Server / rs2b2t-engine / rs2b0t.
+**Policy:** Product clones live under `vendor/`. This workspace git tracks process/docs/harness only — not full game trees.
 
 ---
 
@@ -9,13 +9,14 @@
 
 ```text
 vendor/
-├── engine/        # LostCityRS/Engine-TS — game server + pack/unpack tools
-├── content/       # LostCityRS/Content — RuneScript, configs, assets
-├── Server/        # LostCityRS/Server — thin multi-repo launcher (optional path)
-└── client-java/   # LostCityRS/Client-Java — decompiled desktop client (branch 377)
+├── engine/        # Engine-TS — game server + pack/unpack tools
+├── content/       # Content — RuneScript, configs, assets
+├── client-ts/     # Pure Client-TS (web) — behavioural oracle is Client-Java 377
+├── client-java/   # Client-Java (desktop) — optional; branch 377
+└── Server/        # LostCityRS/Server shell — optional; not required for smoke
 ```
 
-Optional later: `vendor/client-ts/`, `vendor/rs2b0t/`.
+Clone helpers and pins: root `vendor/README.md` · `docs/research/PROVENANCE-UPSTREAM-PINS.md`.
 
 ---
 
@@ -26,7 +27,7 @@ Optional later: `vendor/client-ts/`, `vendor/rs2b0t/`.
 | Field | Value |
 |-------|--------|
 | Remote | `https://github.com/LostCityRS/Engine-TS.git` |
-| Local branch | **`rs2-r377`** (private work name) |
+| Local branch | **`rs2-r377`** (project work branch) |
 | Tracks | `origin/377-wip` |
 | HEAD | `94fcfa2d2c2fc5812e6d448a5e4a04fd73879fd3` |
 | Last commit | `fix: Full stack errors` (2026-07-09) |

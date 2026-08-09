@@ -66,7 +66,7 @@ Thin defaults are for **token cost and noise**, not secrecy.
 
 ```bash
 export RS2_R377_ROOT=/path/to/fairy-ring-workspace   # preferred
-# export LC377_ROOT="$RS2_R377_ROOT"               # legacy alias still used in older docs
+# export RS2_R377_ROOT="$RS2_R377_ROOT"               # legacy alias still used in older docs
 cd "$RS2_R377_ROOT"
 
 # 1) This workspace (already cloned)

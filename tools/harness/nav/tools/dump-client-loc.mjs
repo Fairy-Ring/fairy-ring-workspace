@@ -5,7 +5,7 @@ import { Reader, loadLocTypes } from './lib.ts';
 import { bunzip2 } from '../../io/BZip2.js';
 
 const engine = path.resolve(fileURLToPath(import.meta.url), '../../../../../vendor/engine');
-const engineDir = '/Users/acfrazier/experiments/LC-rs2-r377-2006-05-02/vendor/engine';
+const engineDir = '$RS2_R377_ROOT/vendor/engine';
 
 class JagArchive {
   constructor(src) {
