@@ -1,0 +1,17 @@
+node_modules/
+.tmp/
+.env
+*.pem
+docs/plans/
+docs/gap/
+docs/context/
+docs/superpowers/
+docs/research/CORPUS_DIGEST.md
+**/harness-shots/
+cache/openrs2-*/
+cache/unpacked/
+vendor/content/
+vendor/engine/
+vendor/client-ts/
+vendor/Server/
+vendor/client-java*/
