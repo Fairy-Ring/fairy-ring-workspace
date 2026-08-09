@@ -1,4 +1,7 @@
-# Fairy Ring
+> **Revision workspace branch `rs2-r377`.** Project hub (Fairy Ring / pre-EOC horizon) is on branch [`main`](https://github.com/acfrazier/fairy-ring-workspace/tree/main).  
+> Clone: `git clone -b rs2-r377 https://github.com/acfrazier/fairy-ring-workspace.git`
+
+# Fairy Ring — revision 377 workspace
 
 **Independent** engineering for careful historical **pre-EOC / pre-RS3** RuneScape (RS2-era) preservation: honest residual proofs, docs discipline, and pure client/content accuracy.
 
