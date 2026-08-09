@@ -1,0 +1,10 @@
+# Thin public surface — never commit local runtime
+cache/**
+!cache/README.md
+vendor/**
+!vendor/README.md
+node_modules/
+**/.env
+**/.DS_Store
+*.log
+.tmp/
