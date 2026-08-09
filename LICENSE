@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 rs2-r377 workspace contributors
+Copyright (c) 2026 Fairy Ring contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-----------------------------------------------------------------------------
-NOTE: This license applies to original material in the rs2-r377 *workspace*
-repository (documentation, harness tools, and scripts as distributed here).
-It does not relicense Lost City / LostCityRS sources, Jagex game assets, or
-other third-party trees. This project is derived from Lost City open work but
-is not official Lost City. See NOTICE.md.

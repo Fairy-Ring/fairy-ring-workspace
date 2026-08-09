@@ -1,125 +1,59 @@
 # Fairy Ring
 
-**Independent** engineering for careful historical **pre-EOC / pre-RS3** RuneScape (RS2-era) preservation: honest residual proofs, docs discipline, and pure client/content accuracy.
+**Fairy Ring** is an independent project for careful historical **pre-EOC / pre-RS3 (RS2-era)** RuneScape preservation.
+
+We share Lost City’s long *goal* — honest period stacks until the EOC/RS3 line — not necessarily their *method*.  
+**Not** official Lost City / LostCityRS. **Not** endorsed by Jagex. **RuneScape** is a trademark of Jagex Ltd.
 
 | | |
 |--|--|
-| **Public name** | **Fairy Ring** |
-| **Long horizon** | RS2-era preservation **up to EOC / RS3** — same *goal* family as Lost City; different *method* |
-| **This tree’s focus** | **Rev 377** / ~May 2006 (Return of the Wise Old Man era) — **current standing**, not the brand ceiling |
-| **This repo** | Workspace **process**: docs, harness toys, scripts |
-| **Not this repo** | Full game content, engine, or cache blobs |
+| **Brand** | Fairy Ring |
+| **Horizon** | RS2-era → EOC boundary |
+| **This repository** | Workspace **shell** (process, harness, scripts) — not a monorepo of game content |
+| **Companions** | [FR-content](https://github.com/acfrazier/FR-content) · [FR-engine](https://github.com/acfrazier/FR-engine) · [FR-client-ts](https://github.com/acfrazier/FR-client-ts) |
 
-Why *Fairy Ring*: rings link distant places (and times). This project links careful tools (including AI), humans, and living playable stacks. It is **not** “Lost City,” not a Jagex product name, not an official LostCityRS release.
+## Why *Fairy Ring*
 
-## Derived from Lost City — not Lost City
+Rings link distant places (and times). This project links careful tools — **including AI** — humans, and living playable stacks so something honest can exist **in human time** and outlast a single contributor. That is not a completeness claim.
 
-This project is a **derivation** of open work from **Lost City / LostCityRS** (Engine-TS, Content, Server shell, research culture) and related community tooling.
+## Revision workspaces (branches)
 
-**Derivation** means: we build on those trees under their licenses and our own process — **not** that we are official Lost City, own their brand, or speak for them.
+Like multi-revision layouts elsewhere: **`main` is the project hub**. Each **revision line** lives on its own branch.
 
-| We are | We are not |
-|--------|------------|
-| Independent Fairy Ring experiment | Official **Lost City** / **LostCityRS** |
-| Same long preservation *horizon* as LC (pre-EOC RS2) | Endorsed by LC or Jagex; “the” LC method or tree |
-| Clear about provenance ([NOTICE](NOTICE.md)) | Brand frozen forever at one revision number |
-
-We also work with **rs2b0t / rs2b2t** tooling and ideas. On *this* fence the bot/harness is a **means to an end** (prove rev‑377 content carefully) — not an add-on product for an already-complete 274 world. See Decision **004**.
-
-**RuneScape** is a trademark of Jagex Ltd. Period assets remain Jagex IP where they exist in *other* trees — **not** redistributed from *this* git repository.
-
-See [`docs/decisions/009-branding-attribution-and-upstream.md`](docs/decisions/009-branding-attribution-and-upstream.md).
-
-## Purpose
-
-We share Lost City’s eventual *aim* — preserve RS2-era RuneScape carefully until the EOC/RS3 line — not necessarily their *process*.
-
-The original is not fully recoverable as a pure object. We still work carefully. We use every good tool — **including AI** — so honest, playable stacks can exist **in human time** (to enjoy while we are here) and **outlast** a single contributor. That is **not** a completeness or perfect-authenticity claim.
-
-**Fairy Ring** is the project. **377** is where this workspace stands in the ring *today*.
-
-## AI use (explicit)
-
-We **use AI tools and coding agents** as part of normal development: research, thrash, draft docs, propose patches, run harness loops. Humans own product judgment, authenticity claims, commits, and what ships.
-
-| True | False |
-|------|--------|
-| AI is a **tool** on the path (like a compiler or deob) | “Fully autonomous AI project” / unreviewed dumps |
-| Agents help speed ports and residual smokes | Soft greens or invented content sold as authenticity |
-| Process docs and residual labels are how work is audited | Hiding that AI was involved |
-
-AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research ladder, Decision 004 fence, and honest FAIL/DIRTY labeling still apply.
-
-## What you get here
-
-| Included | Not included |
-|----------|----------------|
-| Plans, research, gap analysis, runbooks *(full vault)* / thin process docs *(public export)* | Full `vendor/content` / engine / client clones |
-| Test harness under `tools/harness/` (Decision 004 fence) | OpenRS2 cache / packed server data **in git** |
-| Automation scripts, isolation helpers | Live 274 / production worlds |
-| Authenticity stance, residual bar, branding decisions | A claim that rev 377 work is already complete |
-
-**Honest mid-gates over green bars.** Soft thrash is labeled; residual PASS means live `.rs2` wrote the stage (see `docs/research/authenticity-stance.md`).
-
-## Start here
-
-| Audience | Path |
-|----------|------|
-| **Agents (token-light)** | **[`AGENT_BRIEF.md`](AGENT_BRIEF.md)** first |
-| **Agents (rules)** | **[`AGENTS.md`](AGENTS.md)** |
-| **Humans** | This README · [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`NOTICE.md`](NOTICE.md) |
-| **Operator / full vault** | [`docs/context/COLD_START.md`](docs/context/COLD_START.md) · [`docs/context/AGENTS-OPERATOR.md`](docs/context/AGENTS-OPERATOR.md) |
-| **Rules / fences** | [`docs/decisions/`](docs/decisions/) (004 · **009** · **011**) |
-
-**Public vs private docs:** most session plans and the full research corpus stay **private** (Decision **011**). Public open is a **thin export** + this surface — not a thrash-log dump.
-
-**Want more on a specific unit?** Open a **GitHub issue** (humans or agents) naming the quest/skill/client bug. Scoped extract if it passes the smell test — Decision **011**.
+| Branch | Focus |
+|--------|--------|
+| **`main`** | This stub — brand, horizon, how to enter a revision workspace |
+| **`rs2-r377`** | Active thin workspace for **revision 377** (~May 2006) — docs, harness, scripts, bootstrap |
 
 ```bash
-export RS2_R377_ROOT=/path/to/fairy-ring   # or your clone root
-cd "$RS2_R377_ROOT"
-bash scripts/snapshot-status.sh   # if vendors present
+git clone https://github.com/acfrazier/fairy-ring-workspace.git
+cd fairy-ring-workspace
+git checkout rs2-r377          # enter the 377 workspace surface
+# then follow that branch’s README (clone FR-* vendors, cache guide, isolation, npm start)
 ```
 
-Historical paths may still use older folder names; treat them as the same root when present.
+Future pre-EOC revision lines can add further branches the same way (name TBD when opened).
 
-## Bootstrap (clone → vendors → cache → run)
+## Getting started (377 today)
 
-Like Lost City’s Server layout: **this repo is the shell**; companions and cache are fetched separately. **Cache blobs are never in git.**
+1. Clone this repo and **`git checkout rs2-r377`**.  
+2. On that branch: clone companions under `vendor/` (`FR-content`, `FR-engine`, `FR-client-ts`, branch `rs2-r377`).  
+3. Download OpenRS2 cache **657** yourself if needed (`cache/README.md` on the branch) — **never committed here**.  
+4. `bash scripts/apply-isolation-config.sh` then start engine from `vendor/engine`.
 
-1. **Clone this workspace** (thin public surface or full private vault).  
-2. **Clone vendors** under `vendor/` (content + engine + client-ts). See [`vendor/README.md`](vendor/README.md).  
-3. **Cache (download yourself):** OpenRS2 **id 657** = RS2 **build 377** — public on the internet. Guide: [`cache/README.md`](cache/README.md). Helper: `bash scripts/fetch-openrs2-cache.sh`.  
-   - **Pitfall:** OpenRS2 path `/caches/runescape/377/` is **OSRS 2014**, not rev 377. Always use **657**.  
-4. **Isolation + start:** `bash scripts/apply-isolation-config.sh` then `cd vendor/engine && npm install && npm start` (web **81**, game **43595**).  
-5. **Client:** pure play via engine `public/`; optional harness after `bun tools/harness/build-client.mjs`.
+Details live on the **revision branch**, not on `main`.
 
-Without matching vendor SHAs, mid-gate content may be missing on bare Lost City tips. That is expected.
+## Related
 
-## Architecture fence
-
-```text
-vendor/client-ts/     pure 1:1 Java 377 → TS (product purity)
-vendor/content/       period content (separate git / license)
-vendor/engine/        server (separate git / license)
-tools/harness/        toys: smokes, thrash, prep cheats — not authenticity claims
-docs/                 bridge: what worked, failed, SHAs, deviations
-```
-
-Details: [`docs/decisions/004-client-bot-harness-boundary.md`](docs/decisions/004-client-bot-harness-boundary.md).  
-Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decisions/010-qol-client-runelite-style.md) — **after** content-complete / public debug phase.
+| Doc on `rs2-r377` | Role |
+|-------------------|------|
+| `AGENT_BRIEF.md` | Token-light agent entry |
+| `AGENTS.md` | Agent rules |
+| `NOTICE.md` / `CONTRIBUTING.md` | Provenance + PRs |
+| Decision **009** | Branding / Fairy Ring / pre-EOC horizon |
 
 ## License
 
-- **This repository** (docs, harness, scripts authored here): [MIT](LICENSE).  
-- **Vendor / Lost City–originated trees:** their upstream licenses and notices; **not** re-licensed as original work of this project.  
-- **Jagex assets:** not covered by MIT; see [NOTICE](NOTICE.md).
+MIT for original material in this repository (see [LICENSE](LICENSE) on branch `rs2-r377`, or the copy below).  
+Vendor trees keep upstream licenses. Jagex assets are not MIT and are not redistributed from this git repo.
 
-## Status
-
-Workspace remotes may be private or public; **visibility is not a content-complete claim.**  
-GitHub names may still use legacy identifiers until rename; **public brand is Fairy Ring.**
-
-**Maintainer disclaimer:** we do **not** assert that this stack **is** authentic, original, or complete. Mistakes (human and agent) happen. **Contributions from all** are welcome in good faith — no PR dismissed without clear rationale. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-**Never push experiment work to `LostCityRS/*` without explicit permission.**
