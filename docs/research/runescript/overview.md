@@ -1,12 +1,14 @@
 # Overview — what RuneScript is
 
-> **RuneScript manual** (LC-rs2 r377) · [Index](README.md) · [Living notes](living-notes.md)
+> **RuneScript manual** (Fairy Ring / rev 377) · [Index](README.md) · [Living notes](living-notes.md)
 
 **Authority:** [@JagexAsh](https://x.com/JagexAsh) (Mod Ash) on RuneScript → absolute unless later contradicted. See [README § Authority](README.md#authority-mod-ash-jagexash).
 
 ## 0. What RuneScript is (one paragraph)
 
-**RuneScript** is Lost City’s reconstruction of Jagex’s server-side scripting language for RS2-era worlds. In this project:
+**RuneScript** is the name Jagex uses **internally** for its server-side scripting language on RS2-era worlds. In open preservation work, **Lost City’s reconstruction** of that language (compiler + runtime + content dialect) is what we actually run — also called RuneScript in LC docs and tooling. That reconstruction is honest provenance, not a rebrand of Jagex’s term.
+
+In this project:
 
 1. You write **source** (`.rs2` files + config files) under `vendor/content/scripts/`.  
 2. The **compiler** (`@lostcityrs/runescript`, invoked by `vendor/engine` `npm run build`) turns that into **bytecode** (`script.dat` / `.idx`) plus **symbol packs** (`obj.pack`, `npc.pack`, …).  

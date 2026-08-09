@@ -3,6 +3,8 @@
 **What this is:** first-principles documentation of RuneScript + content for this workspace.  
 Official public manuals do not exist — **we maintain this set**.
 
+**Name:** **RuneScript** is Jagex’s internal name for the RS2-era server scripting language. Open stacks (including Lost City) ship a **reconstruction** of that language under the same name — see [overview.md](overview.md) §0.
+
 **Audience:** humans and agents editing `vendor/content` and engine script handlers.
 
 ## Authority: Mod Ash (@JagexAsh)

@@ -1,6 +1,6 @@
 # Living language notes
 
-> **RuneScript manual** (LC-rs2 r377) · [Index](README.md) · [Living notes](living-notes.md)
+> **RuneScript manual** (Fairy Ring / rev 377) · [Index](README.md) · [Living notes](living-notes.md)
 
 **Append every non-trivial RuneScript lesson here** (date + one line + path). Promote recurring patterns into the matching chapter (`syntax.md`, `runtime.md`, …).
 

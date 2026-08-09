@@ -1,6 +1,6 @@
 # Content patterns
 
-> **RuneScript manual** (LC-rs2 r377) · [Index](README.md) · [Living notes](living-notes.md)
+> **RuneScript manual** (Fairy Ring / rev 377) · [Index](README.md) · [Living notes](living-notes.md)
 
 ## 8. Content patterns you will write constantly
 
