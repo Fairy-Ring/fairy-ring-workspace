@@ -20,7 +20,7 @@
 
 Do not present as “Lost City,” “LC,” or a Jagex product. See `NOTICE.md` and Decision **009**.
 
-**Purpose:** original not fully recoverable; use every good tool (**including AI**) so honest stacks are **playable in human time** and can **outlast** us. Not a completeness stamp.
+**Purpose:** original not fully recoverable; use every good tool (**including AI**) so honest stacks are **playable in human time** and can **outlast** us. Not a completeness stamp. Client surfaces (pure / bot / QoL): Decision **010** — purpose is choice.
 
 ---
 

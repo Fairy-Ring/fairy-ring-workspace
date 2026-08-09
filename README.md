@@ -1,7 +1,6 @@
-> **Revision workspace branch `rs2-r377`.** Project hub (Fairy Ring / pre-EOC horizon) is on branch [`main`](https://github.com/acfrazier/fairy-ring-workspace/tree/main).  
-> Clone: `git clone -b rs2-r377 https://github.com/acfrazier/fairy-ring-workspace.git`
+> **Revision workspace branch `rs2-r377`.** Project hub on [`main`](https://github.com/acfrazier/fairy-ring-workspace/tree/main).
 
-# Fairy Ring — revision 377 workspace
+# Fairy Ring
 
 **Independent** engineering for careful historical **pre-EOC / pre-RS3** RuneScape (RS2-era) preservation: honest residual proofs, docs discipline, and pure client/content accuracy.
 
@@ -34,6 +33,8 @@ We also work with **rs2b0t / rs2b2t** tooling and ideas. On *this* fence the bot
 See [`docs/decisions/009-branding-attribution-and-upstream.md`](docs/decisions/009-branding-attribution-and-upstream.md).
 
 ## Purpose
+
+**Client surfaces — purpose is choice** (pure period client, eventual bot, optional QoL happy medium): see Decision **010**.  
 
 We share Lost City’s eventual *aim* — preserve RS2-era RuneScape carefully until the EOC/RS3 line — not necessarily their *process*.
 
