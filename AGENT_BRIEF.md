@@ -57,7 +57,8 @@ tools/harness/      smokes, thrash, prep cheats — not purity claims
 ```bash
 export RS2_R377_ROOT=/path/to/workspace   # legacy docs may say LC377_ROOT
 # clone workspace + vendor content/engine/client-ts (rs2-r377)
-# cache: OpenRS2 rev 377 / id 657 — never commit blobs
+# cache: download yourself — OpenRS2 id 657 = RS2 build 377 (NOT path …/377/)
+# bash scripts/fetch-openrs2-cache.sh   → cache/openrs2-377/  (never commit)
 bash scripts/apply-isolation-config.sh
 cd vendor/engine && npm start
 ```
@@ -68,7 +69,8 @@ cd vendor/engine && npm start
 | Game TCP (Java client) | **43595** |
 | Management | **8899** |
 
-Browser TS uses **WS on web port**, not TCP 43595. Details: private runbooks.
+Browser TS uses **WS on web port**, not TCP 43595. Details: private runbooks.  
+**Cache guide:** `cache/README.md` — public OpenRS2 links; **no blobs in git**.
 
 ---
 
