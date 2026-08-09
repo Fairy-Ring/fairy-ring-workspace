@@ -14,7 +14,7 @@
 set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)"
-# Realpath so symlink LC-rs2-r277 → r377 still matches cmdline with either name
+# Realpath so alternate workspace folder names still match cmdline
 ROOT_REAL="$(cd "$ROOT" && pwd -P 2>/dev/null || echo "$ROOT")"
 
 kill_matching() {
@@ -62,7 +62,7 @@ kill_matching() {
     local cmd
     cmd=$(ps -p "$pid" -o command= 2>/dev/null || true)
     case "$cmd" in
-      *rs2-r377*|*LC-rs2-r277*|*"$ROOT"*|*"$ROOT_REAL"*)
+      *rs2-r377*|*rs2-r377*|*LC-rs2-r277*|*"$ROOT"*|*"$ROOT_REAL"*)
         case "$cmd" in
           *path-abc-smoke*|*script/run.mjs*|*quest-*-smoke.mjs*|*tools/harness/*-smoke.mjs*)
             echo "kill $label pid=$pid :: $cmd"

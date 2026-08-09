@@ -135,7 +135,7 @@ def _placements_from_maps(map_names: list[str], read_map, read_loc) -> list[Effe
 def load_effective_placements(engine: Path) -> list[EffectivePlacement]:
     """Load loc placements from engine pack (zip cache or unpacked server/maps).
 
-    LC-rs2-r377 often has only data/pack/server/maps (no maps-server.zip).
+    rs2-r377 often has only data/pack/server/maps (no maps-server.zip).
     Match tools/lib.ts loadMapsquares fallbacks.
     """
     archive_path = engine / "data" / "pack" / ".cache" / "maps-server.zip"

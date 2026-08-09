@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Remove harness / smoke test accounts from the local LC-rs2 r377 debug engine.
+# Remove harness / smoke test accounts from the local rs2-r377 debug engine.
 #
 # With LOGIN_SERVER=false (this stack), logins are file saves under
 #   vendor/engine/data/players/<profile>/<username>.sav
@@ -94,7 +94,7 @@ should_delete_save() {
   matches_prefix "$base"
 }
 
-echo "=== LC-rs2 r377 test account cleanup ==="
+echo "=== rs2-r377 test account cleanup ==="
 echo "engine:  $ENGINE"
 echo "profile: $PROFILE"
 echo "sqlite:  $DB"

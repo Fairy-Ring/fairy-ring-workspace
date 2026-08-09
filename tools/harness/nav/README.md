@@ -1,6 +1,6 @@
 # Harness nav (rs2b0t shared stack, classic mode)
 
-Port of rs2b0t world-walking for LC-rs2 r377. **One walker** — default `classic` (no tele inject).
+Port of rs2b0t world-walking for rs2-r377. **One walker** — default `classic` (no tele inject).
 
 Upstream: `$RS2B0T_REF` `docs/NAV.md`, `docs/nav-v2/`.
 

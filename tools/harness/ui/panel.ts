@@ -60,7 +60,7 @@ export class HarnessPanel {
         this.walkToModal = new WalkToModal();
 
         const title = el('div', 'rs2b0t-title');
-        title.textContent = 'LC-rs2 harness';
+        title.textContent = 'rs2-r377 harness';
         const sub = document.createElement('span');
         sub.className = 'rs2b0t-wall-link';
         sub.style.float = 'right';
