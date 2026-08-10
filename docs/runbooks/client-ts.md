@@ -68,16 +68,16 @@ vendor/client-ts/
 │   ├── ondemandworker.js
 │   ├── ondemandworker.js.map
 │   ├── mapview.js
-│   ├── mapview.js.map
-│   └── tinymidipcm.wasm
+│   └── mapview.js.map
 └── src/
     ├── client/           # Client, GameShell, title, input
     ├── io/               # Packet, ClientStream (WS), OnDemand*, Isaac, prot
     ├── config/ dash3d/ graphics/ sound/ mapview/ util/ wordfilter/
-    └── 3rdparty/         # tinymidipcm wasm + audio helpers (vendored in tree)
+    │   sound/            # MidiFacade + Spessa (Decision 012); JagFX SFX
+    └── 3rdparty/         # audio.js (wave SFX helpers only)
 ```
 
-Submodules listed in `.gitmodules` (`3rdparty/tinymidipcm`, `bzip2-wasm`, `emsdk`) are **not** required for a normal build — wasm already lives under `src/3rdparty/tinymidipcm/`.
+MIDI deploy siblings of `client.js`: `spessasynth_processor.min.js`, `SCC1_Florestan.sf2` (Decision 012).
 
 ---
 
@@ -106,7 +106,7 @@ bun run build:dev      # no terser minify; keeps console
 ```
 
 **Verified 2026-08-03:** `bun install` + `bun run build` → **success**  
-Artifacts: `out/client.js` (~351 KB), `out/ondemandworker.js`, `out/mapview.js`, `out/tinymidipcm.wasm`.
+Artifacts: `out/client.js`, `out/ondemandworker.js`, `out/mapview.js` (MIDI: Spessa bundled; worklet + Florestan copied by deploy).
 
 Prod bundle ends with `export { … as Client }` (named ESM export). HTML must use:
 
@@ -169,7 +169,8 @@ bash scripts/deploy-client-ts.sh
 | Step | What it does |
 |------|----------------|
 | `bun run build` | In `vendor/client-ts` (bakes `LOGIN_RSAE` / `LOGIN_RSAN` if set) |
-| Copy | `out/client.js`, maps, `ondemandworker.js`, `tinymidipcm.wasm` → `vendor/engine/public/client/` |
+| Copy | `out/client.js`, maps, `ondemandworker.js` → `vendor/engine/public/client/` |
+| MIDI | `spessasynth_processor.min.js` + `SCC1_Florestan.sf2` (Decision 012) |
 | HTML | Expects existing `vendor/engine/public/rs2.html` (does not create it; warns if missing) |
 
 **Open URL (engine must be on WEB_PORT=81):**
@@ -198,11 +199,8 @@ cp "$RS2_R377_ROOT/vendor/client-ts/out/client.js" \
    "$RS2_R377_ROOT/vendor/client-ts/out/client.js.map" \
    "$RS2_R377_ROOT/vendor/client-ts/out/ondemandworker.js" \
    "$RS2_R377_ROOT/vendor/client-ts/out/ondemandworker.js.map" \
-   "$RS2_R377_ROOT/vendor/client-ts/out/tinymidipcm.wasm" \
    "$RS2_R377_ROOT/vendor/engine/public/client/"
-# MIDI soundfont (required for tinymidipcm; deploy-client-ts.sh copies if found):
-# Prefer: client-ts/out/SCC1_Florestan.sf2, else reference Server trees, else keep existing.
-# Manual: cp /path/to/SCC1_Florestan.sf2 "$RS2_R377_ROOT/vendor/engine/public/client/"
+# Prefer: bash scripts/deploy-client-ts.sh (also copies Spessa worklet + Florestan).
 ```
 
 Upstream Server menu “Build Web Client” does the equivalent:

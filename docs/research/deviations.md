@@ -43,6 +43,10 @@ Record **intentional product / platform differences** from historical May 2006 /
 | 2026-08-10 | Engine / appearance headicons 377 | `generateAppearance` wrote `0xff/0xff` for pk/prayer icons — fixed encode from content bitmask | Was always no overhead; client already dual-s8 | agent |
 | 2026-08-10 | Content / hunt.pack IDs | Renumbered hunt modes 0…n−1 so `cowardly=3` matches packed HuntType (was pack id 80 → null hunt NPE) | Pack/load id mismatch | agent |
 | 2026-08-10 | ~~Client / MM temple firewall plane~~ | **Retracted as bug** — see research | **Authentic** LinkBelow + `World.pushDown` (Java method276): pack L1 → scene L0 | agent |
+| 2026-08-10 | Client-TS MIDI bank | **Florestan** loaded via setSoundfont-equivalent (Java leaves bank to JVM) | Decision 012: pin XP GS proxy; not Gervill. See `012-midi-java-impl-xp-soundfont.md` | agent |
+| 2026-08-10 | Client-TS MIDI (parked) | Webpage SF2 upload / multi-bank shell | Intentional deviation later; upload branch parked | agent |
+| 2026-08-10 | Client-TS MIDI backend | Spessa + Web Audio instead of `javax.sound.midi` | Decision 012: stock Spessa; Jagex control plane; Florestan bank | agent |
+| 2026-08-10 | Client-TS MIDI (removed) | FluidSynth / tinymidipcm multi-backend | Spike A/B only; Spessa won; dead code deleted from tree | agent |
 
 Template for new rows:
 

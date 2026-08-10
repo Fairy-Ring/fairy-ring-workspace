@@ -211,8 +211,9 @@ Does **not** invent a second toggle — uses existing `actions.setRun` / control
 export RS2_R377_ROOT=$RS2_R377_ROOT
 # pure client (freeze / human play)
 cd "$RS2_R377_ROOT/vendor/client-ts" && bun run build:dev
-cp out/client.js out/client.js.map out/ondemandworker.js out/tinymidipcm.wasm \
+cp out/client.js out/client.js.map out/ondemandworker.js \
   ../engine/public/client/
+# Prefer: bash scripts/deploy-client-ts.sh (Spessa worklet + Florestan)
 
 # harness client (smokes) — use bun (Bun.build)
 cd "$RS2_R377_ROOT" && bun tools/harness/build-client.mjs

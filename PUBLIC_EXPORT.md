@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-10T14:36Z
+Generated: 2026-08-10T17:04Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -23,6 +23,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/decisions/009-branding-attribution-and-upstream.md
 ./docs/decisions/010-qol-client-runelite-style.md
 ./docs/decisions/011-public-docs-surface-and-agent-brief.md
+./docs/decisions/012-midi-java-impl-xp-soundfont.md
 ./docs/README.md
 ./docs/research/authenticity-stance.md
 ./docs/research/corpus/inventory-274-vs-377-quest-delta.md

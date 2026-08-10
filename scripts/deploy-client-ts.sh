@@ -15,15 +15,18 @@ bun run build
 mkdir -p "$ENGINE_PUB/client"
 cp -f out/client.js out/client.js.map \
       out/ondemandworker.js out/ondemandworker.js.map \
-      out/tinymidipcm.wasm \
       "$ENGINE_PUB/client/" 2>/dev/null || {
-  cp -f out/client.js out/ondemandworker.js out/tinymidipcm.wasm "$ENGINE_PUB/client/"
+  cp -f out/client.js out/ondemandworker.js "$ENGINE_PUB/client/"
 }
-# map files optional
 cp -f out/client.js.map out/ondemandworker.js.map "$ENGINE_PUB/client/" 2>/dev/null || true
 
-# MIDI soundfont: tinymidipcm fetch() as sibling of client.js via import.meta.url.
-# Prefer build out/, else keep existing deploy, else known local reference trees.
+# Product MIDI = Spessa only (Decision 012). Strip legacy spike artifacts if present.
+rm -f "$ENGINE_PUB/client/tinymidipcm.wasm" \
+      "$ENGINE_PUB/client/libfluidsynth-2.4.6.js" \
+      "$ENGINE_PUB/client/libfluidsynth-"*.js 2>/dev/null || true
+rm -rf "$ENGINE_PUB/client/midi-thrash" 2>/dev/null || true
+
+# Florestan bank (XP GS proxy) — MidiFacade fetch at boot
 SF2_NAME="SCC1_Florestan.sf2"
 SF2_DEST="$ENGINE_PUB/client/$SF2_NAME"
 SF2_COPIED=0
@@ -45,6 +48,15 @@ if [[ "$SF2_COPIED" -eq 0 && -f "$SF2_DEST" ]]; then
   echo "Keeping existing soundfont at $SF2_DEST"
 elif [[ "$SF2_COPIED" -eq 0 ]]; then
   echo "warn: missing $SF2_NAME — MIDI will fail until soundfont is at $SF2_DEST" >&2
+fi
+
+# Spessa AudioWorklet processor (must be a separate file; not inlined into client.js)
+SPESSA_PROC="$CLIENT/node_modules/spessasynth_lib/dist/spessasynth_processor.min.js"
+if [[ -f "$SPESSA_PROC" ]]; then
+  cp -f "$SPESSA_PROC" "$ENGINE_PUB/client/spessasynth_processor.min.js"
+  echo "Copied spessasynth_processor.min.js"
+else
+  echo "warn: missing $SPESSA_PROC — MIDI will fail" >&2
 fi
 
 # Keep rs2.html if we authored it at engine public root
