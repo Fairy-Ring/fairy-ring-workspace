@@ -49,6 +49,23 @@ Soft mid thrash is a **normal stage of the process**, not a moral fail. You stil
 
    **If residual cannot finish under this bar, it is a product/code problem to debug.** Soft mids earlier in the ladder remain valid process stages; do not green-bar the residual span as complete.
 
+10. **Softlocks and “bugs” are often period-accurate (2026-08-10):** At this era Jagex **did not** systematically prevent softlocks or awkward spawns. Content that fails to place a size-3 NPC, lands a demon on an unwalkable tile, or strands a player if they mis-click was frequently **shipped behaviour**, not a 377-engine defect to “fix.”  
+    | Prefer | Avoid (unless logged deviation) |
+    |--------|----------------------------------|
+    | Ladder source script shape (`map_findsquare` + `^map_findsquare_lineofwalk` as written) | Inventing open-tile hardcodes “so the mid always greens” |
+    | 289/274 comments that admit bad spawns (“no size checks…”) | Quietly hardening product to modern QoL |
+    | Soft harness: open tele / re-seed **labelled** when thrash needs a clear board | Claiming product softlock-proof as authenticity |
+
+    **Pedantic but load-bearing:** what looks like a bug to us may be the way it behaved. Research first; only deviate when the operator accepts a **deviations.md** row.
+
+11. **Preserve period “incorrect” behaviour for now (operator preference 2026-08-10):** Default product bar is **period match**, not modern correctness. If behaviour seems wrong but ladder sources say that is how it worked (or how the ported scripts act), **keep it** in the pure product trees.  
+    | Track | Role |
+    |-------|------|
+    | **Preservation (default now)** | `vendor/content` / engine / client stay period-shaped; softlocks and awkward spawns stay unless evidence says otherwise |
+    | **Bugfix / live fork (later, optional)** | Explicit branch or pack for a **deployed live server** may harden softlocks, open-tile spawns, QoL — **only** when we choose that product; log every change in `deviations.md` (or a live-fork ledger) and do **not** silently fold “fixes” into the preservation default |
+
+    Harness toys may always work around softlocks for thrash. That is not a licence to rewrite product “so players cannot softlock” on the preservation track.
+
 ## Research source ladder (prefer top → bottom)
 
 Use the **highest** source that actually answers the question. Do not jump to lower rungs for convenience.

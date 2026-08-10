@@ -13,6 +13,8 @@ p_arrivedelay();   // wait until finished walking to target
 
 While delayed, many NORMAL timers and queues wait. Softtimers may still run.
 
+**Do not start a new protected op mid-delay.** Engine keeps one `Player.activeScript`. A second OPNPC / OPNPCU / talk while `p_delay` is open **drops** the suspended script (no resume). Classic symptom: `inv_del` ran, `inv_add` after `p_delay` never runs (MM Zooknock hand-in 2026-08-10). See [living-notes.md](living-notes.md) §12.2.
+
 ### 7.2 Claiming protect
 
 ```text

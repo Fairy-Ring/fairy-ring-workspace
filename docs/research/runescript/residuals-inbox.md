@@ -31,6 +31,10 @@
 | 2026-08-08 | p_finduid claims protect path | VERIFIED | `engine.rs2:88` | runtime.md | equip/on_unequip pattern |
 | 2026-08-08 | Map loc type ≠ script bind | VERIFIED | Myreque `route_rowboat_mortton` 6969 vs `route_rowboat` | patterns.md | always check jm2 type |
 | 2026-08-08 | Ash: engine change without runescript diff | CANDIDATE | @JagexAsh 2024-10-28 (post 1850898594…) behaviour change may be engine not RS files | living-notes | semantics: engine can move under scripts |
+| 2026-08-10 | New OP aborts mid-`p_delay` (`activeScript` replace) | VERIFIED | MM Zooknock OPNPCU hand-in; engine `Player.activeScript` | runtime.md §7.1 + living-notes §12.2 | **promoted 2026-08-10** |
+| 2026-08-10 | Pack type `_aa` suffix for map NPC binds | VERIFIED | `mm_garkor_aa` / `mm_zooknock_aa` vs 289 bare names | patterns.md | promoted living-notes |
+| 2026-08-10 | 377 chapter IF = `scroll` not `inter_199` | VERIFIED | MM start/ch2; hangar research | patterns.md / failures | promoted living-notes |
+| 2026-08-10 | No shared `~fade_*` on 377 thin tree | VERIFIED | multiple MM/Myreque ports | deviations + living-notes | delay+tele pattern |
 
 ### Phase B corpus metrics (2026-08-08 main, VERIFIED counts)
 

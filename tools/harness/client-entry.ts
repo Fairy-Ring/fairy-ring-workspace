@@ -53,6 +53,78 @@ export function createHooks(): HarnessHooks {
 }
 
 /**
+ * Feed the side-panel LogBus with thrash/harness lines that used to die in the
+ * browser console (Playwright smokes never started a TaskBot, so the log sat empty).
+ */
+function wirePanelLogBridge(): void {
+    const lc = globalThis as unknown as {
+        __lc377?: {
+            log?: (level: string, msg: string) => void;
+            thrashSnap?: (opts?: object) => unknown;
+        };
+        __harnessLogBus?: typeof LogBus;
+    };
+    if (lc.__lc377) {
+        lc.__lc377.log = (level, msg) => {
+            const lv =
+                level === 'error' || level === 'warn' || level === 'info'
+                    ? level
+                    : 'info';
+            LogBus.add(lv, String(msg));
+        };
+    }
+
+    // Browser console → panel log. Keep broad enough for MM/regicide/mortton smokes
+    // that log from page.evaluate; host CLI mirror (harness.mjs) covers Node console.
+    const interesting =
+        /\[thrash\]|\[quest-|\[harness\]|\[script|\[mm\]|\[mm-|\[reg|\[misc|\[myre|\[nav|\[slayer|\[farm|RESULT:|FAIL:|PASS|SOFT |product |useOn|use bar|useHeld|tele |scene|missingModels|OPLOCU|OPNPCU|residual|stealGhost|mainlandAccount|temple|oil-on|Loar|pyre |enchanted|greegree|firewall|Wall of flame/i;
+
+    const noise =
+        /377port\] scene complete|Requesting (animations|models|maps)|%:\s*Requesting|browser\.(log|info)|DevTools|Download the React/i;
+
+    const feed = (level: 'info' | 'warn' | 'error', args: unknown[]) => {
+        try {
+            const msg = args
+                .map(a => {
+                    if (typeof a === 'string') return a;
+                    if (a && typeof a === 'object') {
+                        try {
+                            return JSON.stringify(a);
+                        } catch {
+                            return String(a);
+                        }
+                    }
+                    return String(a);
+                })
+                .join(' ');
+            if (noise.test(msg)) return;
+            // Always keep warn/error; filter only verbose info
+            if (!interesting.test(msg) && level === 'info') return;
+            const short = msg.length > 420 ? `${msg.slice(0, 417)}…` : msg;
+            LogBus.add(level, short);
+        } catch {
+            /* ignore */
+        }
+    };
+
+    const wrap =
+        (level: 'info' | 'warn' | 'error', orig: (...a: unknown[]) => void) =>
+        (...args: unknown[]) => {
+            orig(...args);
+            feed(level, args);
+        };
+
+    // eslint-disable-next-line no-console
+    console.log = wrap('info', console.log.bind(console));
+    // eslint-disable-next-line no-console
+    console.info = wrap('info', console.info.bind(console));
+    // eslint-disable-next-line no-console
+    console.warn = wrap('warn', console.warn.bind(console));
+    // eslint-disable-next-line no-console
+    console.error = wrap('error', console.error.bind(console));
+}
+
+/**
  * Construct harness Client (injected pure) + adapter + script host + side panel.
  * Pure on-disk Client-TS is never edited; hooks are build-time only.
  */
@@ -65,6 +137,8 @@ export function startHarnessClient(nodeid = 37, lowmem = false, members = true):
     (globalThis as unknown as { __lc377Client: Client }).__lc377Client = client;
     const hooks = createHooks();
     install(client, hooks);
+    // Bridge useful console + thrash lines into the side-panel log (was dead during PW smokes).
+    wirePanelLogBridge();
     registerScriptHost();
 
     // DOM panel (rs2b0t #bot-panel) — after adapter so status can read __lc377

@@ -9,8 +9,16 @@
 #   kill ports used by live Server / rs2b0t (43594, etc.)
 #
 # Usage:
-#   bash scripts/kill-harness-smoke.sh           # path-abc + script/run
-#   bash scripts/kill-harness-smoke.sh --engine  # also stop THIS tree's engine only
+#   bash scripts/kill-harness-smoke.sh              # path-abc + quest smokes + profile chrome
+#   bash scripts/kill-harness-smoke.sh --wait        # then sleep dirty hold (default 65s)
+#   bash scripts/kill-harness-smoke.sh --wait 35     # custom seconds
+#   bash scripts/kill-harness-smoke.sh --engine      # also stop THIS tree's engine only
+#
+# Dirty kill leaves the thrash username in engine World.playerLoop until
+# TIMEOUT_NO_RESPONSE (~100 ticks ≈ 30s@speed300 / 60s@600ms). That is NOT a
+# flag inside the .sav (LOGIN_SERVER=false = file-mode; no account_login lock).
+# Prefer: clean IF logout before exit, or --wait 65. Cold opcode-18 reconnect is
+# wrong (mid-session tryReconnect only — client must already be ingame).
 set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)"
@@ -96,7 +104,24 @@ kill_matching() {
 
 kill_matching "harness-smoke"
 
-if [ "${1:-}" = "--engine" ]; then
+WAIT_S=0
+DO_ENGINE=0
+prev=""
+for arg in "$@"; do
+  if [ "$prev" = "--wait" ] && [ "$arg" -eq "$arg" ] 2>/dev/null; then
+    WAIT_S="$arg"
+    prev=""
+    continue
+  fi
+  case "$arg" in
+    --wait) WAIT_S=65 ;;
+    --wait=*) WAIT_S="${arg#--wait=}" ;;
+    --engine) DO_ENGINE=1 ;;
+  esac
+  prev="$arg"
+done
+
+if [ "$DO_ENGINE" = "1" ]; then
   # Only kill node whose cwd/cmdline is vendor/engine under THIS root
   while IFS= read -r pid; do
     [ -z "$pid" ] && continue
@@ -109,4 +134,10 @@ if [ "${1:-}" = "--engine" ]; then
     esac
   done < <(pgrep -f 'vendor/engine.*src/app\.ts|tsx/dist/loader.*src/app\.ts' 2>/dev/null || true)
   echo "note: did not touch other engines (e.g. experiments/Server on 43594)"
+fi
+
+if [ "$WAIT_S" -gt 0 ] 2>/dev/null; then
+  echo "dirty-logout hold: sleeping ${WAIT_S}s (engine RAM hold ~100 ticks; not a .sav flag)"
+  sleep "$WAIT_S"
+  echo "hold done — safe to relaunch same thrash pin"
 fi

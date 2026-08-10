@@ -17,7 +17,7 @@
 
 **Partial clone note:** content/engine `origin` may use `blob:none` (saves disk). **Commit graph and SHAs remain**; not every historical blob is local until needed.
 
-## Canonical pins (re-measure before public flip if tips move)
+## Canonical pins (re-measure if upstream tips move or before a major re-export)
 
 GitHub-style lineage strings:
 

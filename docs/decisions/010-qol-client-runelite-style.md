@@ -137,7 +137,7 @@ Prefer **inject / thin overlay** over forever-diverging full `Client.ts` copy wh
 - Bot = eventual full tooling path; **more power to you**.  
 - QoL = RSI-aware happy medium; compass center, world map, shift-drop, etc., without breaking period content function; **more power to you**.  
 - Purpose is **choice**, not a single orthodoxy of how you sit at the keyboard.  
-- Timeline for QoL **code**: after public open; after content thrash / pure freeze; debug/improve PR phase.
+- Timeline for QoL **code**: after content thrash / pure freeze; debug/improve PR phase.
 
 ---
 

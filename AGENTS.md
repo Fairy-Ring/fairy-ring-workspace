@@ -132,12 +132,13 @@ This surface does **not** ship full session plans or the entire research corpus.
 ### Documentation
 
 - Intentional non-auth → **`docs/research/deviations.md`**; soft mids → **`docs/research/softpass.md`** same turn.  
+- **RuneScript** (opcodes, triggers, delay/protect, multi, chat helpers, pack/runtime contracts) → same turn append **`docs/research/runescript/living-notes.md`**; promote recurring patterns into `runtime.md` / `patterns.md` / `failures.md`.  
 - Durable facts → research notes or PR description.  
 - Never leave the only copy of a learning in chat.
 
 ### Git
 
-- **Commits stay frequent.** Small commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …) — same discipline as before public open. Chat is not a backup.  
+- **Commits stay frequent.** Small commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …). Public pushes may batch; chat is not a backup.  
 - **Push frequency can drop.** Now that remotes are public, do **not** push every unit. Batch coherent slices (or end of session) to public `fairy-ring-workspace` / FR-* so the public history stays readable. Private vault backup may still push more often than the public export.  
 - Never force-push shared branches unless maintainers explicitly ask.  
 - Never point `origin` at LostCityRS for experiment push.

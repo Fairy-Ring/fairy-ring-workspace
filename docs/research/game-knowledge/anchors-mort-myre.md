@@ -36,9 +36,13 @@
 | **Ulsquire (afflicted)** | m54_51 `1251` | **3496,3289** L0 | Temple dialog / complete |
 | **Razmire (afflicted)** | nearby multi | ~**3489,3296** | Remains hand-in mid-temple |
 | **Flamtaer courtyard stand** | inside wall ring | **3505,3315** L0 | Never tele onto altar **3506,3316** |
-| **Funeral pyre stand** | m54_51 `temple_pyre` @ 0 9 19 | **3466,3283** (pyre+1) | Stage 70–79 place/light |
+| **Fire altar loc** | `0_54_51_50_52` | **3506,3316** L0 | Broken / Fire / Flaming forms |
+| **Funeral pyre loc** | m54_51 `0 9 19` | **3465,3283** L0 | typecodes 4093→4094→4100 |
+| **Funeral pyre stand** | adjacent | **3466,3283** | Stage 70–80 place/light |
 
-**Residual note (2026-08-09):** Loar **is** client-visible under residual (`mtnsl3j4qg` attack d=14–15). Fail was thrash tele-cycle, not empty pack. Mid-temple HARD Take: `mtnsgsppgf` remains#3396.
+**Residual Flamtaer (full ops):** [`flamtaer-residual-377.md`](flamtaer-residual-377.md) — stages 50→85, sanc vs repaired_p, 49t pyre, bar §2 checklist.
+
+**Residual note (2026-08-09):** Loar **is** client-visible under residual (`mtnsl3j4qg` attack d=14–15). Fail was thrash tele-cycle, not empty pack. Mid-temple HARD Take: `mtnsgsppgf` remains#3396. Parked oil remake: sanc ok but **Broken altar** thrash stuck on Temple wall walk — prefer Broken wall Repair + op when cheb≤1.
 
 ## Soft prep (SOFT — label in smokes)
 

@@ -76,12 +76,26 @@ Sticky wall target + only re-walk when `cheb(me, stand) > 1` — do not re-home 
 
 ---
 
+## Exactmove / squeeze start tiles (2026-08-09)
+
+Some product paths (`p_exactmove` after `distance(coord, $start) > 1 → return`) **silently no-op** if the player is not on the computed **$start** tile.
+
+| Loc | Loc tile | Host **start** stand | FAIL mode |
+|-----|----------|----------------------|-----------|
+| Regicide dense forest camp entry (`regicide_cross_over2_tyras_camp`, angle east) | **2187,3169** | **2188,3168** | Tele 2185,3168 → Enter spam → stage stays 9 (`regsmja210`) |
+| Same name “Dense forest” nearby | 2187,3166 / 3163 | **not** camp-entry | Wrong loc type never writes stage 10 |
+
+**Rule:** when porting agility-style loc scripts, log **loc_coord + loc_angle → $start** in anchors **before** thrash loops. Do not thrash “any Dense forest within 12 tiles.”
+
+---
+
 ## Checklist (new smoke tele)
 
-1. Name constants `*_LOC` / `*_ALTAR` vs `*_STAND` / `*_COURTYARD`.  
+1. Name constants `*_LOC` / `*_ALTAR` vs `*_STAND` / `*_COURTYARD` / exactmove `*_START`.  
 2. Headed once: after tele, screenshot + log `worldTile` — if standing “in” the scenery, offset ±1 toward free floor.  
 3. For minigame rings, fix **inside** bias before writing thrash loops.  
-4. Log the stand tile in the plan or `anchors-*.md` same turn.
+4. For exactmove/squeeze: compute $start from angle; prove distance ≤ 1.  
+5. Log the stand tile in the plan or `anchors-*.md` **same turn** as PASS/FAIL.
 
 ---
 

@@ -45,7 +45,18 @@ rs2b0t-style split:
 | Scripts | `tutorial` (A only), `path-abc` (A+B+C step 1) |
 
 Pure play: `http://127.0.0.1:81/rs2.html`  
-Harness: `http://127.0.0.1:81/harness.html` — **side panel** (status / log / Start·Stop) like rs2b0t `bot.html` rail. Full BotPanel later with `vendor/rs2b0t`.
+Harness: `http://127.0.0.1:81/harness.html` — **side panel = agent eyes** (status / multicolor CLI box / log). **No Start/Stop** — residual thrash is CLI (`*-smoke.mjs`); we abandoned bot-client-first panel control. WalkTo / Clear / Shot are optional operator toys only.
+
+**Panel log + CLI box (2026-08-10):**
+
+| Path | What you see |
+|------|----------------|
+| **Top multicolor CLI** | `host` = last Node smoke line; `live`/`tile`/`inv`/`locs` from thrashSnap; `tag` only if smoke calls `thrashPoint` |
+| **Log scroll** | LogBus (max 800): browser console (filtered) + **Node console mirror** via `installSmokePanelMirror` (on `mainlandAccount`) + thrash heartbeats |
+| **Not mirrored** | Raw Node noise without `[mm]`/`[harness]`/`RESULT`/… — widen `PANEL_MIRROR_RE` in `lib/harness.mjs` if needed |
+| **Opt out** | `PANEL_MIRROR=0` |
+
+Rebuild after panel edits: `bun tools/harness/build-client.mjs`.
 
 ## Prerequisites
 
@@ -55,6 +66,17 @@ Harness: `http://127.0.0.1:81/harness.html` — **side panel** (status / log / S
    - Also runs **deploy basemap bake** (`tools/harness/map/build-basemap.ts` → `nav/out/basemap/` → `public/harness/basemap/`). Skip with `SKIP_BASEMAP_BAKE=1`.  
    (runs `inject-client.mjs` first; pure tree untouched. **dev** names — do not use `--prod` for dig-based attach.)
 4. Playwright: `cd tools/client-smoke && npm install && npx playwright install chromium`
+
+### Prefer client packets over cheats (UI / combat under test)
+
+When the mid proves a **player action** (pray, cast, equip, talk, OPLOC), **forge the real client packet** (`ifButton`, `castOnNpc`, `heldOp`, `npcOp`, menu ops) first.
+
+| Prefer | Avoid for the same step |
+|--------|-------------------------|
+| `ifButton` / `castOnNpc` / equip ops | `setvar` that fakes the outcome (e.g. `prayer14=1` without overhead) |
+| Product path that runs scripts + appearance | Soft state that skips `prayer_activate` / similar |
+
+Cheats invent mid-state and produce **false bugs** (or hide real ones). Soft **setup** (setvar quest stage, give kit, setstat floors) is still fine; soft **proof** is not.
 
 ### Cheats: setup vs force-pass
 
@@ -82,6 +104,7 @@ Local isolation only (`NODE_PRODUCTION` false, staffmod 4). Prefer **host prep**
 **Gear policy:** host prep is free, but **match gear tier to combat floor** and **equip** after give. Do not seed bronze for a level-60 fight. Corpus: `docs/research/game-knowledge/harness-prep-and-gear.md`.
 | **`speed <ms>`** | World tick rate (min 20ms) | **Quest e2e default 300** via `setWorldSpeed(page, 300)`; override `WORLD_SPEED_MS` |
 | **`tele …`** | Map placement | Anchors / skip commute between proof steps |
+| **`give` via `giveItems`** | Inv seed | **Inv-aware:** free-slot budget; non-stack (lobster) each take a slot — do not seed &gt; free slots at once |
 
 Notes:
 
@@ -121,7 +144,7 @@ Do **not** treat “logged in” as “can fire OPNPC.” After tele/reload, sce
 | **Clean** | `actions.ifButton(2458)` → `logout:try_logout` → `p_logout` | Preferred for every harness relog |
 | **Dirty** | `client.logout()` socket drop | Fallback only — engine may keep player online (login **5**) |
 
-`mainlandAccount` must setvar tutorial then **relog** so side icons unlock. Most smoke wall-clock before first Talk is that relog. Host: `logoutSafe(page)` + short `RELOG_COOLDOWN_CLEAN_MS` (default **2s**) vs dirty `RELOG_COOLDOWN_MS` (default **20s**).
+`mainlandAccount` for **fresh** accounts: tele off island + `setvar tutorial 1000` + **relog** (side icons). **Thrash/pinned savs** that already have `tutorial=1000` **skip** setvar/relog, but always **soft tele Lumbridge** after wipe (resume steal + pin-no-steal) so sav dirt (Castle Wars waiting room, etc.) does not block product `pre_tele_checks`. Force full path: `MAINLAND_FORCE_FULL=1`. **If steal fails** (or is off) but sav is already tutorial-complete: still run `wipeInvAndWorn` — pin can wear Castle Wars **Hooded cloak**; `~clearinv` alone does not strip worn. Host: `logoutSafe(page)` + short `RELOG_COOLDOWN_CLEAN_MS` (default **2s**) vs dirty hold.
 
 **Policy:** harness may grow **test tools** beyond a typical bot-script corpus (prep, thrash, clean logout). Keep them under `tools/harness/lib/*` (severable) for later rs2b0t forward-port — Decision 004 §9.
 
@@ -143,6 +166,18 @@ waitSceneReady → give / setvar / setstat → waitSceneReady (if tele) → bot 
 
 **Do not** wait for `primaryAnim === -1` alone — some bas/ready anims never clear  
 (hangs gate Open / basalt loops). Soft-timeout then proceed.
+
+### Random events off (debug thrash only)
+
+| | |
+|--|--|
+| Env | `NODE_RANDOM_EVENTS=false` in `vendor/engine/.env` (isolation default via `apply-isolation-config.sh`) |
+| Effect | `afk_event` never ready → no genie/MOM/swarm/plant/skill macros |
+| Default in engine | **true** (authentic) if unset |
+| Enable authentic randoms | `NODE_RANDOM_EVENTS=true` then **restart engine** |
+| Product | Do **not** invent content bans; this is isolation/debug only (`deviations.md`) |
+
+Harness still has `tools/harness/lib/randomEvents.mjs` for when randoms are **on** and thrash must handle them.
 
 ### Content edits without restarting the engine
 
@@ -316,41 +351,90 @@ Default is **injected** `Client.login` (no title-screen typing), same as
 
 Helpers: `login()` / `loginInject()` / `loginTitleUi()` in `tools/harness/lib/harness.mjs`.
 
-### Accounts (rs2b0t-style)
+### Accounts — proof vs thrash (policy)
 
-By default each smoke uses a **fresh username** + password `test`:
+**Proof / residual claim:** fresh sav every run (default).  
+**Thrash / harness debug:** pin one sav so login+state aren’t re-earned every iteration.
 
-| Helper | Behaviour |
-|--------|-----------|
-| `freshAccount(prefix)` | `prefix` + base36 timestamp, max 12 chars |
-| `resolveAccount(rest, prefix)` | argv user/pass → `SMOKE_USER`/`SMOKE_PASS` → fresh |
-
-Local engine auto-creates accounts (`WEBSITE_REGISTRATION=false`). Pin only when debugging a sav:
+| Helper / env | Behaviour |
+|--------------|-----------|
+| `freshAccount(prefix)` | `prefix` + base36 stamp, max 12 chars |
+| `resolveAccount(rest, prefix)` | argv → `SMOKE_USER` → thrash pin → fresh; logs `mode=` |
+| `SMOKE_MODE=proof\|residual` | force fresh (even if `SMOKE_USER` set) |
+| `SMOKE_MODE=thrash` or `THRASH_PIN=1` | pin `{prefix}thrash1` or `SMOKE_USER` |
+| `SMOKE_USER` / `SMOKE_PASS` | pin that user (thrash-friendly) |
 
 ```bash
+# thrash Flamtaer residual harness (reuse sav)
+SMOKE_MODE=thrash MORTTON_FROM=50 MORTTON_TO=85 \
+  node tools/harness/quest-mortton-smoke.mjs
+
+# residual claim (fresh)
+MORTTON_FROM=50 MORTTON_TO=85 node tools/harness/quest-mortton-smoke.mjs
+
+# explicit pin
+SMOKE_USER=mtnthrash1 node tools/harness/quest-mortton-smoke.mjs
 node tools/harness/path-abc-smoke.mjs stuckuser test
-SMOKE_USER=stuckuser node tools/harness/login-walk-smoke.mjs
 ```
 
-### Script host (adapt rs2b0t scripts without a full bot client)
+Lessons + **nav** suite patterns from rs2b0t:  
+[`docs/research/harness-lessons-rs2b0t-nav.md`](../research/harness-lessons-rs2b0t-nav.md).
 
-In-browser TaskBot-style runner on the harness client (sync `reader`/`actions`):
+#### Dirty kill → title stuck (thrash pin)
+
+Force-killing Playwright leaves the username **in engine World RAM** (~100 ticks / ~60s@600ms). **Not** a bit in the `.sav`.
+
+Bare cold opcode 18 is wrong. On reply 5 (“already logged in”):
+
+| Condition | Path |
+|-----------|------|
+| Last smoke for **this thrash pin** **ended** ≤ **90s** ago | **s1-then-inject steal** (`loginStealGhost`) + wipe |
+| Last end **>90s** ago, or **no** harness-shots for user | **Dirty hold** → **normal** login inject + **same wipe/skip-prep** as steal (`__lc377_resumeSteal`) |
+| `DIRTY_LOGIN_STEAL=0` | Always dirty hold (no steal) |
+
+**Session end clock:** max mtime under `docs/plans/harness-shots/*{username}*` (run dirs like `mm_mmthrash1`, flat png/json). Override window: `RESUME_STEAL_MAX_AGE_MS` (default `90000`; `0`=always steal; `-1`=never).
+
+Steal steps (when allowed):
+
+1. Fail-fast “already logged in”
+2. Donor full login → wait **sceneState ≥ 1**
+3. `softDropStream` → `reconnectLogin(pin)`
+4. **`unequipAll` + `~clearinv`** (wipe pack/gear; keep tutorial/stats/quest)
+5. `mainlandAccount` skips tele island + tutorial setvar + relog on resume
+
+| Path | How |
+|------|-----|
+| **s1 then inject** | Only if shot age ≤90s — `loginStealGhost` + wipe |
+| **Wait hold + normal** | Age >90s / no shots / steal off / steal fail — wipe after inject |
+| **Clean IF** | `logoutSafe` / com 2458 before process exit — best |
+
+```bash
+# after force-kill — no mandatory --wait 65
+SMOKE_MODE=thrash SMOKE_USER=mtnthrash1 node tools/harness/quest-mortton-smoke.mjs
+```
+
+### Script host (in-page TaskBots — not residual driver)
+
+In-browser TaskBot-style runner on the harness client (sync `reader`/`actions`). Panel **lists** registered scripts and **shows** `running` / CLI residual status — it does **not** Start/Stop them. Agents drive residual via monofile smokes; optional soft demos via `script/run.mjs`.
 
 | Path | Role |
 |------|------|
 | `tools/harness/script/browser/api.ts` | Thin Game / Execution / Npcs / Locs / ChatDialog / TaskBot |
 | `tools/harness/script/browser/tutorial/TutorialBot.ts` | Adapted stages from rs2b0t |
-| `tools/harness/script/browser/register.ts` | `globalThis.__lc377.scripts.start('tutorial')` |
+| `tools/harness/script/browser/register.ts` | `globalThis.__lc377.scripts` (list / start / stop — CLI/console only) |
 | `tools/harness/script/run.mjs` | Playwright: login → start script → wait |
+| `tools/harness/ui/panel.ts` | Eyes only: list + running + thrash heartbeat + status |
 
 ```bash
 bun tools/harness/build-client.mjs
+# residual (truth):
+node tools/harness/quest-mortton-smoke.mjs --max-ms 900000
+# optional soft demo script host:
 node tools/harness/script/run.mjs tutorial              # headed by default
-node tools/harness/script/run.mjs tutorial --max-ms 900000
 HEADLESS=1 node tools/harness/script/run.mjs tutorial   # CI only
 ```
 
-Add more scripts by registering factories in `register.ts` (same pattern as rs2b0t script library, no MultiBox/panel required).
+Add more soft scripts by registering factories in `register.ts`. Do **not** reintroduce panel Start/Stop as the residual path — bot-client-first was abandoned.
 
 Open manually: `http://127.0.0.1:81/rs2.html?harness=1` → console should log  
 `[harness] globalThis.__lc377 attached`.
@@ -401,7 +485,7 @@ See **Test-speed cheats** above for policy.
 
 ## What this is not
 
-- Not a second protocol / forged packets.
+- Not a second custom game protocol. Harness **does** forge **real** client packets (`IF_BUTTON`, target spell, OPNPC, …) — that is preferred over cheats for actions under test.
 - Not the full bot **product** (BotHost, MultiBox, panel, nav packs) — that is `vendor/rs2b0t` later.
 - **Is** the place to adapt rs2b0t **scripts** now — `script/browser/**` + `run.mjs` — so we can iterate without waiting on that product.
 - Not authority for “client is 1:1” — only convenience for bang-on loops.

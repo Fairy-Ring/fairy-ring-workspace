@@ -48,8 +48,8 @@
    That is **not** a claim of completeness or perfect authenticity.  
    **Fairy Ring** is the project; **377** is where this workspace stands in the ring *today*.
 
-7. **License (when public).**  
-   Respect upstream licenses on vendored LC-originated trees. Do **not** relicense LC code as original Fairy Ring invention. Workspace docs/harness may be MIT separately.
+7. **License.**  
+   Respect upstream licenses on LC-originated trees under `vendor/`. Do **not** relicense LC code as original Fairy Ring invention. Workspace docs/harness may be MIT separately.
 
 8. **Completeness disclaimer + open contributions.**  
    We **disclaim** that the stack **is** authentic, original, or complete today.  
@@ -68,16 +68,16 @@
 
 ---
 
-## Checklist when going public
+## Public surface checklist (done 2026-08-09)
 
-- [x] Public name **Fairy Ring** locked (2026-08-09); **not** brand-locked to rev 377 only  
-- [x] Drop **LC** / **rs2-*** as *public brand* (technical branch/legacy remotes may lag)  
-- [x] GitHub names: `fairy-ring-workspace` + `FR-{content,engine,client-ts}` (2026-08-09)  
+- [x] Public name **Fairy Ring** locked; **not** brand-locked to rev 377 only  
+- [x] Drop **LC** / **rs2-*** as *public brand* (branch names may still say `rs2-r377`)  
+- [x] GitHub org **Fairy-Ring**: `fairy-ring-workspace` + `FR-{content,engine,client-ts}`; vault private  
 - [x] NOTICE + derivation + AI disclosure  
-- [x] Vendor README/NOTICE brand pass  
+- [x] Vendor README/NOTICE brand pass (no “going public” leftover)  
 - [x] Thin contributor surface + AGENT_BRIEF (Decision **011**)  
-- [ ] GH descriptions: Fairy Ring; rev 377; derived from Lost City; not official LC/Jagex  
-- [ ] Never push to LostCityRS without permission — restate publicly when opening remotes  
+- [x] GH descriptions / org profile: Fairy Ring; rev 377; derived from Lost City; not official LC/Jagex  
+- [x] Never push to LostCityRS without permission — restated on public READMEs
 
 ---
 

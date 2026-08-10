@@ -1,7 +1,7 @@
 # Runbook — vendor layout
 
 **Workspace:** `$RS2_R377_ROOT`  
-**Policy:** Product clones live under `vendor/`. This workspace git tracks process/docs/harness only — not full game trees.
+**Layout:** Product repos are normal git clones under `vendor/`. Workspace git holds process/docs/harness only. Index: root [`vendor/README.md`](../../vendor/README.md).
 
 ---
 
@@ -9,31 +9,27 @@
 
 ```text
 vendor/
-├── engine/        # Engine-TS — game server + pack/unpack tools
-├── content/       # Content — RuneScript, configs, assets
-├── client-ts/     # Pure Client-TS (web) — behavioural oracle is Client-Java 377
-├── client-java/   # Client-Java (desktop) — optional; branch 377
-└── Server/        # LostCityRS/Server shell — optional; not required for smoke
+├── engine/        # Fairy-Ring/FR-engine — server + pack/unpack
+├── content/       # Fairy-Ring/FR-content — RuneScript, configs, maps
+├── client-ts/     # Fairy-Ring/FR-client-ts — pure web client (oracle: Client-Java 377)
+├── client-java/   # optional research — LostCityRS Client-Java branch 377
+└── Server/        # optional research — LostCityRS Server shell (not required for smoke)
 ```
 
-Clone helpers and pins: root `vendor/README.md` · `docs/research/PROVENANCE-UPSTREAM-PINS.md`.
+Pins: `docs/research/PROVENANCE-UPSTREAM-PINS.md`. Typical remotes: `origin` = LostCityRS (push disabled), `private` = Fairy-Ring.
 
 ---
 
-## 2. Per-repo identity (as of 2026-08-03 inventory)
+## 2. Per-repo identity
 
 ### `vendor/engine` — Engine-TS
 
 | Field | Value |
 |-------|--------|
-| Remote | `https://github.com/LostCityRS/Engine-TS.git` |
-| Local branch | **`rs2-r377`** (project work branch) |
-| Tracks | `origin/377-wip` |
-| HEAD | `94fcfa2d2c2fc5812e6d448a5e4a04fd73879fd3` |
-| Last commit | `fix: Full stack errors` (2026-07-09) |
-| Also fetched | `origin/274`, `origin/377-node`, others |
-
-Upstream default branch is **`274`**. README title on this tip: “Lost City - May 2, 2006”.
+| Public remote | [Fairy-Ring/FR-engine](https://github.com/Fairy-Ring/FR-engine) (`private`) |
+| Upstream fetch | `https://github.com/LostCityRS/Engine-TS.git` (`origin`, push disabled) |
+| Working branch | **`rs2-r377`** |
+| Upstream base pin | `94fcfa2d2c2fc5812e6d448a5e4a04fd73879fd3` (`377-wip`) |
 
 **Role:** Runtime (`src/`), pack (`tools/pack`), unpack (`tools/unpack`), network protocol, SQLite/login helpers.
 
@@ -47,12 +43,10 @@ Upstream default branch is **`274`**. README title on this tip: “Lost City - M
 
 | Field | Value |
 |-------|--------|
-| Remote | `https://github.com/LostCityRS/Content.git` |
-| Local branch | **`rs2-r377`** |
-| Tracks | `origin/377-wip` |
-| HEAD | `7d7719693100cc45ff187c12139e5b63b3ab21df` |
-| Last commit | `feat: [377] Drop tables for Pyrefiend, Jelly (#672)` (2026-07-24) |
-| Also fetched | `origin/274` |
+| Public remote | [Fairy-Ring/FR-content](https://github.com/Fairy-Ring/FR-content) (`private`) |
+| Upstream fetch | `https://github.com/LostCityRS/Content.git` (`origin`, push disabled) |
+| Working branch | **`rs2-r377`** |
+| Upstream base pin | `7d7719693100cc45ff187c12139e5b63b3ab21df` (`377-wip`) |
 
 **Role:** Editable game data: `scripts/` (RuneScript + configs), `maps/`, `models/`, `pack/`, audio/sprites/textures.
 
@@ -82,13 +76,11 @@ For rev key `377-wip`, Server would clone:
 | Java client | `377` (`clientBranch`) |
 | Web client | not listed for this rev entry |
 
-**This workspace does not rely on Server’s nested clones.** Engine and content are independent checkouts under `vendor/` on private branch `rs2-r377`. Prefer engine-only path for early smoke:
+**Day-to-day smoke does not use Server’s nested clones.** Engine + content are sibling checkouts on `rs2-r377`:
 
 ```bash
 cd vendor/engine && npm install && npm start
 ```
-
-`server.json` is still written with `"rev": "377"` for clarity if someone runs Server tooling later.
 
 ### `vendor/client-java` — Client-Java
 

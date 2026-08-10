@@ -2,8 +2,11 @@
  * Register in-browser script runner on harness ABI.
  * Called from harness client-entry after adapter install.
  *
- * API shape is a thin stand-in for rs2b0t ScriptRunner (start/stop/list/running)
- * so HarnessPanel and a future full BotPanel share the same host surface.
+ * Soft demos / early e2e only (tutorial, path-abc, TBWT, Horror, Mort'ton mid).
+ * Residual bar §2 thrash and soft-pass monofiles do **not** use this host —
+ * they run as `tools/harness/*-smoke.mjs` (Playwright). Panel does not Start.
+ *
+ * API shape is a thin stand-in for rs2b0t ScriptRunner (start/stop/list/running).
  */
 import TutorialBot from './tutorial/TutorialBot.ts';
 import PathABCBot from './path-abc/PathABCBot.ts';

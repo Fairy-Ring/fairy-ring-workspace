@@ -1,31 +1,26 @@
 #!/usr/bin/env node
 /**
- * Shades of Mort'ton e2e smoke (start diary → mid temple).
+ * Shades of Mort'ton — Playwright residual / mid host.
  *
- * Host prep (not content proofs):
- *   - mainlandAccount + combat/herblore floor
- *   - diary flip to last page → morttonquest = 5 (read_diary)
- *   - brew materials (tarromin, ashes, vials) + combat gear + serum spare
- *   - one tele to Mort'ton (Ulsquire); no mid-quest tele
+ * Two code paths (do not confuse with the panel script picker):
  *
- * Script: scripts.start('quest-mortton') — brew → Razmire → kill 5 (default).
- * Temple (50) only with real ground remains — no give-seed.
+ *   A) Early path (default no MORTTON_FROM): host prep + scripts.start('quest-mortton')
+ *      → in-page QuestBot defs/mortton.ts (diary → brew → kill mid ≤40 / temple start).
+ *      Panel Start can run the same script; residual thrash is NOT that script.
+ *
+ *   B) Flamtaer residual (MORTTON_FROM≥50): **host thrash only** in this monofile
+ *      (courtyard / oil / pyre / Loar). Does not use QuestBot. Bar §2 when residualMode.
  *
  *   WORLD_SPEED_MS=300 node tools/harness/quest-mortton-smoke.mjs   # headed default ≥40
- *   MORTTON_COMPLETE_STAGE=15 node tools/harness/quest-mortton-smoke.mjs
- *   MORTTON_COMPLETE_STAGE=50 …  # needs ground-take remains; will hard-fail if missing
- *   MORTTON_FROM=50 …            # soft temple mid → product Flamtaer first repair ≥55
- *   MORTTON_FROM=50 MORTTON_TO=60 …  # thrash until temple_repaired_p=100 (visible full segments)
- *   MORTTON_FROM=60 MORTTON_TO=65 …  # soft 60 + product light altar + olive oil → sacred oil
- *   MORTTON_FROM=60 MORTTON_TO=85 …  # residual default: one soft entry, e2e under bar §2
+ *   MORTTON_FROM=65 MORTTON_TO=85 …  # residual product thrash under bar §2
  *
- * Residual bar (default when MORTTON_FROM set — highest promise standard):
- *   one soft setvar morttonquest=FROM at thrash start; then only setstat/tele/generic prep.
- *   No mid-path quest/multi setvar; no give sacred oil / remains / quest seeds.
- *   Opt out: MORTTON_SOFT_THRASH=1 (DIRTY thrash only — not residual PASS).
+ * Residual bar (default when MORTTON_FROM set):
+ *   one soft setvar morttonquest=FROM; then only setstat/tele/generic prep.
+ *   No mid-path quest setvar; no give sacred oil / remains.
+ *   Opt out: MORTTON_SOFT_THRASH=1 (DIRTY — not residual PASS).
  *
+ * @see docs/plans/2026-08-09-harness-fork-after-mortton.md
  * @see docs/plans/2026-08-08-promise-cleanup.md
- * @see docs/research/mortton-flamtaer-complete-377.md
  */
 import {
   boot,
@@ -43,6 +38,7 @@ import {
   setStats,
   setWorldSpeed,
   teleTo,
+  thrashPoint,
   waitSceneReady
 } from './lib/harness.mjs';
 import { softRandomTick } from './lib/randomEvents.mjs';
@@ -87,14 +83,26 @@ const ULSQUIRE = { x: 3496, z: 3289, level: 0 };
 /** Funeral pyre sample — m54_51 `0 9 19: temple_pyre` → 3465,3283. Stand adjacent. */
 const FUNERAL_PYRE = { x: 54 * 64 + 9, z: 51 * 64 + 19, level: 0 };
 const FUNERAL_PYRE_STAND = { x: FUNERAL_PYRE.x + 1, z: FUNERAL_PYRE.z, level: 0 };
-/** Loar shadow spawns m54_51 (npc 1240) — sample jm2 tiles for residual hunt. */
+/**
+ * Loar hunt stands (m54_51 npc 1240→1241 shade form).
+ * Live thrash: shadows convert to **Loar Shade** and cluster near Flamtaer
+ * (datapoints 2026-08-09: 9× at ~3500,3312). Field west still valid for wander.
+ * @see docs/research/game-knowledge/anchors-mort-myre.md
+ */
 const SHADE_FIELD_SPAWNS = [
-  { x: 3474, z: 3280, level: 0 }, // 0 18 16
-  { x: 3478, z: 3307, level: 0 }, // 0 22 43
-  { x: 3479, z: 3283, level: 0 }, // 0 23 19
-  { x: 3480, z: 3271, level: 0 }, // 0 24 7
-  { x: 3482, z: 3302, level: 0 }, // 0 26 38
-  { x: 3483, z: 3283, level: 0 } // 0 27 19
+  // Temple-adjacent cluster (where client actually sees Loar Shade)
+  { x: 3500, z: 3312, level: 0 },
+  { x: 3498, z: 3314, level: 0 },
+  { x: 3502, z: 3311, level: 0 },
+  { x: 3496, z: 3308, level: 0 },
+  // West town / field (jm2 1240 samples)
+  { x: 3474, z: 3280, level: 0 },
+  { x: 3480, z: 3271, level: 0 },
+  { x: 3479, z: 3283, level: 0 },
+  { x: 3483, z: 3283, level: 0 },
+  { x: 3482, z: 3302, level: 0 },
+  { x: 3478, z: 3307, level: 0 },
+  { x: 3492, z: 3285, level: 0 }
 ];
 /** Flamtaer wall sample (Broken Wall) — do NOT tele onto; op from inside courtyard. */
 const FLAMTAER_WALL = { x: 54 * 64 + 48, z: 51 * 64 + 51, level: 0 };
@@ -117,17 +125,197 @@ const TEMPLE_BOX = { x0: 3502, z0: 3312, x1: 3510, z1: 3320 };
 /** Geometric centre for “step wall → inside” projection (may equal altar; not a tele). */
 const TEMPLE_CENTER = { x: FLAMTAER_ALTAR.x, z: FLAMTAER_ALTAR.z };
 
+/**
+ * Combat floor for Loar (vislevel 40, HP 38, DEF 26) + multi-aggro field.
+ * Host prep only (bar §2 allows setstat + generic gear). Corpus: steel full + food×20
+ * (`docs/research/game-knowledge/combat-floors-377.md`). c18 stuck 60+ hunt ticks on
+ * steel@60 with only 6–8 lobster and no shield — thrash looked “combat stuck” but was
+ * under-geared for multi-aggro thrash speed.
+ */
 const MORTTON_STATS = {
   herblore: 20,
-  // Practical combat floor — Loar shades + multi aggro (smoke mtnsgr765j died @35)
-  attack: 60,
-  strength: 60,
-  defence: 50,
-  hitpoints: 70,
+  attack: 70,
+  strength: 70,
+  defence: 60,
+  hitpoints: 80,
   prayer: 1,
   crafting: 80,
   firemaking: 40
 };
+
+/**
+ * Generic melee kit for Loar field.
+ * Cooked lobster is **non-stackable** — 20 food = 20 inv slots (c21 FAIL: no plank).
+ * Wear gear first (equip frees 4 slots), then food + mats.
+ */
+const LOAR_GEAR_GIVE = [
+  ['adamant_scimitar', 1],
+  ['adamant_platebody', 1],
+  ['adamant_platelegs', 1],
+  ['adamant_kiteshield', 1]
+];
+/** Food for multi-aggro thrash — non-stack; keep small so mats/tinder fit (28-pack). */
+const LOAR_FOOD_GIVE = [['lobster', 6]];
+const LOAR_EQUIP_NAMES = [
+  'Adamant scimitar',
+  'Adamant platebody',
+  'Adamant platelegs',
+  'Adamant kiteshield'
+];
+
+/**
+ * Flamtaer courtyard multi-aggro is **never** clearable (15–25 Loar respawn/reaggro).
+ * Residual oil remake must **not** try to kill the field.
+ *
+ * Strategy: flee south until `inCombat` drops, then short wall-build windows.
+ * Eat only while fighting; never Attack Loar during rebuild thrash.
+ *
+ * Flee stand: south of temple (out of courtyard multi), still Mort’ton.
+ */
+const TEMPLE_FLEE = { x: 3505, z: 3288 };
+
+/**
+ * @returns {{ action: 'flee-aggro'|'build-window', combat: boolean, ate?: object, loarNear?: number, tile?: object }}
+ */
+async function templeOilAggroGate(page) {
+  return page.evaluate(flee => {
+    const a = globalThis.__lc377?.actions;
+    const r = globalThis.__lc377?.reader;
+    a?.continueDialog?.();
+    a?.dismissModalMessage?.();
+    a?.chatContinue?.();
+    const ate = a?.eatIfNeeded?.('Lobster', 12, { floor: 50, minMissing: 8 }) ?? null;
+    const combat = !!r?.inCombat?.();
+    const me = r?.worldTile?.() || { x: 0, z: 0 };
+    const npcs = r?.npcs?.() ?? [];
+    let loarNear = 0;
+    for (const n of npcs) {
+      const nm = String(n?.name ?? '');
+      const id = n?.id | 0;
+      if (!(/^Loar (Shadow|Shade)$/i.test(nm) || id === 1240 || id === 1241)) continue;
+      const nx = n.tile?.x ?? n.wx ?? n.x;
+      const nz = n.tile?.z ?? n.wz ?? n.z;
+      const d =
+        typeof n.distance === 'number'
+          ? n.distance
+          : nx != null && nz != null
+            ? Math.max(Math.abs(me.x - nx), Math.abs(me.z - nz))
+            : 99;
+      if (d <= 4) loarNear++;
+    }
+    // Scoop remains only when not in combat (free slot later for pyre).
+    if (!combat) {
+      const invLen = (r?.inventory?.() ?? []).length;
+      if (invLen >= 26) a?.heldOp?.('Lobster', 5);
+      const ground = r?.groundItems?.({ maxDist: 3 }) ?? [];
+      const rem = ground.find(g => /loar remains|shade remains/i.test(String(g?.name ?? '')));
+      if (rem && invLen < 27) {
+        if (a?.takeObj) a.takeObj(rem.lx, rem.lz, rem.id, 3);
+        else a?.takeGround?.(String(rem.name), 6);
+      }
+    }
+    if (combat) {
+      // Break multi — walk south; do not Attack (never clears).
+      a?.walkWorld?.(flee.x, flee.z);
+      return {
+        action: 'flee-aggro',
+        combat: true,
+        ate,
+        loarNear,
+        tile: me,
+        flee
+      };
+    }
+    return {
+      action: 'build-window',
+      combat: false,
+      ate,
+      loarNear,
+      tile: me
+    };
+  }, TEMPLE_FLEE);
+}
+
+/**
+ * Equip adamant kit with real settle (c25: 250ms clicks showed Wear but items stayed in inv).
+ * menuAction is one client click — needs a game tick+ at WORLD_SPEED_MS≈300.
+ */
+async function equipLoarKit(page) {
+  const report = await page.evaluate(async names => {
+    const a = globalThis.__lc377?.actions;
+    const r = globalThis.__lc377?.reader;
+    const sleep = ms => new Promise(res => setTimeout(res, ms));
+    const wornNames = () =>
+      (r?.equipment?.() ?? []).map(i => String(i?.name ?? '')).filter(Boolean);
+    const invHas = n =>
+      (r?.inventory?.() ?? []).some(i =>
+        String(i?.name ?? '')
+          .toLowerCase()
+          .includes(String(n).toLowerCase().replace(/^adamant\s+/i, 'adamant '))
+      ) ||
+      (r?.inventory?.() ?? []).some(i =>
+        String(i?.name ?? '')
+          .toLowerCase()
+          .includes(String(n).toLowerCase())
+      );
+    a?.setSideTab?.(3); // inventory
+    await sleep(200);
+    const worn = [];
+    for (const n of names) {
+      // Skip if already worn
+      if (wornNames().some(w => w.toLowerCase().includes(n.toLowerCase().split(' ').pop()))) {
+        worn.push({ n, ok: true, already: true });
+        continue;
+      }
+      if (!invHas(n) && !invHas(n.replace(/^Adamant /i, ''))) {
+        worn.push({ n, ok: false, reason: 'not-in-inv' });
+        continue;
+      }
+      let ok = false;
+      for (let attempt = 0; attempt < 3 && !ok; attempt++) {
+        a?.setSideTab?.(3);
+        await sleep(100);
+        a?.equip?.(n);
+        // ≥2 ticks at 300ms world speed
+        await sleep(700);
+        const w = wornNames();
+        const needle = n.toLowerCase().replace(/^adamant\s+/, '');
+        ok = w.some(x => x.toLowerCase().includes(needle) || x.toLowerCase().includes(n.toLowerCase()));
+      }
+      worn.push({ n, ok, worn: wornNames() });
+    }
+    a?.setSideTab?.(3);
+    return { worn: wornNames(), steps: worn };
+  }, LOAR_EQUIP_NAMES);
+  console.log('[quest-mortton] equipLoarKit', JSON.stringify(report));
+  return report;
+}
+
+/** Give gear → settle → equip (verify worn) → food/mats → re-check equip only if missing. */
+async function seedLoarCombatKit(page, extra = []) {
+  await giveItems(page, [...LOAR_GEAR_GIVE]).catch(() => {});
+  await page.waitForTimeout(500); // inv refresh after give
+  await equipLoarKit(page);
+  await giveItems(page, [...LOAR_FOOD_GIVE, ...extra]).catch(() => {});
+  await page.waitForTimeout(300);
+  // Only re-equip pieces still in inv (don't spam Wear on empty slots)
+  const need = await page.evaluate(names => {
+    const r = globalThis.__lc377?.reader;
+    const worn = (r?.equipment?.() ?? []).map(i => String(i?.name ?? '').toLowerCase());
+    const inv = (r?.inventory?.() ?? []).map(i => String(i?.name ?? '').toLowerCase());
+    return names.filter(n => {
+      const needle = n.toLowerCase();
+      const short = needle.replace(/^adamant\s+/, '');
+      const isWorn = worn.some(w => w.includes(short) || w.includes(needle));
+      const inInv = inv.some(i => i.includes(short) || i.includes(needle));
+      return inInv && !isWorn;
+    });
+  }, LOAR_EQUIP_NAMES);
+  if (need.length) {
+    console.log('[quest-mortton] re-equip still in inv', need);
+    await equipLoarKit(page);
+  }
+}
 
 const browser = await launchBrowser();
 /** @type {import('playwright').Page | null} */
@@ -210,16 +398,13 @@ try {
 
     // Initial kit once. Restock must NOT re-give hammer every tick (hammers don't stack
     // usefully — was filling 28 slots with hammers).
-    await giveItems(page, [
+    // Equip adamant first (frees slots), then food + temple mats (lobster non-stack).
+    await seedLoarCombatKit(page, [
       ['hammer', 1],
-      ['swamppaste', 100],
-      ['limestonebrick', 12],
-      ['woodplank', 12],
-      ['steel_scimitar', 1],
-      ['steel_platebody', 1],
-      ['steel_platelegs', 1],
-      ['lobster', 8]
-    ]).catch(() => {});
+      ['swamppaste', 80],
+      ['limestonebrick', 8],
+      ['woodplank', 8]
+    ]);
 
     const restock = async () => {
       const s = await invSnap();
@@ -229,7 +414,7 @@ try {
       if (s.paste < 20) need.push(['swamppaste', 80]);
       if (s.brick < 4) need.push(['limestonebrick', 8]);
       if (s.plank < 4) need.push(['woodplank', 8]);
-      if (s.lobster < 3) need.push(['lobster', 6]);
+      if (s.lobster < 4) need.push(['lobster', 8]);
       if (!need.length) return s;
       // leave a couple free slots
       if (s.free < 2 && s.plank + s.brick > 6) {
@@ -248,13 +433,6 @@ try {
         `flamtaer kit incomplete (need hammer+plank+limestone brick+swamp paste): ${JSON.stringify(kit.names)}`
       );
     }
-    await page.evaluate(async () => {
-      const a = globalThis.__lc377?.actions;
-      for (const n of ['Steel scimitar', 'Steel platebody', 'Steel platelegs']) {
-        a?.equip?.(n);
-        await new Promise(r => setTimeout(r, 300));
-      }
-    });
 
     // Stand in courtyard (altar), not on wall loc — tele-on-wall is a bad thrash pose.
     // Upstream rs2b0t: walkNear before interact; RandomEvents for genie/MOM/hostiles.
@@ -559,20 +737,73 @@ try {
       console.log(`[quest-mortton] oil soft stage after setvar=${stage} residual=${residualMode}`);
       if (Number(stage) < 60) fail(`oil soft stage failed got ${stage} want≥60`);
 
-      // olive oil = shopable generic; mats for product repair without reseed
+      // c23: rebuild left free=0 → tinder never landed. c27: ~clearinv does NOT unequip —
+      // re-give adamant stacked on still-worn set (equip said already, inv still held copies).
+      await page.evaluate(() => {
+        globalThis.__lc377?.actions?.unequipAll?.(12);
+      });
+      await page.waitForTimeout(400);
+      await cheatQuiet(page, '~clearinv', 500);
+      await giveItems(page, [...LOAR_GEAR_GIVE]).catch(() => {});
+      await page.waitForTimeout(400);
+      await equipLoarKit(page);
+      // Mats first (broken-altar upgrade needs resource pool on wall oploc), then food/oil.
       await giveItems(page, [
-        ['tinderbox', 1],
-        ['oliveoil4', 4],
         ['hammer', 1],
         ['swamppaste', 40],
-        ['limestonebrick', 8],
-        ['woodplank', 8],
-        ['logs', 4],
-        ['lobster', 8],
-        ['steel_scimitar', 1],
-        ['steel_platebody', 1],
-        ['steel_platelegs', 1]
+        ['limestonebrick', 6],
+        ['woodplank', 6],
+        ['tinderbox', 1],
+        ['oliveoil4', 3],
+        ['lobster', 6]
       ]).catch(() => {});
+      await equipLoarKit(page);
+      let oilKit = await page.evaluate(() => {
+        const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+        const n = i => String(i?.name ?? '');
+        return {
+          tinder: inv.some(i => /tinderbox/i.test(n(i))),
+          olive: inv.some(i => /olive oil/i.test(n(i))),
+          hammer: inv.some(i => /hammer/i.test(n(i))),
+          plank: inv.filter(i => /plank/i.test(n(i))).length,
+          brick: inv.filter(i => /brick/i.test(n(i))).length,
+          paste: inv.some(i => /swamp paste/i.test(n(i))),
+          free: 28 - inv.length,
+          names: inv.map(i => i?.name).filter(Boolean)
+        };
+      });
+      console.log('[quest-mortton] oil kit', JSON.stringify(oilKit));
+      if (!oilKit.tinder || !oilKit.olive || !oilKit.hammer || oilKit.plank < 1 || oilKit.brick < 1) {
+        await giveItems(page, [
+          ['tinderbox', 1],
+          ['oliveoil4', 2],
+          ['hammer', 1],
+          ['woodplank', 4],
+          ['limestonebrick', 4],
+          ['swamppaste', 20]
+        ]).catch(() => {});
+        oilKit = await page.evaluate(() => {
+          const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+          const n = i => String(i?.name ?? '');
+          return {
+            tinder: inv.some(i => /tinderbox/i.test(n(i))),
+            olive: inv.some(i => /olive oil/i.test(n(i))),
+            hammer: inv.some(i => /hammer/i.test(n(i))),
+            plank: inv.filter(i => /plank/i.test(n(i))).length,
+            brick: inv.filter(i => /brick/i.test(n(i))).length,
+            paste: inv.some(i => /swamp paste/i.test(n(i))),
+            free: 28 - inv.length,
+            names: inv.map(i => i?.name).filter(Boolean)
+          };
+        });
+        console.log('[quest-mortton] oil kit retry', JSON.stringify(oilKit));
+      }
+      if (!oilKit.tinder) fail(`oil kit missing tinderbox: ${JSON.stringify(oilKit.names)}`);
+      if (oilKit.plank < 1 || oilKit.brick < 1) {
+        fail(
+          `oil kit missing wall mats (broken altar upgrade needs plank+brick+paste): ${JSON.stringify(oilKit)}`
+        );
+      }
 
       console.log('[quest-mortton] oil path tele courtyard', FLAMTAER_COURTYARD);
       if (!(await teleTo(page, FLAMTAER_COURTYARD, 2, 30_000))) fail('tele Flamtaer courtyard (oil) failed');
@@ -627,19 +858,24 @@ try {
           }
         }
 
-        // Product: light/pour need sanctity_p≥10. Prefer reinforce before light spam.
-        // Occasional residual low-sanc Light capture (mesbox proof) still allowed every 20 ticks.
+        // Flamtaer two layers (product flamtaer_temple.rs2):
+        //   • Wall segs / flaming altar = **world locs** (shared; prior thrash leaves walls up).
+        //   • %temple_sanctity / _p = **player varp** (new account starts 0; drains on timer).
+        // Light: sanctity_p≥10 (raw≥300). Olive→sacred oil: raw≥300 (10% mes). Serum: raw≥600 (20%).
+        // Thrash uses **20% / raw≥600 before pour** so post-light drain + multi-dose don't bounce.
         const sancRawNow = Number(
           (await getServerVarQuiet(page, 'temple_sanctity').catch(() => 0)) ?? 0
         );
         const sancNow = Number(
           (await getServerVarQuiet(page, 'temple_sanctity_p').catch(() => 0)) ?? 0
         );
-        const lowSanc = sancNow < 10 || sancRawNow < 300;
-        const captureMesbox = residualMode && lowSanc && oilTicks % 20 === 5;
+        const needSancLight = sancNow < 10 || sancRawNow < 300;
+        const needSancPour = sancNow < 20 || sancRawNow < 600;
+        const lowSanc = needSancPour; // thrash until pour-ready
+        const captureMesbox = residualMode && needSancLight && oilTicks % 20 === 5;
 
         const step = await page.evaluate(
-          async ({ center, residual, captureMesbox: cap, lowSanc: needSanc }) => {
+          async ({ center, residual, captureMesbox: cap, needSancLight, needSancPour }) => {
             const a = globalThis.__lc377?.actions;
             const r = globalThis.__lc377?.reader;
             // Soft thrash: always clear. Residual mesbox capture: leave chat open.
@@ -666,11 +902,17 @@ try {
                 /wall/i.test(String(l?.name ?? '')) &&
                 (l.ops || []).some(o => /repair|reinforce/i.test(String(o ?? '')))
             );
+            // Broken wall Repair first when altar broken; Temple reinforce is sanc-only.
             const wall =
+              walls.find(
+                l =>
+                  /broken/i.test(String(l?.name ?? '')) &&
+                  (l.ops || []).some(o => /repair/i.test(String(o ?? '')))
+              ) ||
+              walls.find(l => (l.ops || []).some(o => /repair/i.test(String(o ?? '')))) ||
               walls.find(l =>
                 (l.ops || []).some(o => /reinforce/i.test(String(o ?? '')))
               ) ||
-              walls.find(l => /broken/i.test(String(l?.name ?? ''))) ||
               walls[0] ||
               null;
             const walkToWall = w => {
@@ -689,19 +931,39 @@ try {
               return false;
             };
 
-            // Residual: broken altar → wall first (product upgrades on wall oploc when repaired_p=100)
-            if (residual && broken && wall && !flaming) {
-              if (walkToWall(wall)) {
-                return { action: 'walk-wall-broken-altar', lit: false, broken: true };
+            // Residual: broken altar upgrades via wall build. Prefer Repair on Broken segs.
+            if (residual && broken && !flaming) {
+              const w = wall;
+              if (!w) {
+                a?.opLocAt?.(broken.wx ?? broken.x, broken.wz ?? broken.z, 'repair') ||
+                  a?.opLoc?.(broken.name, 'repair');
+                return { action: 'fix-broken-altar', lit: false, broken: true };
               }
-              a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, 'reinforce') ||
-                a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, 'repair') ||
-                a?.opLoc?.(wall.name, 'reinforce');
-              return { action: 'reinforce-broken-altar', lit: false, broken: true, name: wall.name };
+              if (walkToWall(w)) {
+                return {
+                  action: 'walk-wall-broken-altar',
+                  lit: false,
+                  broken: true,
+                  name: w.name
+                };
+              }
+              const ops = (w.ops || []).map(o => String(o ?? ''));
+              const op =
+                ops.find(o => /repair/i.test(o)) ||
+                ops.find(o => /reinforce/i.test(o)) ||
+                'repair';
+              a?.opLocAt?.(w.wx ?? w.x, w.wz ?? w.z, op) || a?.opLoc?.(w.name, op);
+              return {
+                action: 'wall-for-broken-altar',
+                lit: false,
+                broken: true,
+                name: w.name,
+                op
+              };
             }
 
-            // Low sanctity: reinforce first (except rare captureMesbox Light tick)
-            if (needSanc && wall && !cap) {
+            // Personal sanc: reinforce until pour-ready (20%/600). Walls may already be world-up.
+            if (needSancPour && wall && !cap) {
               if (walkToWall(wall)) {
                 return { action: 'walk-wall-sanc', lit: false, name: wall.name };
               }
@@ -715,8 +977,8 @@ try {
               return { action: 'reinforce-sanc', lit: false, name: wall.name, op };
             }
 
-            // 1) Lit → pour olive oil (only when sanc ok, or soft thrash)
-            if (flaming && !needSanc) {
+            // 1) Lit → pour olive only when pour-ready
+            if (flaming && !needSancPour) {
               const wx = flaming.wx ?? flaming.x;
               const wz = flaming.wz ?? flaming.z;
               const sx = wx <= center.x ? wx - 1 : wx + 1;
@@ -725,12 +987,29 @@ try {
                 a?.walkWorld?.(sx, sz);
                 return { action: 'walk-altar', lit: true, name: flaming.name };
               }
-              const ok = a?.useHeldOnLoc?.('Olive oil', flaming.name || 'Flaming Fire altar', 14);
+              const inv = r?.inventory?.() ?? [];
+              const olive = inv.find(i => /olive oil/i.test(String(i?.name ?? '')));
+              const tinder = inv.find(i => /tinderbox/i.test(String(i?.name ?? '')));
+              if (!olive) {
+                return { action: 'need-olive', lit: true, hasTinder: !!tinder };
+              }
+              const ok = a?.useHeldOnLoc?.(
+                { id: olive.id, slot: olive.slot, comId: olive.comId },
+                {
+                  typecode: flaming.typecode | 0,
+                  lx: flaming.lx | 0,
+                  lz: flaming.lz | 0,
+                  x: flaming.x ?? wx,
+                  z: flaming.z ?? wz,
+                  name: flaming.name
+                },
+                14
+              ) || a?.useHeldOnLoc?.(olive.name, flaming.name || 'Flaming Fire altar', 14);
               return { action: ok ? 'oil' : 'oil-fail', lit: true, name: flaming.name };
             }
 
-            // 2) Unlit repaired altar → Light (after 10% sanc, or capture tick)
-            if (nofire && (!needSanc || cap)) {
+            // 2) Light after 10% (product gate) — still reinforce to 20% before pour
+            if (nofire && (!needSancLight || cap)) {
               const wx = nofire.wx ?? nofire.x;
               const wz = nofire.wz ?? nofire.z;
               const sx = wx <= center.x ? wx - 1 : wx + 1;
@@ -738,7 +1017,23 @@ try {
                 a?.walkWorld?.(sx, wz);
                 return { action: 'walk-nofire', lit: false, name: nofire.name };
               }
-              a?.useHeldOnLoc?.('Tinderbox', nofire.name || 'Fire altar', 14);
+              const inv = r?.inventory?.() ?? [];
+              const tinder = inv.find(i => /tinderbox/i.test(String(i?.name ?? '')));
+              if (!tinder) {
+                return { action: 'need-tinder', lit: false, name: nofire.name };
+              }
+              a?.useHeldOnLoc?.(
+                { id: tinder.id, slot: tinder.slot, comId: tinder.comId },
+                {
+                  typecode: nofire.typecode | 0,
+                  lx: nofire.lx | 0,
+                  lz: nofire.lz | 0,
+                  x: nofire.x ?? wx,
+                  z: nofire.z ?? wz,
+                  name: nofire.name
+                },
+                14
+              ) || a?.useHeldOnLoc?.(tinder.name, nofire.name || 'Fire altar', 14);
               a?.opLocAt?.(wx, wz, 'light') || a?.opLoc?.('Fire altar', 'light');
               return { action: 'light', lit: false, name: nofire.name, captureMesbox: !!cap };
             }
@@ -757,7 +1052,8 @@ try {
             return {
               action: 'idle',
               lit: false,
-              needSanc,
+              needSancLight,
+              needSancPour,
               names: locs.map(l => l?.name).filter(Boolean).slice(0, 12)
             };
           },
@@ -765,9 +1061,33 @@ try {
             center: TEMPLE_CENTER,
             residual: residualMode,
             captureMesbox,
-            lowSanc
+            needSancLight,
+            needSancPour
           }
         );
+
+        // Multi-tick wall oploc (p_oploc 3) — one click per thrash without settle never upgrades altar
+        if (
+          residualMode &&
+          /wall-for-broken|reinforce-broken|walk-wall-broken/.test(String(step?.action ?? ''))
+        ) {
+          await page.waitForTimeout(1100);
+        }
+        if (residualMode && oilTicks % 15 === 0) {
+          const rp = await getServerVarQuiet(page, 'temple_repaired_p').catch(() => null);
+          const alts = await altarSnap();
+          console.log(
+            `[quest-mortton] oil diag t=${oilTicks} repaired_p=${rp} sanc=${sancRawNow}/${sancNow} step=${step?.action} altars=${JSON.stringify(alts)}`
+          );
+          if (
+            oilTicks >= 90 &&
+            alts.some(a => /broken fire altar/i.test(String(a?.name ?? '')))
+          ) {
+            fail(
+              `RESIDUAL broken Fire altar stuck ${oilTicks} ticks (sanc=${sancNow}% repaired_p=${rp}; need wall oploc with mats + repaired_p=100 to upgrade). last=${JSON.stringify(step)}`
+            );
+          }
+        }
 
         // Residual: settle after low-sanc Light and log chat IF text (sanctity mesbox proof)
         if (captureMesbox && step?.action === 'light') {
@@ -873,23 +1193,15 @@ try {
         // Temple thrash fills 28 slots — ~clearinv (host prep) then generic kit only.
         // Do NOT re-give sacred oil: product re-make with olive at temple if wiped.
         await cheatQuiet(page, '~clearinv', 500);
-        await giveItems(page, [
-          ['logs', 8],
+        await seedLoarCombatKit(page, [
+          ['logs', 6],
           ['tinderbox', 1],
-          ['oliveoil4', 4],
-          // remake oil at temple (product walls/altar — no soft reseed)
+          ['oliveoil4', 3],
           ['hammer', 1],
-          ['swamppaste', 40],
-          ['limestonebrick', 8],
-          ['woodplank', 8],
-          ['tarromin', 3],
-          ['ashes', 3],
-          ['vial_water', 3],
-          ['lobster', 6],
-          ['steel_scimitar', 1],
-          ['steel_platebody', 1],
-          ['steel_platelegs', 1]
-        ]).catch(() => {});
+          ['swamppaste', 30],
+          ['limestonebrick', 4],
+          ['woodplank', 4]
+        ]);
         const invCheck = await page.evaluate(() => {
           const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
           return {
@@ -930,8 +1242,94 @@ try {
        * First oil thrash took ~210 ticks; cleanup7 failed at 100 on broken-only spam.
        */
       let remakeOilTicks = 0;
+      /** Consecutive flee ticks while temple oil remake blocked by multi-aggro. */
+      let templeCombatStreak = 0;
+      /** Last sanc/repaired_p snapshot for stall detect (not tick-only fail-fast). */
+      let lastTempleProgressKey = '';
+      let lastTempleProgressTick = 0;
       /** @type {{ name: string, wx: number, wz: number } | null} */
       let stickShade = null;
+      /** Rate-limit residual teles — patient: walk first, tele only when truly far/stuck. */
+      let lastResidualTeleAt = 0;
+      let emptyLoarStreak = 0;
+      /** Min ms between residual teleTo calls (scene rebuild spam feels like teleport thrash). */
+      const RESIDUAL_TELE_COOLDOWN_MS = Number(process.env.RESIDUAL_TELE_COOLDOWN_MS) || 12_000;
+      /**
+       * Walk if within walkRadius; tele only if farther AND cooldown elapsed (or force).
+       * Prefer staying put and letting combat / altar thrash finish.
+       */
+      const residualGo = async (dest, { walkRadius = 4, teleRadius = 4, force = false, label = 'go' } = {}) => {
+        const tile = await page.evaluate(() => globalThis.__lc377?.worldTile?.());
+        const d =
+          tile && dest
+            ? Math.max(Math.abs(tile.x - dest.x), Math.abs(tile.z - dest.z))
+            : 999;
+        if (d <= walkRadius) return { ok: true, how: 'here', d };
+        const now = Date.now();
+        const canTele =
+          force ||
+          (d > 18 && now - lastResidualTeleAt >= RESIDUAL_TELE_COOLDOWN_MS);
+        if (!canTele) {
+          await page.evaluate(({ x, z }) => {
+            globalThis.__lc377?.actions?.walkWorld?.(x, z);
+          }, { x: dest.x, z: dest.z });
+          await page.waitForTimeout(700);
+          return { ok: true, how: 'walk', d };
+        }
+        lastResidualTeleAt = now;
+        const ok = await teleTo(page, dest, teleRadius, 20_000);
+        if (ok) await waitSceneReady(page, 10_000);
+        console.log(`[quest-mortton] residual ${label} d=${d} tele=${ok} (patient)`);
+        return { ok, how: ok ? 'tele' : 'tele-fail', d };
+      };
+      /**
+       * After remains land on pyre, refuse Loar hunt/tele for N place ticks so the
+       * 49t clear_pyre window is not burned (c14: remains-on-pyre → immediate shade tele).
+       */
+      let pyreWindowSticky = 0;
+      /**
+       * Product stage 75 means logs were accepted even if client typecode still shows base
+       * for a few ticks (c17: logs-on → stage 75 → still 4093 → need-pyre remake loop).
+       * Count down place ticks; only remake after this expires while still base.
+       */
+      let logsWindowExpect = 0;
+      /** Peek funeral pyre loc stage (4093 base / 4094–99 logs / 4100–05 bones). */
+      const peekPyreLoc = async () =>
+        page.evaluate(({ wx, wz }) => {
+          const r = globalThis.__lc377?.reader;
+          let pyre = typeof r?.locAt === 'function' ? r.locAt(wx, wz) : null;
+          if (!pyre) {
+            const locs = r?.locs?.({ maxDist: 16 }) ?? [];
+            pyre =
+              locs.find(
+                l =>
+                  /funeral pyre|pyre/i.test(String(l?.name ?? '')) &&
+                  (l.x === wx || l.wx === wx) &&
+                  (l.z === wz || l.wz === wz)
+              ) || locs.find(l => /funeral pyre/i.test(String(l?.name ?? '')));
+          }
+          const typecode = pyre?.typecode != null ? pyre.typecode | 0 : 0;
+          const locTypeId = typecode ? (typecode >> 14) & 0xffff : 0;
+          const isBase = locTypeId === 4093 || locTypeId === 0;
+          const isLogs =
+            (locTypeId >= 4094 && locTypeId <= 4099) || locTypeId === 9006 || locTypeId === 9007;
+          const isBones =
+            (locTypeId >= 4100 && locTypeId <= 4105) || locTypeId === 9008 || locTypeId === 9009;
+          const inv = r?.inventory?.() ?? [];
+          return {
+            locTypeId,
+            isBase,
+            isLogs,
+            isBones,
+            name: pyre?.name ?? null,
+            ops: pyre?.ops || [],
+            hasRemains: inv.some(i =>
+              /loar.*remains|shade.*remains|remains/i.test(String(i?.name ?? ''))
+            ),
+            hasPyreLogs: inv.some(i => /pyre logs/i.test(String(i?.name ?? ''))),
+            hasTinder: inv.some(i => /tinderbox/i.test(String(i?.name ?? '')))
+          };
+        }, { wx: FUNERAL_PYRE.x, wz: FUNERAL_PYRE.z });
       while (Date.now() < pyreDeadline && Number(stage) < Math.min(85, target)) {
         pyreTicks++;
         // Soft random steals the 49t pyre_loc window during place/light — only when hunting
@@ -1072,20 +1470,12 @@ try {
                 invPre
               );
             }
-            // Soft re-tele only when outside temple box (same as first oil thrash)
-            const tileRemake = await page.evaluate(() => globalThis.__lc377?.worldTile?.());
-            const outsideTemple =
-              !tileRemake ||
-              tileRemake.x < TEMPLE_BOX.x0 ||
-              tileRemake.x > TEMPLE_BOX.x1 ||
-              tileRemake.z < TEMPLE_BOX.z0 ||
-              tileRemake.z > TEMPLE_BOX.z1;
-            if (outsideTemple) {
-              if (!(await teleTo(page, FLAMTAER_COURTYARD, 4, 20_000))) {
-                await teleTo(page, FLAMTAER_COURTYARD, 6, 15_000).catch(() => {});
-              }
-              await waitSceneReady(page, 12_000);
-            }
+            // Patient: only approach temple when outside; walk preferred (no TP thrash).
+            await residualGo(FLAMTAER_COURTYARD, {
+              walkRadius: 4,
+              force: remakeOilTicks === 1,
+              label: 'temple-s65-remake'
+            });
             // Ensure olive + light mats if missing (generic prep only)
             if (!invPre.olive) {
               await giveItems(page, [['oliveoil4', 2]]).catch(() => {});
@@ -1141,13 +1531,20 @@ try {
                   /wall/i.test(String(l?.name ?? '')) &&
                   (l.ops || []).some(o => /repair|reinforce/i.test(String(o ?? '')))
               );
-              const wall =
+              // Prefer Broken wall Repair when fixing broken altar; Temple reinforce is sanc-only.
+              const wallBroken =
+                walls.find(
+                  l =>
+                    /broken/i.test(String(l?.name ?? '')) &&
+                    (l.ops || []).some(o => /repair|reinforce/i.test(String(o ?? '')))
+                ) || null;
+              const wallRepair =
+                walls.find(l => (l.ops || []).some(o => /repair/i.test(String(o ?? '')))) || null;
+              const wallReinforce =
                 walls.find(l =>
                   (l.ops || []).some(o => /reinforce/i.test(String(o ?? '')))
-                ) ||
-                walls.find(l => /broken/i.test(String(l?.name ?? ''))) ||
-                walls[0] ||
-                null;
+                ) || null;
+              const wall = wallBroken || wallRepair || wallReinforce || walls[0] || null;
               const me = r?.worldTile?.();
               const walkToWall = w => {
                 const wx = w.wx ?? w.x;
@@ -1158,13 +1555,15 @@ try {
                 else if (wx > center.x) sx = wx - 1;
                 if (wz < center.z) sz = wz + 1;
                 else if (wz > center.z) sz = wz - 1;
+                // cheb ≤1 → op (do not walk forever on blocked stand)
                 if (me && Math.max(Math.abs(me.x - sx), Math.abs(me.z - sz)) > 1) {
                   a?.walkWorld?.(sx, sz);
                   return true;
                 }
                 return false;
               };
-              const needSanc = sancP < 10 || sancRaw < 300;
+              // Light 10%/300; pour thrash 20%/600 (product olive is 10%; serum 20%)
+              const needSanc = sancP < 20 || sancRaw < 600;
 
               // 0) Sanctity gate first — never light-spam mesbox at 0% (cleanup12 soft-65)
               if (needSanc && wall) {
@@ -1244,19 +1643,36 @@ try {
                 return { action: 'light-nofire', name: nofire.name };
               }
 
-              // 3) Broken altar → wall reinforce first (product upgrades when repaired_p high)
-              if (broken && wall && !flaming) {
-                if (walkToWall(wall)) {
-                  return { action: 'walk-wall-broken-altar', wall: wall.name, broken: broken.name };
+              // 3) Broken altar + sanc ok → Repair Broken walls first, then reinforce, then altar op.
+              // Temple wall reinforce alone leaves altar Broken (parked residual hang).
+              if (broken && !flaming) {
+                const w = wallBroken || wallRepair || wall;
+                if (w) {
+                  if (walkToWall(w)) {
+                    return {
+                      action: 'walk-wall-broken-altar',
+                      wall: w.name,
+                      broken: broken.name
+                    };
+                  }
+                  const ops = (w.ops || []).map(o => String(o ?? ''));
+                  const op =
+                    ops.find(o => /repair/i.test(o)) ||
+                    ops.find(o => /reinforce/i.test(o)) ||
+                    'repair';
+                  a?.opLocAt?.(w.wx ?? w.x, w.wz ?? w.z, op) || a?.opLoc?.(w.name, op);
+                  return {
+                    action: 'wall-for-broken-altar',
+                    wall: w.name,
+                    op,
+                    broken: broken.name
+                  };
                 }
-                a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, 'reinforce') ||
-                  a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, 'repair') ||
-                  a?.opLoc?.(wall.name, 'reinforce');
-                return {
-                  action: 'reinforce-broken-altar',
-                  wall: wall.name,
-                  broken: broken.name
-                };
+                // No wall ops — try product repair/build on broken altar loc
+                a?.opLocAt?.(broken.wx ?? broken.x, broken.wz ?? broken.z, 'repair') ||
+                  a?.opLocAt?.(broken.wx ?? broken.x, broken.wz ?? broken.z, 'build') ||
+                  a?.opLoc?.(broken.name, 'repair');
+                return { action: 'fix-broken-altar', broken: broken.name };
               }
 
               // 4) Walls for sanctity / upgrade even when no broken loc yet
@@ -1268,14 +1684,6 @@ try {
                   a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, 'reinforce') ||
                   a?.opLoc?.(wall.name, 'repair');
                 return { action: 'reinforce', wall: wall.name, broken: broken?.name ?? null };
-              }
-
-              // 5) Broken with no wall ops — try repair broken directly
-              if (broken && !flaming) {
-                a?.opLocAt?.(broken.wx ?? broken.x, broken.wz ?? broken.z, 'repair') ||
-                  a?.opLocAt?.(broken.wx ?? broken.x, broken.wz ?? broken.z, 'build') ||
-                  a?.opLoc?.(broken.name, 'repair');
-                return { action: 'fix-broken-altar', broken: broken.name, wall: wall?.name ?? null };
               }
 
               return {
@@ -1355,8 +1763,13 @@ try {
               chat
             };
           });
-          if (pyreTicks % 8 === 0) {
-            console.log(`[quest-mortton] pyre tick=${pyreTicks} stage=${stage} step=make-pyre-logs`, made);
+          if (pyreTicks % 4 === 0) {
+            await thrashPoint(page, 'mortton-pyre-logs', {
+              stage: Number(stage),
+              t: pyreTicks,
+              phase: 'make-pyre-logs',
+              made
+            });
           }
           if (pyreTicks >= 40 && !made?.hasPyre && !made?.already && Number(stage) < 70) {
             fail(
@@ -1370,12 +1783,486 @@ try {
 
         // 70–79: place logs, remains, light
         if (s >= 70 && s < 80) {
+          // Residual gate (resume wipe leaves stage 75 without oil/pyre logs):
+          // 1) stay at temple until sacred oil + pyre logs exist
+          // 2) then hunt Loar (often near temple — not empty west town)
+          // 3) only then walk pyre for place/light
+          // Never bounce temple↔pyre while remaking (looks like "no shades + running").
+          if (residualMode) {
+            const invGate = await page.evaluate(() => {
+              const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+              const names = inv.map(i => i?.name).filter(Boolean);
+              return {
+                free: 28 - inv.length,
+                oil: names.some(n => /sacred oil/i.test(n)),
+                pyre: names.some(n => /pyre logs/i.test(n)),
+                olive: names.some(n => /olive oil/i.test(n)),
+                logs: names.some(n => /^logs$/i.test(n)),
+                remains: names.some(n => /remain/i.test(n)),
+                names
+              };
+            });
+
+            // --- A) Need sacred oil: temple only (no pyre walk) ---
+            if (!invGate.pyre && !invGate.oil) {
+              remakeOilTicks++;
+              if (remakeOilTicks % 8 === 1) {
+                console.log(
+                  `[quest-mortton] residual: patient temple oil remake t=${remakeOilTicks}`,
+                  invGate
+                );
+              }
+              if (!invGate.olive || !invGate.logs) {
+                await giveItems(page, [
+                  ['logs', 4],
+                  ['oliveoil4', 2],
+                  ['tinderbox', 1]
+                ]).catch(() => {});
+              }
+              // Top off food + wall mats mid-rebuild (resource pool drains).
+              if (remakeOilTicks % 12 === 5) {
+                const kit = await page.evaluate(() => {
+                  const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+                  const n = s =>
+                    inv.filter(i => new RegExp(s, 'i').test(String(i?.name ?? ''))).length;
+                  return {
+                    food: n('lobster'),
+                    plank: n('plank'),
+                    brick: n('limestone'),
+                    paste: n('swamp paste')
+                  };
+                });
+                const top = [];
+                if (kit.food < 3) top.push(['lobster', 6]);
+                if (kit.plank < 2) top.push(['plank', 6]);
+                if (kit.brick < 2) top.push(['limestonebrick', 6]);
+                if (kit.paste < 5) top.push(['swamppaste', 20]);
+                if (top.length) await giveItems(page, top).catch(() => {});
+              }
+              // Never kill-all Loar (field never clears). Flee multi first —
+              // do NOT residualGo(courtyard) while in combat (walks into swarm).
+              const aggroGate = await templeOilAggroGate(page);
+              if (aggroGate.action === 'flee-aggro') {
+                templeCombatStreak = (templeCombatStreak | 0) + 1;
+                if (remakeOilTicks % 4 === 0 || templeCombatStreak <= 2) {
+                  console.log(
+                    `[quest-mortton] residual temple flee-aggro t=${remakeOilTicks} streak=${templeCombatStreak}`,
+                    aggroGate
+                  );
+                }
+                // Soft tele south if walk stuck in courtyard multi for many ticks.
+                if (templeCombatStreak % 6 === 0) {
+                  await residualGo(TEMPLE_FLEE, {
+                    walkRadius: 2,
+                    force: true,
+                    label: 'flee-loar-south'
+                  });
+                }
+                if (templeCombatStreak >= 100) {
+                  fail(
+                    `FAIL-FAST: temple oil remake stuck fleeing multi (no build window) t=${remakeOilTicks} streak=${templeCombatStreak} last=${JSON.stringify(aggroGate)}`
+                  );
+                }
+                await thrashPoint(page, 'mortton-temple-oil', {
+                  stage: Number(stage),
+                  t: remakeOilTicks,
+                  phase: 'flee-aggro',
+                  aggroGate,
+                  invGate
+                });
+                await page.waitForTimeout(500);
+                continue;
+              }
+              templeCombatStreak = 0;
+
+              // Build window: only now enter courtyard for wall sticky.
+              await residualGo(FLAMTAER_COURTYARD, {
+                walkRadius: 4,
+                force: remakeOilTicks <= 2,
+                label: 'temple-oil-only'
+              });
+              // Re-check: re-aggro while walking in → flee next tick, don't wall spam.
+              const recheck = await templeOilAggroGate(page);
+              if (recheck.action === 'flee-aggro') {
+                templeCombatStreak = 1;
+                await page.waitForTimeout(400);
+                continue;
+              }
+
+              const sancR = Number(
+                (await getServerVarQuiet(page, 'temple_sanctity').catch(() => 0)) ?? 0
+              );
+              const sancPR = Number(
+                (await getServerVarQuiet(page, 'temple_sanctity_p').catch(() => 0)) ?? 0
+              );
+              // Same product thrash as s<70 remake (opLocAt / useHeldOnLoc snaps) — not dead locOp.
+              const pour = await page.evaluate(
+                async ({ altarWx, altarWz, center, sancP, sancRaw }) => {
+                  const a = globalThis.__lc377?.actions;
+                  const r = globalThis.__lc377?.reader;
+                  a?.continueDialog?.();
+                  a?.dismissModalMessage?.();
+                  a?.chatContinue?.();
+                  if ((r?.chatOptions?.() ?? []).length) a?.chooseOption?.();
+                  a?.setSideTab?.(3);
+                  const locs = r?.locs?.({ maxDist: 16 }) ?? [];
+                  const snap = l =>
+                    l && l.typecode != null
+                      ? {
+                          typecode: l.typecode | 0,
+                          lx: l.lx | 0,
+                          lz: l.lz | 0,
+                          x: l.x,
+                          z: l.z,
+                          name: l.name
+                        }
+                      : null;
+                  const isFlaming = n =>
+                    /flaming/i.test(String(n ?? '')) && /altar/i.test(String(n ?? ''));
+                  let flaming = locs.find(l => isFlaming(l?.name));
+                  const atTile = r?.locAt?.(altarWx, altarWz);
+                  if (!flaming && atTile && isFlaming(atTile.name)) flaming = atTile;
+                  const nofire =
+                    locs.find(
+                      l =>
+                        /^fire altar$/i.test(String(l?.name ?? '')) &&
+                        !/broken|flaming/i.test(String(l?.name ?? ''))
+                    ) ||
+                    (atTile &&
+                    /^fire altar$/i.test(String(atTile.name ?? '')) &&
+                    !/broken|flaming/i.test(String(atTile.name ?? ''))
+                      ? atTile
+                      : null);
+                  const broken =
+                    locs.find(l => /broken fire altar/i.test(String(l?.name ?? ''))) ||
+                    (atTile && /broken fire altar/i.test(String(atTile.name ?? ''))
+                      ? atTile
+                      : null);
+                  const inv = r?.inventory?.() ?? [];
+                  const oil = inv.find(i => /olive oil/i.test(String(i?.name ?? '')));
+                  const tinder = inv.find(i => /tinderbox/i.test(String(i?.name ?? '')));
+                  const walls = locs.filter(
+                    l =>
+                      /wall/i.test(String(l?.name ?? '')) &&
+                      (l.ops || []).some(o => /repair|reinforce/i.test(String(o ?? '')))
+                  );
+                  const wall =
+                    walls.find(l =>
+                      (l.ops || []).some(o => /reinforce/i.test(String(o ?? '')))
+                    ) ||
+                    walls.find(l => /broken/i.test(String(l?.name ?? ''))) ||
+                    walls[0] ||
+                    null;
+                  const me = r?.worldTile?.();
+                  const anim = r?.selfAnim?.() ?? -1;
+                  // Sticky: only walk when far (cheb>2). >1 caused walk-spam vs sticky p_oploc.
+                  const walkToWall = w => {
+                    const wx = w.wx ?? w.x;
+                    const wz = w.wz ?? w.z;
+                    let sx = wx;
+                    let sz = wz;
+                    if (wx < center.x) sx = wx + 1;
+                    else if (wx > center.x) sx = wx - 1;
+                    if (wz < center.z) sz = wz + 1;
+                    else if (wz > center.z) sz = wz - 1;
+                    if (me && Math.max(Math.abs(me.x - sx), Math.abs(me.z - sz)) > 2) {
+                      a?.walkWorld?.(sx, sz);
+                      return true;
+                    }
+                    return false;
+                  };
+                  // Nearest Repair wall (not walls[0] which can be far / wrong side).
+                  const nearestWall = pool => {
+                    if (!pool?.length || !me) return pool?.[0] || null;
+                    return [...pool]
+                      .map(w => {
+                        const wx = w.wx ?? w.x;
+                        const wz = w.wz ?? w.z;
+                        const d =
+                          wx != null && wz != null
+                            ? Math.max(Math.abs(me.x - wx), Math.abs(me.z - wz))
+                            : 99;
+                        return { w, d };
+                      })
+                      .sort((a, b) => a.d - b.d)[0]?.w;
+                  };
+                  // Light needs ~10%/300; pour product ~10% olive (use 10/300 gate).
+                  // Broken Fire altar upgrades only when wall repaired_p→100 (try_build_temple) —
+                  // NOT by opLoc repair on the altar loc. Spamming fix-broken-altar hangs forever.
+                  // Order: wall-for-broken → light nofire → pour flaming → personal sanc if low.
+                  const needSanc = sancP < 10 || sancRaw < 300;
+
+                  // 1) Lit → pour (product path to sacred oil)
+                  if (flaming && oil) {
+                    const wx = flaming.wx ?? flaming.x;
+                    const wz = flaming.wz ?? flaming.z;
+                    const sx = wx <= center.x ? wx - 1 : wx + 1;
+                    if (me && Math.max(Math.abs(me.x - sx), Math.abs(me.z - (wz | 0))) > 1) {
+                      a?.walkWorld?.(sx, wz);
+                      return { action: 'walk-altar', flaming: flaming.name };
+                    }
+                    const fs = snap(flaming);
+                    const ok = fs
+                      ? a?.useHeldOnLoc?.(
+                          { id: oil.id, slot: oil.slot, comId: oil.comId },
+                          fs,
+                          14
+                        )
+                      : a?.useHeldOnLoc?.(
+                          { id: oil.id, slot: oil.slot, comId: oil.comId },
+                          flaming.name,
+                          14
+                        );
+                    return { action: 'pour-olive', ok: !!ok, flaming: flaming?.name, loc: fs };
+                  }
+
+                  // 2) Nofire altar + tinder → light (after walls upgraded broken→nofire)
+                  if (nofire && tinder && !flaming) {
+                    const wx = nofire.wx ?? nofire.x;
+                    const wz = nofire.wz ?? nofire.z;
+                    const sx = wx <= center.x ? wx - 1 : wx + 1;
+                    if (me && Math.max(Math.abs(me.x - sx), Math.abs(me.z - (wz | 0))) > 1) {
+                      a?.walkWorld?.(sx, wz);
+                      return { action: 'walk-nofire', name: nofire.name };
+                    }
+                    const ns = snap(nofire);
+                    if (ns) {
+                      a?.useHeldOnLoc?.(
+                        { id: tinder.id, slot: tinder.slot, comId: tinder.comId },
+                        ns,
+                        14
+                      );
+                    } else {
+                      a?.useHeldOnLoc?.(tinder.name, nofire.name, 14);
+                    }
+                    a?.opLocAt?.(wx, wz, 'light') || a?.opLoc?.(nofire.name, 'light');
+                    return { action: 'light-nofire', name: nofire.name };
+                  }
+
+                  // 3) Broken Fire altar → wall Repair/reinforce until repaired_p upgrades loc
+                  if (broken && !flaming) {
+                    const repairPool = walls.filter(l =>
+                      (l.ops || []).some(o => /repair/i.test(String(o ?? '')))
+                    );
+                    const reinforcePool = walls.filter(l =>
+                      (l.ops || []).some(o => /reinforce/i.test(String(o ?? '')))
+                    );
+                    // Prefer Broken wall Repair nearest; reinforce only if no Repair segs left.
+                    const w =
+                      nearestWall(repairPool) ||
+                      nearestWall(reinforcePool) ||
+                      nearestWall(walls) ||
+                      wall;
+                    if (w) {
+                      // Mid sticky anim: re-issue Repair without walk (walk kills p_oploc sticky).
+                      if (anim != null && anim >= 0 && !walkToWall(w)) {
+                        const ops = (w.ops || []).map(o => String(o ?? ''));
+                        const op =
+                          ops.find(o => /repair/i.test(o)) ||
+                          ops.find(o => /reinforce/i.test(o)) ||
+                          'repair';
+                        a?.opLocAt?.(w.wx ?? w.x, w.wz ?? w.z, op) || a?.opLoc?.(w.name, op);
+                        return {
+                          action: 'wall-sticky',
+                          wall: w.name,
+                          broken: broken.name,
+                          op,
+                          anim,
+                          sancP,
+                          sancRaw
+                        };
+                      }
+                      if (walkToWall(w)) {
+                        return {
+                          action: 'walk-wall-broken-altar',
+                          wall: w.name,
+                          broken: broken.name,
+                          sancP,
+                          sancRaw
+                        };
+                      }
+                      const ops = (w.ops || []).map(o => String(o ?? ''));
+                      const op =
+                        ops.find(o => /repair/i.test(o)) ||
+                        ops.find(o => /reinforce/i.test(o)) ||
+                        'reinforce';
+                      a?.opLocAt?.(w.wx ?? w.x, w.wz ?? w.z, op) || a?.opLoc?.(w.name, op);
+                      return {
+                        action: 'wall-for-broken-altar',
+                        wall: w.name,
+                        broken: broken.name,
+                        op,
+                        sancP,
+                        sancRaw
+                      };
+                    }
+                    // No wall ops visible — last resort on altar loc (usually dead)
+                    a?.opLocAt?.(broken.wx ?? broken.x, broken.wz ?? broken.z, 'repair') ||
+                      a?.opLoc?.(broken.name, 'repair');
+                    return {
+                      action: 'fix-broken-altar',
+                      broken: broken.name,
+                      wall: null,
+                      sancP,
+                      sancRaw
+                    };
+                  }
+
+                  // 4) Personal sanc low with walls up (no broken) — reinforce for pour gate
+                  if (needSanc && wall) {
+                    if (walkToWall(wall)) {
+                      return { action: 'walk-wall-sanc', wall: wall.name, sancP, sancRaw };
+                    }
+                    const ops = (wall.ops || []).map(o => String(o ?? ''));
+                    const op =
+                      ops.find(o => /reinforce/i.test(o)) ||
+                      ops.find(o => /repair/i.test(o)) ||
+                      'reinforce';
+                    a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, op) ||
+                      a?.opLoc?.(wall.name, op);
+                    return { action: 'reinforce-sanc', wall: wall.name, op, sancP, sancRaw };
+                  }
+
+                  if (wall && !flaming) {
+                    if (walkToWall(wall)) {
+                      return { action: 'walk-wall', wall: wall.name };
+                    }
+                    a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, 'repair') ||
+                      a?.opLocAt?.(wall.wx ?? wall.x, wall.wz ?? wall.z, 'reinforce') ||
+                      a?.opLoc?.(wall.name, 'repair');
+                    return { action: 'reinforce', wall: wall.name, broken: broken?.name ?? null };
+                  }
+
+                  return {
+                    action: 'idle-remake',
+                    flaming: flaming?.name ?? null,
+                    broken: broken?.name ?? null,
+                    nofire: nofire?.name ?? null,
+                    wall: wall?.name ?? null,
+                    oil: !!oil,
+                    tinder: !!tinder,
+                    sancP,
+                    sancRaw,
+                    locNames: locs.map(l => l?.name).filter(Boolean).slice(0, 12)
+                  };
+                },
+                {
+                  altarWx: FLAMTAER_ALTAR.x,
+                  altarWz: FLAMTAER_ALTAR.z,
+                  center: TEMPLE_CENTER,
+                  sancP: sancPR,
+                  sancRaw: sancR
+                }
+              );
+              if (
+                remakeOilTicks % 3 === 0 ||
+                /pour|light|reinforce|walk/.test(String(pour?.action ?? ''))
+              ) {
+                console.log(
+                  `[quest-mortton] residual temple oil t=${remakeOilTicks} sanc=${sancR}/${sancPR}`,
+                  pour
+                );
+                await thrashPoint(page, 'mortton-temple-oil', {
+                  stage: Number(stage),
+                  t: remakeOilTicks,
+                  phase: 'temple-oil-only',
+                  pour,
+                  invGate,
+                  sanc: { raw: sancR, p: sancPR }
+                });
+              }
+              // repaired_p (not personal sanc) upgrades Broken→nofire. Log it.
+              const repairedP = Number(
+                (await getServerVarQuiet(page, 'temple_repaired_p').catch(() => 0)) ?? 0
+              );
+              if (remakeOilTicks % 6 === 0 || pour?.action === 'light-nofire' || pour?.action === 'pour-olive') {
+                console.log(
+                  `[quest-mortton] residual temple oil t=${remakeOilTicks} sanc=${sancR}/${sancPR} repaired_p=${repairedP}`,
+                  pour?.action,
+                  pour?.broken || pour?.flaming || pour?.name || ''
+                );
+              }
+              // Progress: sanc or repaired_p rising = rebuild working (need ~15 full segs → 100%).
+              // Fail only when both stall, not on wall tick count alone (48 was too tight).
+              const progressKey = `${sancR}|${repairedP}|${pour?.broken || pour?.flaming || ''}`;
+              if (progressKey !== lastTempleProgressKey) {
+                lastTempleProgressKey = progressKey;
+                lastTempleProgressTick = remakeOilTicks;
+              }
+              if (
+                remakeOilTicks >= 40 &&
+                remakeOilTicks - lastTempleProgressTick >= 35 &&
+                /wall-for-broken|walk-wall-broken|fix-broken|idle-remake/.test(
+                  String(pour?.action ?? '')
+                )
+              ) {
+                fail(
+                  `FAIL-FAST: temple oil rebuild stalled (no sanc/repaired_p change ${remakeOilTicks - lastTempleProgressTick} ticks). t=${remakeOilTicks} last=${JSON.stringify(pour)} sanc=${sancR}/${sancPR} repaired_p=${repairedP}`
+                );
+              }
+              if (remakeOilTicks >= 280) {
+                fail(
+                  `RESIDUAL temple oil remake stalled t=${remakeOilTicks} (need sacred oil before pyre/Loar). last=${JSON.stringify(pour)} sanc=${sancR}/${sancPR} repaired_p=${repairedP}`
+                );
+              }
+              await page.waitForTimeout(900);
+              continue;
+            }
+
+            // --- B) Oil but no pyre logs: OPHELDU here (no pyre walk yet) ---
+            if (!invGate.pyre && invGate.oil) {
+              remakePyreLogsTicks++;
+              const made = await page.evaluate(async () => {
+                const a = globalThis.__lc377?.actions;
+                const r = globalThis.__lc377?.reader;
+                a?.continueDialog?.();
+                a?.dismissModalMessage?.();
+                a?.setSideTab?.(3);
+                await new Promise(res => setTimeout(res, 150));
+                let inv = r?.inventory?.() ?? [];
+                if (inv.some(i => /pyre logs/i.test(String(i?.name ?? '')))) {
+                  return { ok: true, already: true };
+                }
+                const oil = inv.find(i => /sacred oil/i.test(String(i?.name ?? '')));
+                const logs = inv.find(i => /^logs$/i.test(String(i?.name ?? '')));
+                if (!oil || !logs) return { ok: false, reason: 'need oil+logs' };
+                a?.useHeldOnHeld?.(
+                  { id: oil.id, slot: oil.slot, comId: oil.comId },
+                  { id: logs.id, slot: logs.slot, comId: logs.comId }
+                );
+                await new Promise(res => setTimeout(res, 900));
+                inv = r?.inventory?.() ?? [];
+                return {
+                  ok: inv.some(i => /pyre logs/i.test(String(i?.name ?? ''))),
+                  action: 'oil-on-logs'
+                };
+              });
+              if (remakePyreLogsTicks % 4 === 0 || made?.ok) {
+                console.log(
+                  `[quest-mortton] residual: oil-on-logs t=${remakePyreLogsTicks}`,
+                  made
+                );
+                await thrashPoint(page, 'mortton-pyre-logs', {
+                  stage: Number(stage),
+                  t: remakePyreLogsTicks,
+                  phase: 'oil-on-logs-stay',
+                  made
+                });
+              }
+              if (made?.ok) remakePyreLogsTicks = 0;
+              if (remakePyreLogsTicks >= 80) {
+                fail(`RESIDUAL oil-on-logs stalled t=${remakePyreLogsTicks}`);
+              }
+              await page.waitForTimeout(600);
+              continue;
+            }
+          }
+
           // Residual: get Loar remains via kill + ground Take (no give)
           if (residualMode) {
-            // cleanup9/10: free:0 → take ok but no remains; clearinv at stage≥70 wiped
-            // pyre logs while quest stayed 75 → remains hit base temple_pyre (never consume).
-            // Free slots once: keep olive+logs+tinder so product can re-make pyre logs if needed.
-            if (remainsHuntTicks === 0) {
+            // Free slots for Take remains — NEVER ~clearinv when holding pyre logs / sacred oil
+            // (c29 wiped product pyre logs → remake loop; chat "Inventory wiped").
+            if (remainsHuntTicks === 0 || remainsHuntTicks % 40 === 1) {
               const free = await page.evaluate(() => {
                 const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
                 return {
@@ -1388,25 +2275,54 @@ try {
               });
               console.log('[quest-mortton] residual remains inv before hunt', JSON.stringify(free));
               if ((free?.free ?? 0) < 3) {
-                await cheatQuiet(page, '~clearinv', 500);
-                // Generic only — olive+logs for product re-make of oil/pyre logs if stage advanced
-                await giveItems(page, [
-                  ['logs', 6],
-                  ['tinderbox', 1],
-                  ['oliveoil4', 3],
-                  ['lobster', 8],
-                  ['steel_scimitar', 1],
-                  ['steel_platebody', 1],
-                  ['steel_platelegs', 1]
-                ]).catch(() => {});
-                const after = await page.evaluate(() => {
-                  const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
-                  return { free: 28 - inv.length, names: inv.map(i => i?.name).filter(Boolean) };
-                });
-                console.log(
-                  '[quest-mortton] residual remains: clearinv+lean kit (olive+logs for re-product)',
-                  JSON.stringify(after)
-                );
+                const keepCritical = free.hasPyreLogs || free.hasOil || Number(stage) >= 70;
+                if (keepCritical) {
+                  // Drop lobsters / spare olive only — keep pyre logs, sacred oil, tinder, logs
+                  const dropped = await page.evaluate(async () => {
+                    const a = globalThis.__lc377?.actions;
+                    const r = globalThis.__lc377?.reader;
+                    const sleep = ms => new Promise(res => setTimeout(res, ms));
+                    const freeSlots = () => 28 - (r?.inventory?.() ?? []).length;
+                    let n = 0;
+                    a?.setSideTab?.(3);
+                    for (let i = 0; i < 16 && freeSlots() < 4; i++) {
+                      const inv = r?.inventory?.() ?? [];
+                      const drop =
+                        inv.find(x => /lobster/i.test(String(x?.name ?? ''))) ||
+                        inv.find(
+                          x =>
+                            /olive oil/i.test(String(x?.name ?? '')) &&
+                            inv.filter(y => /olive oil/i.test(String(y?.name ?? ''))).length > 1
+                        ) ||
+                        inv.find(x => /adamant/i.test(String(x?.name ?? ''))); // should be worn
+                      if (!drop) break;
+                      // Drop = held op matching Drop
+                      const ops = drop.ops || [];
+                      let idx = ops.findIndex(o => o && /drop/i.test(String(o)));
+                      if (idx < 0) idx = 4; // often last held op
+                      a?.heldOp?.(drop.name, idx + 1) || a?.equip?.(drop.name);
+                      n++;
+                      await sleep(350);
+                    }
+                    return {
+                      dropped: n,
+                      free: freeSlots(),
+                      names: (r?.inventory?.() ?? []).map(i => i?.name).filter(Boolean)
+                    };
+                  });
+                  console.log(
+                    '[quest-mortton] residual remains: drop-food free slots (kept pyre/oil)',
+                    JSON.stringify(dropped)
+                  );
+                } else {
+                  await cheatQuiet(page, '~clearinv', 500);
+                  await seedLoarCombatKit(page, [
+                    ['logs', 4],
+                    ['tinderbox', 1],
+                    ['oliveoil4', 2]
+                  ]);
+                  console.log('[quest-mortton] residual remains: clearinv+lean (pre-pyre only)');
+                }
               }
             }
             const hasRem = await page.evaluate(() => {
@@ -1415,173 +2331,261 @@ try {
                 /loar.*remains|shade.*remains|remains.*loar/i.test(String(i?.name ?? ''))
               );
             });
+            // c14: after remains-on-pyre inv_del, !hasRem tele-hunted and burned 49t bones window.
+            // c16: sticky after logs-on-pyre blocked hunt → light-spam on logs stage, window dies.
+            // Hunt whenever logs stage has no remains in inv. Sticky only holds for bones light
+            // or when we still hold remains to place.
             if (!hasRem) {
-              remainsHuntTicks++;
-              if (remainsHuntTicks % 12 === 0) {
-                console.log(
-                  `[quest-mortton] residual: kill+Take Loar remains t=${remainsHuntTicks} stick=${stickShade ? stickShade.name : 'none'}`
-                );
-              }
-              // Equip once at hunt start / every ~40 ticks (not every thrash)
-              if (remainsHuntTicks === 1 || remainsHuntTicks % 40 === 0) {
-                await page.evaluate(async () => {
-                  const a = globalThis.__lc377?.actions;
-                  for (const n of ['Steel scimitar', 'Steel platebody', 'Steel platelegs']) {
-                    a?.equip?.(n);
-                    await new Promise(r => setTimeout(r, 150));
-                  }
-                });
-              }
-              // Only tele when not sticky — tele every tick was aborting Loar combat (mtnsl3j4qg).
-              const needTele = !stickShade && remainsHuntTicks % 8 === 1;
-              let shadeOk = true;
-              if (needTele) {
-                const spawn =
-                  SHADE_FIELD_SPAWNS[Math.floor(remainsHuntTicks / 8) % SHADE_FIELD_SPAWNS.length] ||
-                  SHADE_FIELD_SPAWNS[0];
-                shadeOk = await teleTo(page, spawn, 4, 25_000);
-                await waitSceneReady(page, 12_000);
-              } else if (stickShade && remainsHuntTicks % 20 === 0) {
-                // Soft re-home near sticky target if still far from field
-                await teleTo(page, { x: stickShade.wx, z: stickShade.wz, level: 0 }, 6, 15_000).catch(
-                  () => {}
-                );
-                await waitSceneReady(page, 10_000);
-              }
-              const take = await page.evaluate(async stick => {
-                const a = globalThis.__lc377?.actions;
-                const r = globalThis.__lc377?.reader;
-                a?.continueDialog?.();
-                a?.dismissModalMessage?.();
-                a?.setSideTab?.(3);
-                a?.eatIfNeeded?.('Lobster', 12);
-                const tile = r?.worldTile?.();
-                // takeGround expects name substring (not a snap object)
-                if (a?.takeGround?.('Loar remains', 18)) {
-                  return { ok: true, how: 'takeGround', tile };
-                }
-                if (a?.takeGround?.('remains', 18)) {
-                  return { ok: true, how: 'takeGround-remains', tile };
-                }
-                const ground = r?.groundItems?.({ maxDist: 18 }) ?? [];
-                const rem = ground.find(g =>
-                  /loar remains|shade remains/i.test(String(g?.name ?? ''))
-                );
-                if (rem && a?.takeObj) {
-                  a.takeObj(rem.lx, rem.lz, rem.id, 3);
-                  return { ok: true, how: 'takeObj', name: rem.name, tile };
-                }
-                const npcs = r?.npcs?.() ?? [];
-                const me = tile || { x: 0, z: 0 };
-                const shadeCands = npcs
-                  .filter(n => /^Loar (Shadow|Shade)$/i.test(String(n?.name ?? '')))
-                  .map(n => {
-                    const nx = n.tile?.x ?? n.wx ?? n.x;
-                    const nz = n.tile?.z ?? n.wz ?? n.z;
-                    const d =
-                      typeof n.distance === 'number'
-                        ? n.distance
-                        : nx != null && nz != null
-                          ? Math.max(Math.abs(me.x - nx), Math.abs(me.z - nz))
-                          : 999;
-                    return { n, d, nx, nz };
-                  })
-                  .sort((a, b) => a.d - b.d);
-                // Prefer sticky name if still in list, else nearest Loar
-                let pick = shadeCands[0];
-                if (stick?.name) {
-                  const stuck = shadeCands.find(
-                    c => String(c.n.name).toLowerCase() === String(stick.name).toLowerCase()
+              const pl = await peekPyreLoc();
+              // Hunt BEFORE placing logs when we already hold pyre logs (c18 burned 49t
+              // hunting after logs-on). Also hunt on live logs stage / logsWindowExpect.
+              // Order under residual: remains in inv → logs-on → remains-on → light.
+              const invPyreReady = await page.evaluate(() => {
+                const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+                return inv.some(i => /pyre logs/i.test(String(i?.name ?? '')));
+              });
+              const needHuntRemains =
+                !pl?.hasRemains &&
+                (pl?.isLogs === true ||
+                  (logsWindowExpect > 0 && !pl?.isBones && Number(stage) >= 75) ||
+                  (pl?.isBase && invPyreReady && Number(stage) >= 70 && !pl?.isBones));
+              if (!needHuntRemains) {
+                if (pyreTicks % 6 === 0) {
+                  console.log(
+                    '[quest-mortton] residual: skip Loar hunt — place/light/remake',
+                    JSON.stringify(pl),
+                    `sticky=${pyreWindowSticky} logsExpect=${logsWindowExpect} invPyre=${invPyreReady}`
                   );
-                  if (stuck) pick = stuck;
                 }
-                if (pick) {
-                  const shade = pick.n;
-                  const d = pick.d;
-                  const nx = pick.nx;
-                  const nz = pick.nz;
-                  // Walk in if out of attack reach — attackNpc alone at d≈15 never finished
-                  if (d > 1 && nx != null && nz != null) {
-                    a?.walkWorld?.(nx, nz);
+                // fall through to place/light (do not continue)
+              } else {
+                remainsHuntTicks++;
+                // Equip at hunt start + every ~20 ticks (steel@60 + 6 food was under-geared)
+                if (remainsHuntTicks === 1 || remainsHuntTicks % 20 === 0) {
+                  await equipLoarKit(page);
+                }
+                // Patient field hunt: walk between spawns; tele only first time or long empty streak.
+                // Tele every 8 ticks was aborting Loar combat and felt like random TP spam.
+                let shadeOk = true;
+                let teleSpawn = null;
+                let goHow = 'none';
+                if (stickShade) {
+                  // Stay on sticky target — walk only, never tele mid-fight
+                  const go = await residualGo(
+                    { x: stickShade.wx, z: stickShade.wz, level: 0 },
+                    { walkRadius: 2, force: false, label: 'stick-shade' }
+                  );
+                  goHow = go.how;
+                  shadeOk = go.ok;
+                } else {
+                  teleSpawn =
+                    SHADE_FIELD_SPAWNS[
+                      Math.floor(remainsHuntTicks / 16) % SHADE_FIELD_SPAWNS.length
+                    ] || SHADE_FIELD_SPAWNS[0];
+                  const forceTele =
+                    remainsHuntTicks === 1 ||
+                    (emptyLoarStreak >= 30 && remainsHuntTicks % 40 === 0);
+                  const go = await residualGo(teleSpawn, {
+                    walkRadius: 6,
+                    force: forceTele,
+                    label: 'loar-field'
+                  });
+                  goHow = go.how;
+                  shadeOk = go.ok;
+                }
+                const take = await page.evaluate(async stick => {
+                  const a = globalThis.__lc377?.actions;
+                  const r = globalThis.__lc377?.reader;
+                  a?.continueDialog?.();
+                  a?.dismissModalMessage?.();
+                  a?.setSideTab?.(3);
+                  a?.eatIfNeeded?.('Lobster', 12);
+                  const tile = r?.worldTile?.();
+                  // takeGround expects name substring (not a snap object)
+                  if (a?.takeGround?.('Loar remains', 18)) {
+                    return { ok: true, how: 'takeGround', tile };
                   }
-                  // Attack is op2 (1-based); prefer index so multi Loars work
-                  const atk =
-                    (shade.index != null && a?.npcOp?.(shade.index, 2)) ||
-                    a?.attackNpc?.(shade.name);
+                  if (a?.takeGround?.('remains', 18)) {
+                    return { ok: true, how: 'takeGround-remains', tile };
+                  }
+                  const ground = r?.groundItems?.({ maxDist: 18 }) ?? [];
+                  const rem = ground.find(g =>
+                    /loar remains|shade remains/i.test(String(g?.name ?? ''))
+                  );
+                  if (rem && a?.takeObj) {
+                    a.takeObj(rem.lx, rem.lz, rem.id, 3);
+                    return { ok: true, how: 'takeObj', name: rem.name, tile };
+                  }
+                  const npcs = r?.npcs?.() ?? [];
+                  const me = tile || { x: 0, z: 0 };
+                  // 1240 Loar Shadow ↔ 1241 Loar Shade (timer form swap). Match either.
+                  const shadeCands = npcs
+                    .filter(n => {
+                      const nm = String(n?.name ?? '');
+                      const id = n?.id | 0;
+                      return (
+                        /^Loar (Shadow|Shade)$/i.test(nm) ||
+                        /loar/i.test(nm) ||
+                        id === 1240 ||
+                        id === 1241
+                      );
+                    })
+                    .map(n => {
+                      const nx = n.tile?.x ?? n.wx ?? n.x;
+                      const nz = n.tile?.z ?? n.wz ?? n.z;
+                      const d =
+                        typeof n.distance === 'number'
+                          ? n.distance
+                          : nx != null && nz != null
+                            ? Math.max(Math.abs(me.x - nx), Math.abs(me.z - nz))
+                            : 999;
+                      return { n, d, nx, nz };
+                    })
+                    .sort((a, b) => a.d - b.d);
+                  // Prefer sticky name if still in list, else nearest Loar
+                  let pick = shadeCands[0];
+                  if (stick?.name) {
+                    const stuck = shadeCands.find(
+                      c => String(c.n.name).toLowerCase() === String(stick.name).toLowerCase()
+                    );
+                    if (stuck) pick = stuck;
+                  }
+                  if (pick) {
+                    const shade = pick.n;
+                    const d = pick.d;
+                    const nx = pick.nx;
+                    const nz = pick.nz;
+                    // Walk in if out of attack reach — attackNpc alone at d≈15 never finished
+                    if (d > 1 && nx != null && nz != null) {
+                      a?.walkWorld?.(nx, nz);
+                    }
+                    // Attack is op2 (1-based); prefer index so multi Loars work
+                    const atk =
+                      (shade.index != null && a?.npcOp?.(shade.index, 2)) ||
+                      a?.attackNpc?.(shade.name);
+                    return {
+                      ok: false,
+                      how: d > 2 ? 'walk-attack' : 'attack',
+                      name: shade.name,
+                      dist: d,
+                      atk: !!atk,
+                      inCombat: !!shade.inCombat,
+                      wx: nx,
+                      wz: nz,
+                      tile,
+                      cand: shadeCands.slice(0, 5).map(c => ({ name: c.n.name, d: c.d }))
+                    };
+                  }
+                  // No Loar in client list — light sweep near last stick / field
+                  const sx = stick?.wx ?? 3474 + ((Date.now() / 1000) % 6 | 0) * 3;
+                  const sz = stick?.wz ?? 3280 - ((Date.now() / 700) % 5 | 0) * 2;
+                  a?.walkWorld?.(sx, sz);
                   return {
                     ok: false,
-                    how: d > 2 ? 'walk-attack' : 'attack',
-                    name: shade.name,
-                    dist: d,
-                    atk: !!atk,
-                    inCombat: !!shade.inCombat,
-                    wx: nx,
-                    wz: nz,
+                    how: 'none',
+                    teleOk: true,
                     tile,
-                    cand: shadeCands.slice(0, 5).map(c => ({ name: c.n.name, d: c.d }))
+                    ground: ground.map(g => g?.name).slice(0, 8),
+                    npcCount: npcs.length,
+                    npcNames: [...new Set(npcs.map(n => n?.name).filter(Boolean))].slice(0, 30)
                   };
+                }, stickShade);
+                if (take?.ok) {
+                  stickShade = null;
+                  emptyLoarStreak = 0;
+                  // Verify inv after take — takeGround can report ok with full inv (cleanup9)
+                  await page.waitForTimeout(900);
+                  const got = await page.evaluate(() => {
+                    const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+                    return {
+                      free: 28 - inv.length,
+                      rem: inv
+                        .filter(i => /remain/i.test(String(i?.name ?? '')))
+                        .map(i => i?.name),
+                      names: inv.map(i => i?.name).filter(Boolean).slice(0, 16)
+                    };
+                  });
+                  console.log(
+                    '[quest-mortton] residual: took Loar remains',
+                    take.how,
+                    JSON.stringify(got)
+                  );
+                  if (!(got?.rem?.length > 0)) {
+                    // Click sent but no inv land — do not treat as success; keep hunting
+                    console.log(
+                      '[quest-mortton] WARN: take ok but rem not in inv — continue hunt',
+                      JSON.stringify(got)
+                    );
+                    await page.waitForTimeout(700);
+                    continue;
+                  }
+                } else if (take?.how === 'attack' || take?.how === 'walk-attack') {
+                  emptyLoarStreak = 0;
+                  if (take.wx != null && take.wz != null) {
+                    stickShade = { name: take.name, wx: take.wx, wz: take.wz };
+                  }
+                  // Patient combat settle — do not tele/walk spam mid-fight
+                  await page.waitForTimeout(1200);
+                } else if (take?.how === 'none') {
+                  emptyLoarStreak++;
+                  // Lost visual — clear stick slowly; walk field, don't TP thrash
+                  if (emptyLoarStreak >= 12) stickShade = null;
                 }
-                // No Loar in client list — light sweep near last stick / field
-                const sx = stick?.wx ?? 3474 + ((Date.now() / 1000) % 6 | 0) * 3;
-                const sz = stick?.wz ?? 3280 - ((Date.now() / 700) % 5 | 0) * 2;
-                a?.walkWorld?.(sx, sz);
-                return {
-                  ok: false,
-                  how: 'none',
-                  teleOk: true,
-                  tile,
-                  ground: ground.map(g => g?.name).slice(0, 8),
-                  npcCount: npcs.length,
-                  npcNames: [...new Set(npcs.map(n => n?.name).filter(Boolean))].slice(0, 30)
-                };
-              }, stickShade);
-              if (take?.ok) {
-                stickShade = null;
-                // Verify inv after take — takeGround can report ok with full inv (cleanup9)
-                await page.waitForTimeout(400);
-                const got = await page.evaluate(() => {
-                  const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
-                  return {
-                    free: 28 - inv.length,
-                    rem: inv
-                      .filter(i => /remain/i.test(String(i?.name ?? '')))
-                      .map(i => i?.name),
-                    names: inv.map(i => i?.name).filter(Boolean).slice(0, 16)
-                  };
-                });
-                console.log(
-                  '[quest-mortton] residual: took Loar remains',
-                  take.how,
-                  JSON.stringify(got)
-                );
-                if (!(got?.rem?.length > 0) && (got?.free ?? 0) < 1) {
-                  console.log('[quest-mortton] WARN: take ok but no remains + inv full — free slots');
+                // Dense datapoint every other tick
+                if (remainsHuntTicks % 2 === 0 || take?.how !== 'none') {
+                  await thrashPoint(page, 'mortton-remains', {
+                    stage: Number(stage),
+                    t: remainsHuntTicks,
+                    phase: 'kill-take-loar',
+                    action: take?.how ?? '?',
+                    stick: stickShade,
+                    goHow,
+                    teleOk: shadeOk,
+                    teleSpawn,
+                    emptyLoarStreak,
+                    pl,
+                    take: take
+                      ? {
+                          how: take.how,
+                          name: take.name,
+                          dist: take.dist,
+                          atk: take.atk,
+                          cand: take.cand
+                        }
+                      : null
+                  });
                 }
-              } else if (take?.how === 'attack' || take?.how === 'walk-attack') {
-                if (take.wx != null && take.wz != null) {
-                  stickShade = { name: take.name, wx: take.wx, wz: take.wz };
+                // ~ patient ticks × 320 ≈ long hunt without tele spam
+                if (remainsHuntTicks >= 320) {
+                  fail(
+                    `RESIDUAL no Loar remains after ${remainsHuntTicks} hunt ticks (kill+Take failed; no give). last=${JSON.stringify(take)}`
+                  );
                 }
-              } else if (take?.how === 'none') {
-                // Lost visual — clear stick after a few empties so tele can re-hunt
-                if (remainsHuntTicks % 6 === 0) stickShade = null;
-              }
-              if (remainsHuntTicks % 10 === 0 || take?.how === 'attack' || take?.how === 'walk-attack') {
-                console.log(
-                  `[quest-mortton] residual remains thrash teleOk=${shadeOk} stick=${!!stickShade}`,
-                  take
+                await page.waitForTimeout(
+                  take?.how === 'attack' || take?.how === 'walk-attack' ? 900 : 700
                 );
+                continue;
               }
-              // ~3s/tick thrash × 280 ≈ 14 min hunt budget (was 100 total pyreTicks — too short)
-              if (remainsHuntTicks >= 280) {
-                fail(
-                  `RESIDUAL no Loar remains after ${remainsHuntTicks} hunt ticks (kill+Take failed; no give). last=${JSON.stringify(take)}`
-                );
-              }
-              await page.waitForTimeout(600);
-              continue;
             }
-            // Have remains — clear stick for later
+            // Have remains (or stayOnPyre fall-through) — clear stick for place/light
             stickShade = null;
+          }
+
+          // Place/light — only when we have something to place (remains or pyre logs).
+          // Residual without mats already continued above (temple oil / oil-on-logs).
+          const canPlace = await page.evaluate(() => {
+            const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+            const n = inv.map(i => i?.name).filter(Boolean);
+            return {
+              pyre: n.some(x => /pyre logs/i.test(x)),
+              remains: n.some(x => /remain/i.test(x)),
+              oil: n.some(x => /sacred oil/i.test(x))
+            };
+          });
+          if (residualMode && !canPlace.pyre && !canPlace.remains) {
+            // Should have been handled by temple oil / oil-on-logs gates; avoid pyre walk thrash
+            await page.waitForTimeout(500);
+            continue;
           }
 
           // Place/light budget is independent of Loar hunt ticks.
@@ -1589,6 +2593,8 @@ try {
           // _flamtaer_pyre_bones). longqueue clear_pyre_loc @ 49 game ticks — tele+scene
           // every place tick (cleanup8) burns the window; remains "ok" never consumes.
           pyrePlaceTicks++;
+          if (pyreWindowSticky > 0) pyreWindowSticky--;
+          if (logsWindowExpect > 0) logsWindowExpect--;
           const tilePyre = await page.evaluate(() => globalThis.__lc377?.worldTile?.());
           const nearPyre =
             tilePyre &&
@@ -1596,13 +2602,21 @@ try {
               Math.abs(tilePyre.x - FUNERAL_PYRE_STAND.x),
               Math.abs(tilePyre.z - FUNERAL_PYRE_STAND.z)
             ) <= 3;
+          // Patient: walk to pyre; tele only when far + cooldown (never spam mid 49t window).
           if (!nearPyre) {
-            if (!(await teleTo(page, FUNERAL_PYRE_STAND, 3, 20_000))) {
+            const go = await residualGo(FUNERAL_PYRE_STAND, {
+              walkRadius: 3,
+              force: false,
+              label: 'pyre-stand'
+            });
+            if (!go.ok && go.how === 'tele-fail') {
               console.log('[quest-mortton] tele pyre stand failed');
               await page.waitForTimeout(600);
               continue;
             }
-            await waitSceneReady(page, 10_000);
+            if (go.how === 'walk' || go.how === 'walk-cooldown') {
+              await page.waitForTimeout(500);
+            }
           }
           const step = await page.evaluate(async ({ pyreWx, pyreWz, questStage, placeN }) => {
             const a = globalThis.__lc377?.actions;
@@ -1701,9 +2715,17 @@ try {
               (locTypeId >= 4100 && locTypeId <= 4105) || locTypeId === 9008 || locTypeId === 9009;
             const chat = (r?.chat?.(6) ?? []).map(l => String(l?.text ?? l ?? ''));
 
-            // 1) pyre logs on base — re-place after clear_pyre 49t (stage may already be 75)
-            //    Prefer remains ready so remains can land inside the same 49t window.
+            // 1) pyre logs on base — only when remains already in inv (residual).
+            //    c18: logs-first then 60+ hunt ticks → clear_pyre before remains.
             if (pyreLogs && isBasePyre) {
+              if (!remains) {
+                return {
+                  action: 'need-remains-before-logs',
+                  locTypeId,
+                  hasPyreLogs: true,
+                  chat
+                };
+              }
               const ok = pyreSnap
                 ? a?.useHeldOnLoc?.(
                     { id: pyreLogs.id, slot: pyreLogs.slot, comId: pyreLogs.comId },
@@ -1744,13 +2766,26 @@ try {
               };
             }
 
-            // 3) Light only on bones / named Light — never spam base (cleanup10 waste)
-            if ((lightable || isBonesPyre) && !isBasePyre) {
+            // 3) Light ONLY bones stage (or named Light op) — never base, never bare logs.
+            //    c16: light-after-remains-maybe on logs stage printed "Nothing interesting" and
+            //    burned the 49t window before we hunted Loar remains.
+            if ((lightable || isBonesPyre) && !isBasePyre && !isLogsPyre) {
               return tryLight(isBonesPyre ? 'light-bones-pyre' : 'light-pyre');
             }
+            // Logs stage without remains in inv → outer loop must hunt (not light).
+            if (isLogsPyre && !remains) {
+              return {
+                action: 'need-remains-on-logs',
+                locTypeId,
+                ops: pyre?.ops || [],
+                chat
+              };
+            }
 
-            // 4) stage≥75 + base + no pyre logs → outer loop must product-remake (oil→logs)
-            if (questStage >= 75 && isBasePyre && !pyreLogs) {
+            // 4) base + no pyre logs at stage≥70 → remake only if logs window not expected.
+            //    c17: stage already 75 after product logs-on; client still 4093 for a beat —
+            //    remake then wastes oil and never hunts. Outer loop gates remake on logsWindowExpect.
+            if (questStage >= 70 && isBasePyre && !pyreLogs) {
               return {
                 action: 'need-pyre-logs-replace',
                 locTypeId,
@@ -1804,13 +2839,76 @@ try {
           ) {
             stage = await getServerVarQuiet(page, 'morttonquest');
             console.log(
-              `[quest-mortton] pyre tick=${pyreTicks} place=${pyrePlaceTicks} stage=${stage} step=${JSON.stringify(step)}`
+              `[quest-mortton] pyre tick=${pyreTicks} place=${pyrePlaceTicks} stage=${stage} sticky=${pyreWindowSticky} step=${JSON.stringify(step)}`
             );
+            await thrashPoint(page, 'mortton-pyre-place', {
+              stage: Number(stage),
+              t: pyreTicks,
+              place: pyrePlaceTicks,
+              phase: 'place-light',
+              sticky: pyreWindowSticky,
+              logsExpect: logsWindowExpect,
+              step
+            });
             if (shot && pyrePlaceTicks % 40 === 0) await shot(`pyre-t${pyrePlaceTicks}`);
+          }
+
+          // Sticky only after remains land (bones window) or successful light thrash.
+          // After logs-on-pyre alone we still need Loar remains — do not block hunt (c16).
+          if (
+            step?.ok &&
+            (step?.action === 'remains-on-pyre' || step?.action === 'remains-on-pyre-early')
+          ) {
+            pyreWindowSticky = Math.max(pyreWindowSticky, 22);
+            logsWindowExpect = 0; // remains path owns the window now
+            console.log(
+              `[quest-mortton] residual: pyre window sticky=${pyreWindowSticky} after ${step.action}`
+            );
+          }
+          if (step?.ok && step?.action === 'logs-on-pyre') {
+            // Product accepted logs (stage often 75 next); hold remake, go hunt remains.
+            logsWindowExpect = Math.max(logsWindowExpect, 28);
+            stage = await getServerVarQuiet(page, 'morttonquest');
+            console.log(
+              `[quest-mortton] residual: logs-on accepted stage=${stage} logsExpect=${logsWindowExpect}`
+            );
+            await page.waitForTimeout(900); // let loc_change land before remake/hunt thrash
+            continue;
+          }
+          if (/light/.test(String(step?.action ?? '')) && step?.ok) {
+            pyreWindowSticky = Math.max(pyreWindowSticky, 12);
+          }
+          // need-remains-on-logs / need-remains-before-logs: hunt next loop (do not remake)
+          if (
+            step?.action === 'need-remains-on-logs' ||
+            step?.action === 'need-remains-before-logs'
+          ) {
+            if (step?.action === 'need-remains-on-logs') {
+              logsWindowExpect = Math.max(logsWindowExpect, 12);
+            }
+            if (pyreTicks % 8 === 0) {
+              console.log(`[quest-mortton] residual: ${step.action} → hunt Loar`);
+            }
+            await page.waitForTimeout(200);
+            continue;
           }
 
           // cleanup11 gap: need-pyre-logs-replace was logged but never acted on → light-spam stall @75.
           // Product remake only (generic olive+logs; no give sacred oil / pyre logs / remains).
+          // c17: skip remake while logsWindowExpect — client base lag after product logs-on.
+          if (
+            residualMode &&
+            step?.action === 'need-pyre-logs-replace' &&
+            logsWindowExpect > 0
+          ) {
+            if (pyreTicks % 5 === 0) {
+              console.log(
+                `[quest-mortton] residual: hold remake — logs window expect=${logsWindowExpect} (hunt remains)`
+              );
+            }
+            await page.waitForTimeout(400);
+            continue;
+          }
           if (residualMode && step?.action === 'need-pyre-logs-replace') {
             remakePyreLogsTicks++;
             if (remakePyreLogsTicks % 5 === 1) {
@@ -1842,18 +2940,13 @@ try {
               ]).catch(() => {});
             }
             if (!invR.oil) {
-              // Temple pour path — sanc≥10% before light/pour (same as s<70 remake)
-              const tileR = await page.evaluate(() => globalThis.__lc377?.worldTile?.());
-              const outside =
-                !tileR ||
-                tileR.x < TEMPLE_BOX.x0 ||
-                tileR.x > TEMPLE_BOX.x1 ||
-                tileR.z < TEMPLE_BOX.z0 ||
-                tileR.z > TEMPLE_BOX.z1;
-              if (outside) {
-                await teleTo(page, FLAMTAER_COURTYARD, 4, 15_000).catch(() => {});
-                await waitSceneReady(page, 10_000);
-              }
+              // Temple pour path — patient: walk into courtyard; tele only if far + cooldown.
+              // Do not bounce temple↔pyre every tick while remaking oil.
+              await residualGo(FLAMTAER_COURTYARD, {
+                walkRadius: 4,
+                force: false,
+                label: 'temple-remake-oil'
+              });
               const sancR = Number(
                 (await getServerVarQuiet(page, 'temple_sanctity').catch(() => 0)) ?? 0
               );
@@ -1893,7 +2986,12 @@ try {
                   walls.find(l =>
                     (l.ops || []).some(o => /reinforce/i.test(String(o ?? '')))
                   ) || walls[0];
-                const needSanc = sancP < 10 || sancRaw < 300;
+                const broken = locs.find(l =>
+                  /broken/i.test(String(l?.name ?? '')) && /altar|fire/i.test(String(l?.name ?? ''))
+                );
+                // Light 10%/300; pour thrash 20%/600 (product olive is 10%; serum 20%)
+              const needSanc = sancP < 20 || sancRaw < 600;
+                // c14: sanc already 14%/426 but thrash stuck on Temple wall — only reinforce when low sanc
                 if (needSanc && wall) {
                   const wx = wall.wx ?? wall.x;
                   const wz = wall.wz ?? wall.z;
@@ -1934,23 +3032,74 @@ try {
                     : a?.useHeldOnLoc?.(olive.name, flaming.name, 14);
                   return { action: 'pour-olive', ok: !!ok, name: flaming.name };
                 }
+                // Prefer locAt altar tile when reader miss (player near pyre then tele in)
+                const atAltar = r?.locAt?.(altarWx, altarWz);
+                if (atAltar && /flaming/i.test(String(atAltar.name ?? '')) && olive && !needSanc) {
+                  const snap =
+                    atAltar.typecode != null
+                      ? {
+                          typecode: atAltar.typecode | 0,
+                          lx: atAltar.lx | 0,
+                          lz: atAltar.lz | 0,
+                          x: atAltar.x ?? altarWx,
+                          z: atAltar.z ?? altarWz,
+                          name: atAltar.name
+                        }
+                      : null;
+                  const ok = snap
+                    ? a?.useHeldOnLoc?.(
+                        { id: olive.id, slot: olive.slot, comId: olive.comId },
+                        snap,
+                        14
+                      )
+                    : a?.useHeldOnLoc?.(olive.name, atAltar.name, 14);
+                  return { action: 'pour-olive-at', ok: !!ok, name: atAltar.name };
+                }
                 if (nofire && tinder && !needSanc) {
                   a?.useHeldOnLoc?.(tinder.name, nofire.name, 14) ||
-                    a?.opLocAt?.(nofire.x ?? nofire.wx, nofire.z ?? nofire.wz, 'light');
+                    a?.opLocAt?.(nofire.x ?? nofire.wx, nofire.z ?? nofire.wz, 'light') ||
+                    a?.opLocAt?.(altarWx, altarWz, 'light');
                   return { action: 'light-altar', name: nofire.name };
                 }
-                if (wall) {
-                  const wx = wall.wx ?? wall.x;
-                  const wz = wall.wz ?? wall.z;
-                  a?.opLocAt?.(wx, wz, 'reinforce') ||
-                    a?.opLoc?.(wall.name, 'reinforce') ||
-                    a?.opLoc?.(wall.name, 'repair');
-                  return { action: 'wall', name: wall.name };
+                if (atAltar && !/flaming|broken/i.test(String(atAltar.name ?? '')) && tinder && !needSanc) {
+                  a?.useHeldOnLoc?.(tinder.name, atAltar.name, 14) ||
+                    a?.opLocAt?.(altarWx, altarWz, 'light');
+                  return { action: 'light-altar-at', name: atAltar.name };
                 }
+                if (broken) {
+                  const wx = broken.wx ?? broken.x;
+                  const wz = broken.wz ?? broken.z;
+                  a?.opLocAt?.(wx, wz, 'repair') ||
+                    a?.opLocAt?.(wx, wz, 'reinforce') ||
+                    a?.opLoc?.(broken.name, 'repair');
+                  return { action: 'fix-broken-altar', name: broken.name };
+                }
+                // Walk to altar center if nothing found in range
+                const me = r?.worldTile?.();
+                if (
+                  me &&
+                  Math.max(Math.abs(me.x - altarWx), Math.abs(me.z - altarWz)) > 2
+                ) {
+                  a?.walkWorld?.(altarWx, altarWz - 1);
+                  return {
+                    action: 'walk-altar',
+                    me,
+                    altars: locs
+                      .filter(l => /altar/i.test(String(l?.name ?? '')))
+                      .map(l => l?.name)
+                      .slice(0, 6)
+                  };
+                }
+                // Do NOT reinforce walls when sanc already ok (c14 infinite Temple wall)
                 return {
                   action: 'idle-remake',
                   needSanc,
                   sancP,
+                  sancRaw,
+                  altarNames: locs
+                    .filter(l => /altar|fire/i.test(String(l?.name ?? '')))
+                    .map(l => l?.name)
+                    .slice(0, 8),
                   chat: (r?.chat?.(4) ?? []).map(l => String(l?.text ?? l ?? ''))
                 };
               }, {
@@ -2066,12 +3215,9 @@ try {
     ['tarromin', 3],
     ['ashes', 3],
     ['vial_water', 3],
-    ['mort_serum3', 4],
-    ['steel_scimitar', 1],
-    ['steel_platebody', 1],
-    ['steel_platelegs', 1],
-    ['lobster', 20]
+    ['mort_serum3', 4]
   ]);
+  await seedLoarCombatKit(page);
 
   // —— 1. Read diary to last page (case 12 sets read_diary = 5) ——
   console.log('[quest-mortton] read diary to last page (if_button book:com_86 ×14)');
@@ -2130,13 +3276,7 @@ try {
   if (shot) await shot('at-mortton');
 
   // Equip melee (best-effort)
-  await page.evaluate(async () => {
-    const a = globalThis.__lc377?.actions;
-    for (const n of ['Steel scimitar', 'Steel platebody', 'Steel platelegs']) {
-      a?.equip?.(n);
-      await new Promise(r => setTimeout(r, 400));
-    }
-  });
+  await equipLoarKit(page);
 
   await page.evaluate(ws => {
     globalThis.__morttonCompleteStage = ws;

@@ -7,6 +7,7 @@
  */
 import { createRequire } from 'node:module';
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,18 +17,141 @@ const SMOKE_PKG = path.join(ROOT, 'tools/client-smoke');
 /** Playwright profile — IndexedDB `lostcity` ondemand cache survives between runs (274-style). */
 export const DEFAULT_HARNESS_PROFILE = path.join(ROOT, '.tmp/playwright-harness-profile');
 
+/** Default shot root — local only (docs/ is gitignored). */
+export const DEFAULT_SHOT_DIR = path.join(ROOT, 'docs/plans/harness-shots');
+
+/**
+ * Max age (ms) of last thrash-pin smoke **end** (harness-shots mtime) to allow s1-then-inject steal.
+ * Default **90s**. `0` = always allow steal; `-1` = never steal.
+ * Override: `RESUME_STEAL_MAX_AGE_MS`.
+ */
+export const RESUME_STEAL_MAX_AGE_MS = (() => {
+  const raw = process.env.RESUME_STEAL_MAX_AGE_MS;
+  if (raw === undefined || raw === '') return 90_000;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : 90_000;
+})();
+
 export function fail(msg) {
   console.error(`FAIL: ${msg}`);
   process.exit(1);
 }
 
+/**
+ * Latest mtime (epoch ms) under `docs/plans/harness-shots/*` for this username.
+ * Run dirs look like `mm_mmthrash1` / `misc_miscthrash1` — match folder name containing the user.
+ * Uses dir + first-level file mtimes (png/json) as “session ended” signal.
+ * @param {string} username
+ * @returns {number|null}
+ */
+export function lastHarnessShotSessionEndMs(username) {
+  const want = String(username || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, '');
+  if (!want) return null;
+  let root;
+  try {
+    root = DEFAULT_SHOT_DIR;
+    if (!fsSync.existsSync(root)) return null;
+  } catch {
+    return null;
+  }
+  let latest = null;
+  let names;
+  try {
+    names = fsSync.readdirSync(root);
+  } catch {
+    return null;
+  }
+  for (const name of names) {
+    if (name.startsWith('.')) continue;
+    const low = name.toLowerCase();
+    // Prefer suffix match (`mm_mmthrash1`) or exact folder === user
+    if (low !== want && !low.endsWith(`_${want}`) && !low.includes(want)) continue;
+    const dir = path.join(root, name);
+    let st;
+    try {
+      st = fsSync.statSync(dir);
+    } catch {
+      continue;
+    }
+    if (!st.isDirectory()) continue;
+    let t = st.mtimeMs;
+    try {
+      for (const f of fsSync.readdirSync(dir)) {
+        try {
+          const ft = fsSync.statSync(path.join(dir, f)).mtimeMs;
+          if (ft > t) t = ft;
+        } catch {
+          /* skip */
+        }
+      }
+    } catch {
+      /* skip listing */
+    }
+    if (latest == null || t > latest) latest = t;
+  }
+  return latest;
+}
+
+/**
+ * Whether s1-then-inject steal is allowed for this thrash pin.
+ * Steal only if last harness-shots activity for the user ended ≤ RESUME_STEAL_MAX_AGE_MS ago.
+ * @param {string} username
+ * @returns {{ allow: boolean, reason: string, ageMs: number|null, endedMs: number|null }}
+ */
+export function resumeStealAgeGate(username) {
+  const limit = RESUME_STEAL_MAX_AGE_MS;
+  if (limit < 0) {
+    return { allow: false, reason: 'RESUME_STEAL_MAX_AGE_MS<0 (steal disabled)', ageMs: null, endedMs: null };
+  }
+  if (limit === 0) {
+    return { allow: true, reason: 'RESUME_STEAL_MAX_AGE_MS=0 (always allow)', ageMs: null, endedMs: null };
+  }
+  const endedMs = lastHarnessShotSessionEndMs(username);
+  if (endedMs == null) {
+    return {
+      allow: false,
+      reason: `no harness-shots dir for user=${username} (treat as cold)`,
+      ageMs: null,
+      endedMs: null
+    };
+  }
+  const ageMs = Date.now() - endedMs;
+  if (ageMs <= limit) {
+    return {
+      allow: true,
+      reason: `last shot end ${Math.round(ageMs / 1000)}s ago ≤ ${Math.round(limit / 1000)}s`,
+      ageMs,
+      endedMs
+    };
+  }
+  return {
+    allow: false,
+    reason: `last shot end ${Math.round(ageMs / 1000)}s ago > ${Math.round(limit / 1000)}s`,
+    ageMs,
+    endedMs
+  };
+}
+
 export function parseArgs(argv, defaults = {}) {
   let base;
   const rest = [];
+  // Flags that take a value (must not land in rest as a fake username).
+  // Symptom 2026-08-09: `--max-ms 300000` → user=`--max-ms` → s1/login thrash as `max_ms`.
+  const valueFlags = new Set(['--base', '--max-ms', '--timeout', '--user', '--pass']);
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--base' && i + 1 < argv.length) {
       base = argv[++i];
+      continue;
+    }
+    if (valueFlags.has(a) && i + 1 < argv.length) {
+      i++; // skip value
+      continue;
+    }
+    if (a.startsWith('-')) {
+      // bare flags: --headless, --proof, …
       continue;
     }
     if (a.startsWith('http') || a.includes('://')) {
@@ -65,26 +189,82 @@ export function freshAccount(prefix = 'h') {
 }
 
 /**
- * Resolve credentials: explicit argv → SMOKE_USER/PASS → fresh random.
- * Prefer random so sav state never poisons smokes (rs2b0t style).
+ * Smoke account mode (rs2b0t-style + thrash pin).
  *
+ * | Mode | When | Account |
+ * |------|------|---------|
+ * | **proof** (default) | residual / citeable PASS | fresh username every run |
+ * | **thrash** | harness iteration | pin sav (`SMOKE_USER` or `{prefix}thrash1`) |
+ * | **pinned** | explicit argv / SMOKE_USER without thrash flag | reuse that user |
+ *
+ * Env: `SMOKE_MODE=proof|thrash|residual` · `THRASH_PIN=1` → thrash ·
+ * `SMOKE_USER` / `SMOKE_PASS` · argv user/pass override all.
+ *
+ * @see docs/research/harness-lessons-rs2b0t-nav.md
  * @param {string[]} rest positional [user, pass] from parseArgs
  * @param {string} [prefix='h']
+ * @returns {{ username: string, password: string, mode: 'proof'|'thrash'|'pinned' }}
  */
 export function resolveAccount(rest = [], prefix = 'h') {
-  if (rest[0]) {
-    return {
-      username: String(rest[0]).slice(0, 12),
-      password: rest[1] ?? process.env.SMOKE_PASS ?? 'test'
+  const envMode = String(process.env.SMOKE_MODE || '')
+    .toLowerCase()
+    .trim();
+  const thrashEnv =
+    process.env.THRASH_PIN === '1' ||
+    process.env.THRASH_PIN === 'true' ||
+    envMode === 'thrash';
+  const proofEnv = envMode === 'proof' || envMode === 'residual';
+
+  // Positional user must look like a username, not a leftover flag value.
+  const posUser = rest.find(a => a && !String(a).startsWith('-') && !/^\d+$/.test(String(a)));
+  if (posUser) {
+    const passIdx = rest.indexOf(posUser) + 1;
+    const posPass = rest[passIdx];
+    const acc = {
+      username: String(posUser).slice(0, 12),
+      password:
+        posPass && !String(posPass).startsWith('-')
+          ? String(posPass)
+          : (process.env.SMOKE_PASS ?? 'test'),
+      mode: thrashEnv ? 'thrash' : 'pinned'
     };
+    console.log(
+      `[harness] account mode=${acc.mode} user=${acc.username} (argv)`
+    );
+    return acc;
   }
   if (process.env.SMOKE_USER) {
-    return {
+    const acc = {
       username: String(process.env.SMOKE_USER).slice(0, 12),
-      password: process.env.SMOKE_PASS ?? 'test'
+      password: process.env.SMOKE_PASS ?? 'test',
+      mode: thrashEnv || !proofEnv ? 'thrash' : 'pinned'
     };
+    // SMOKE_USER alone = thrash-friendly pin unless SMOKE_MODE=proof forces fresh
+    if (proofEnv && !thrashEnv) {
+      const fresh = freshAccount(prefix);
+      console.log(
+        `[harness] account mode=proof user=${fresh.username} (SMOKE_MODE=proof ignores SMOKE_USER=${acc.username})`
+      );
+      return { ...fresh, mode: 'proof' };
+    }
+    console.log(
+      `[harness] account mode=${acc.mode} user=${acc.username} (SMOKE_USER)`
+    );
+    return acc;
   }
-  return freshAccount(prefix);
+  if (thrashEnv) {
+    const p = String(prefix)
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .slice(0, 5) || 'h';
+    const username = `${p}thrash1`.slice(0, 12);
+    console.log(
+      `[harness] account mode=thrash user=${username} (THRASH_PIN / SMOKE_MODE=thrash)`
+    );
+    return { username, password: process.env.SMOKE_PASS ?? 'test', mode: 'thrash' };
+  }
+  const fresh = freshAccount(prefix);
+  console.log(`[harness] account mode=proof user=${fresh.username} (fresh)`);
+  return { ...fresh, mode: 'proof' };
 }
 
 export const HARNESS_VIEWPORT = { width: 1280, height: 720 };
@@ -189,29 +369,318 @@ export function boot(page) {
   );
 }
 
+/** GET body byte length via node:http (IPv4). */
+async function httpBodySize(url) {
+  const httpMod = await import('node:http');
+  const http = httpMod.default ?? httpMod;
+  const u = new URL(url);
+  return new Promise((resolve, reject) => {
+    const req = http.request(
+      {
+        hostname: u.hostname === 'localhost' ? '127.0.0.1' : u.hostname,
+        port: u.port || 80,
+        path: u.pathname + u.search,
+        method: 'GET',
+        family: 4,
+        timeout: 8000
+      },
+      res => {
+        let n = 0;
+        res.on('data', c => {
+          n += c.length;
+        });
+        res.on('end', () => resolve({ status: res.statusCode | 0, size: n }));
+      }
+    );
+    req.on('error', reject);
+    req.on('timeout', () => {
+      req.destroy(new Error('timeout'));
+    });
+    req.end();
+  });
+}
+
+/**
+ * Preflight: live HTTP pack must match flat client pack (esp. versionlist).
+ * Mismatch → sceneState stuck at **1** forever (model ver=0 / CRC “Game updated”).
+ *
+ * @see docs/plans/2026-08-05-scene-stuck-versionlist-zero.md
+ * @param {string} [base='http://127.0.0.1:81']
+ * @returns {Promise<{ ok: boolean, versionlistHttp: number, versionlistDisk: number, configHttp: number, note?: string }>}
+ */
+export async function checkEnginePackHealth(base = 'http://127.0.0.1:81') {
+  const fsSync = await import('node:fs');
+  const diskPath = path.join(ROOT, 'vendor/engine/data/pack/client/versionlist');
+  let versionlistDisk = 0;
+  try {
+    versionlistDisk = fsSync.statSync(diskPath).size;
+  } catch {
+    /* missing */
+  }
+  // base may be full page URL (…/harness.html) — health checks need origin only
+  let origin = base.replace(/\/$/, '');
+  try {
+    const u = new URL(origin);
+    origin = `${u.protocol}//${u.host}`;
+  } catch {
+    origin = 'http://127.0.0.1:81';
+  }
+  let versionlistHttp = 0;
+  let configHttp = 0;
+  try {
+    const vr = await httpBodySize(`${origin}/versionlist`);
+    if (vr.status !== 200) {
+      return {
+        ok: false,
+        versionlistHttp: 0,
+        versionlistDisk,
+        configHttp: 0,
+        note: `versionlist HTTP ${vr.status}`
+      };
+    }
+    versionlistHttp = vr.size;
+  } catch (e) {
+    return {
+      ok: false,
+      versionlistHttp: 0,
+      versionlistDisk,
+      configHttp: 0,
+      note: `versionlist fetch failed: ${e?.message || e}`
+    };
+  }
+  try {
+    const cr = await httpBodySize(`${origin}/config`);
+    if (cr.status === 200) configHttp = cr.size;
+  } catch {
+    /* ignore */
+  }
+  // Known-good flat size ~81054; HTTP must match disk (not a smaller stale cache).
+  const match = versionlistHttp > 0 && versionlistHttp === versionlistDisk;
+  const configOk = configHttp > 100_000;
+  const ok = match && configOk;
+  const note = ok
+    ? undefined
+    : !match
+      ? `versionlist HTTP ${versionlistHttp} ≠ disk ${versionlistDisk} — scene1 hang risk. ` +
+        `Fix: BUILD_VERIFY=false npm run build in vendor/engine + restart; wipe .tmp/playwright-harness-profile`
+      : `config HTTP size ${configHttp} looks empty/bad`;
+  return { ok, versionlistHttp, versionlistDisk, configHttp, note };
+}
+
+/**
+ * Fail fast **before** launchBrowser if pack/cache contract is broken.
+ * Retries while HTTP size is 0 (engine still booting / mid “Packing changes”).
+ * Set SKIP_PACK_HEALTH=1 to bypass.
+ */
+export async function assertEnginePackHealth(base = 'http://127.0.0.1:81') {
+  if (process.env.SKIP_PACK_HEALTH === '1' || process.env.SKIP_PACK_HEALTH === 'true') {
+    return;
+  }
+  const deadline = Date.now() + Number(process.env.PACK_HEALTH_MS || 45_000);
+  let h = await checkEnginePackHealth(base);
+  let attempt = 0;
+  while (!h.ok && Date.now() < deadline) {
+    attempt++;
+    // 0-byte HTTP = engine down or mid-reload; mismatch = real scene1 risk
+    const transient = h.versionlistHttp === 0 || h.configHttp === 0;
+    console.log(
+      `[harness] pack health wait #${attempt} vl_http=${h.versionlistHttp} vl_disk=${h.versionlistDisk} config=${h.configHttp}` +
+        (transient ? ' (engine not ready yet)' : '') +
+        (h.note ? ` note=${h.note}` : '')
+    );
+    if (!transient) break; // hard mismatch — no point spinning forever
+    await new Promise(r => setTimeout(r, 1500));
+    h = await checkEnginePackHealth(base);
+  }
+  console.log(
+    `[harness] pack health vl_http=${h.versionlistHttp} vl_disk=${h.versionlistDisk} config=${h.configHttp} ok=${h.ok}`
+  );
+  if (!h.ok) {
+    fail(h.note || 'engine pack health check failed');
+  }
+}
+
 /**
  * Login via Client.login inject (rs2b0t tools/lib/harness.ts).
  *
- *   await page.evaluate → client.loginUser/loginPass + void client.login(u,p,false)
+ * Dirty-kill (cold title, World holds username → reply 5):
+ *   Ghost is **World RAM**, not a `.sav` flag. Bare opcode 18 from title is wrong.
  *
- * Default for harness client. Opt into old canvas typing with TITLE_LOGIN=1
- * if you need to exercise the title screen UI.
+ * **Resume steal (s1-then-inject)** only when the thrash pin’s last smoke **ended**
+ * recently — measured by mtime of `docs/plans/harness-shots/*{user}*` (png/json).
+ * Default window: **≤90s** (`RESUME_STEAL_MAX_AGE_MS`). If older / no shots:
+ *   dirty hold → normal login inject → **same thrash prep as steal** (wipe inv/worn,
+ *   `__lc377_resumeSteal` so mainlandAccount skips tutorial setvar/relog).
+ *   Opt out of steal entirely: `DIRTY_LOGIN_STEAL=0`.
+ *
+ * Opt into title UI: TITLE_LOGIN=1.
+ * @returns {Promise<boolean>}
  */
 export async function login(page, user, pass = 'test') {
+  await page.evaluate(() => {
+    globalThis.__lc377_resumeSteal = false;
+  }).catch(() => {});
+
   if (process.env.TITLE_LOGIN === '1' || process.env.TITLE_LOGIN === 'true') {
     return loginTitleUi(page, user, pass);
   }
-  return loginInject(page, user, pass);
+  const r = await loginInject(page, user, pass);
+  if (r.ok) return true;
+
+  if (!r.alreadyLoggedIn) {
+    return false;
+  }
+
+  const stealOff =
+    process.env.DIRTY_LOGIN_STEAL === '0' || process.env.DIRTY_LOGIN_STEAL === 'false';
+  const ageGate = resumeStealAgeGate(user);
+  if (!stealOff && ageGate.allow) {
+    console.log(
+      `[harness] already logged in — resumeSteal OK (${ageGate.reason}) — s1-then-inject (donor → softDrop → reconnect ${user})`
+    );
+    if (await loginStealGhost(page, user, pass)) {
+      await wipeAfterResumeSteal(page);
+      await resyncMusicAfterSteal(page);
+      await page.evaluate(() => {
+        globalThis.__lc377_resumeSteal = true;
+      });
+      return true;
+    }
+    console.warn('[harness] s1-then-inject steal failed — falling back to dirty hold + normal login');
+  } else if (!stealOff && !ageGate.allow) {
+    console.log(
+      `[harness] already logged in — skip resumeSteal (${ageGate.reason}) — dirty hold + normal login, then thrash wipe`
+    );
+  }
+
+  const hold = RELOG_COOLDOWN_DIRTY_MS;
+  console.log(
+    `[harness] already logged in (World ghost, not .sav) — dirty hold ${Math.round(hold / 1000)}s then retry`
+  );
+  await page.waitForTimeout(hold);
+
+  const deadline = Date.now() + RELOG_BUDGET_MS;
+  let attempt = 0;
+  while (Date.now() < deadline) {
+    attempt++;
+    console.log(
+      `[harness] dirty-hold login retry ${attempt} mes='${await loginMes(page).catch(() => '')}'`
+    );
+    const again = await loginInject(page, user, pass);
+    if (again.ok) {
+      // Same thrash prep as resumeSteal: wipe inv/worn; skip full mainland setvar/relog.
+      await wipeInvAndWorn(page, 'thrash pin after dirty hold (no steal)');
+      await page.evaluate(() => {
+        globalThis.__lc377_resumeSteal = true;
+      });
+      return true;
+    }
+    if (!again.alreadyLoggedIn) return false;
+    await page.waitForTimeout(RELOG_RETRY_MS);
+  }
+  return false;
 }
 
-/** rs2b0t-style inject — no canvas clicks. */
-export async function loginInject(page, user, pass = 'test') {
-  await page.waitForFunction(() => !!globalThis.__lc377?.ok, undefined, { timeout: 30_000 });
+/** True if last successful login() used s1-then-inject steal (page flag). */
+export async function didResumeSteal(page) {
+  return page.evaluate(() => !!globalThis.__lc377_resumeSteal).catch(() => false);
+}
+
+/**
+ * Strip worn + pack so thrash can re-seed cleanly.
+ * Does **not** touch tutorial varp, stats, or quest vars.
+ *
+ * Needed when dirty **steal fails** (or is off): thrash pin sav still has worn
+ * (e.g. Castle Wars Hooded cloak) and `~clearinv` alone does not unequip.
+ */
+export async function wipeInvAndWorn(page, reason = 'wipe') {
+  console.log(`[harness] ${reason}: unequipAll + ~clearinv + ~clearinv worn (keep tutorial/stats/quest)`);
+  await page.evaluate(() => {
+    const a = globalThis.__lc377?.actions;
+    if (typeof a?.unequipAll === 'function') a.unequipAll(12);
+  }).catch(() => {});
+  await page.waitForTimeout(400);
+  // Pack wipe (does not strip worn — unequip first)
+  await cheatQuiet(page, '~clearinv', 500);
+  // Leftover worn if unequip missed a slot
+  await cheatQuiet(page, '~clearinv worn', 500);
+  await page.waitForTimeout(300);
+}
+
+/** @deprecated name — use wipeInvAndWorn (steal is only one caller path) */
+export async function wipeAfterResumeSteal(page) {
+  return wipeInvAndWorn(page, 'resume steal');
+}
+
+/**
+ * After s1-then-inject steal: title music (scape_main) often keeps playing because
+ * reconnect reply 15 does **not** re-run mapzone → midi_song. Server only fires
+ * music on mapsquare enter (NetworkPlayer lastMapZone change).
+ *
+ * 1. clearMidiState (stop tinymidipcm + reset nextMidiSong so MIDI_SONG applies)
+ * 2. brief hop off mapsquare + back → triggerMapzone → music_playbyregion
+ */
+export async function resyncMusicAfterSteal(page) {
+  console.log('[harness] resume steal: resync game music (stop title + re-enter mapzone)');
+  await page.evaluate(() => {
+    globalThis.__lc377?.clearMidiState?.('post-steal');
+  }).catch(() => {});
+
+  const tile = await worldTile(page).catch(() => null);
+  if (!tile) {
+    console.warn('[harness] resyncMusic: no tile — skipped mapzone hop');
+    return;
+  }
+
+  // Leave mapsquare (64×64) then re-enter so engine fires [mapzone,0_mx_mz] music.
+  const mx = tile.x >> 6;
+  const mz = tile.z >> 6;
+  const localX = tile.x & 63;
+  // Prefer hop west; if on west edge hop east instead
+  const outX = localX >= 2 ? mx * 64 - 1 : (mx + 1) * 64 + 1;
+  const out = { x: outX, z: tile.z, level: tile.level ?? 0 };
+
+  const hopOk = await teleTo(page, out, 3, 18_000).catch(() => false);
+  if (!hopOk) {
+    console.warn('[harness] resyncMusic: exit hop failed — music may stay title');
+    return;
+  }
+  await page.waitForTimeout(500);
+  // Ensure client accepts a new MIDI_SONG (title left nextMidiSong=0 often)
+  await page.evaluate(() => {
+    globalThis.__lc377?.clearMidiState?.('pre-reenter');
+  }).catch(() => {});
+  await teleTo(page, tile, 3, 18_000).catch(() => {});
+  await waitSceneReady(page, 25_000).catch(() => {});
+  await page.waitForTimeout(400);
+  console.log(
+    `[harness] resyncMusic: re-entered mapsquare ${mx}_${mz} at ${tile.x},${tile.z}`
+  );
+}
+
+/**
+ * Steal a World ghost: **get client to s1 the normal way, then inject reconnect.**
+ *
+ * 1. Full login as throwaway donor (reply 2 → prepareGame + graph) — known-good path
+ * 2. Wait until **ingame && sceneState ≥ 1** (s1 = map build / mid-session shape)
+ * 3. softDropStream — close socket only (tryReconnect-shaped; no logout teardown)
+ * 4. reconnectLogin(target) — opcode 18 inject while already post-s1
+ * 5. Wait ingame + scene ≥ 1 (then prefer 2)
+ *
+ * Opt out: DIRTY_LOGIN_STEAL=0. Harness-only.
+ */
+export async function loginStealGhost(page, user, pass = 'test') {
+  const donor = freshAccount('don');
+  const s1Ms = Number(process.env.STEAL_S1_MS) || Math.min(LOGIN_MS, 90_000);
+  console.log(
+    `[harness] stealGhost: donor=${donor.username} → wait s1 (scene≥1) → softDrop → inject reconnect ${user}`
+  );
+
+  // --- 1) Known-good: full donor login (opcode 16 / reply 2). Don't require s2 yet. ---
   const dispatched = await page.evaluate(
     ([u, p]) => {
       const h = globalThis.__lc377;
       if (h?.login) return h.login(u, p, false);
-      // Fallback: dig client on abi
       const c = h?.client;
       if (!c?.login) return false;
       c.loginUser = u;
@@ -219,32 +688,199 @@ export async function loginInject(page, user, pass = 'test') {
       void c.login(u, p, false);
       return true;
     },
-    [String(user).slice(0, 12), String(pass ?? 'test')]
+    [donor.username, donor.password]
   );
   if (!dispatched) {
-    console.warn('[harness] login inject not dispatched — falling back to title UI');
-    return loginTitleUi(page, user, pass);
+    console.warn('[harness] stealGhost: donor login not dispatched');
+    return false;
   }
+
+  // --- 2) Get to s1 (ingame + sceneState ≥ 1). This is the shape we know how to reach. ---
   try {
     await page.waitForFunction(
       () => {
         const h = globalThis.__lc377;
-        return h && h.ingame() && h.sceneState() === 2;
+        if (!h?.ingame?.()) return false;
+        const s = h.sceneState?.() ?? -1;
+        return s >= 1; // s1 or s2 — past title / reply-2 graph live
       },
       undefined,
-      { timeout: LOGIN_MS }
+      { timeout: s1Ms }
     );
-    return true;
   } catch {
-    // Often: already ingame but stuck sceneState=1 (ondemand). loginMes may still say
-    // "Connecting to server..." — dump real scene diag so we don't misread the failure.
     const diag = await sceneDiag(page).catch(() => null);
     console.warn(
-      `[harness] login wait timed out after ${LOGIN_MS}ms (want ingame+scene 2):`,
-      diag ? JSON.stringify(diag) : await loginMes(page)
+      '[harness] stealGhost: never reached s1 on donor',
+      diag ? JSON.stringify(diag) : await loginMes(page).catch(() => '')
     );
     return false;
   }
+
+  const pre = await page.evaluate(() => {
+    const h = globalThis.__lc377;
+    return {
+      ingame: !!h?.ingame?.(),
+      scene: h?.sceneState?.() ?? -1,
+      mes: h?.loginMes?.() ?? ''
+    };
+  });
+  console.log(`[harness] stealGhost: donor at s${pre.scene} (ingame=${pre.ingame}) — softDrop + inject`);
+
+  // --- 3) Soft-drop like tryReconnect (keep graph; drop stream) ---
+  const dropped = await page.evaluate(() => {
+    const h = globalThis.__lc377;
+    if (typeof h?.softDropStream === 'function') return h.softDropStream();
+    const c = h?.client;
+    if (!c) return false;
+    try {
+      c.stream?.close?.();
+      c.stream = null;
+      c.ingame = false;
+      if (typeof c.loginRetryCount === 'number') c.loginRetryCount = 0;
+      return true;
+    } catch {
+      return false;
+    }
+  });
+  if (!dropped) {
+    console.warn('[harness] stealGhost: softDropStream failed');
+    return false;
+  }
+
+  // --- 4) Inject reconnect as the thrash pin (opcode 18) ---
+  const recon = await page.evaluate(
+    ([u, p]) => {
+      const h = globalThis.__lc377;
+      if (typeof h?.reconnectLogin === 'function') return h.reconnectLogin(u, p);
+      return h?.login?.(u, p, true) === true;
+    },
+    [String(user).slice(0, 12), String(pass ?? 'test')]
+  );
+  if (!recon) {
+    console.warn('[harness] stealGhost: reconnect inject not dispatched');
+    return false;
+  }
+
+  // --- 5) Resume: reply 15 → ingame; rebuild often hits s1 then s2 ---
+  try {
+    await page.waitForFunction(
+      () => {
+        const h = globalThis.__lc377;
+        return h && h.ingame() && (h.sceneState?.() ?? -1) >= 1;
+      },
+      undefined,
+      { timeout: Math.min(LOGIN_MS, 60_000) }
+    );
+    // Prefer s2 when it lands; don't fail the steal if stuck briefly at s1
+    await page
+      .waitForFunction(
+        () => {
+          const h = globalThis.__lc377;
+          return h && h.ingame() && h.sceneState() === 2;
+        },
+        undefined,
+        { timeout: 45_000 }
+      )
+      .catch(() => {});
+    const post = await page.evaluate(() => {
+      const h = globalThis.__lc377;
+      return { ingame: !!h?.ingame?.(), scene: h?.sceneState?.() ?? -1 };
+    });
+    console.log(`[harness] stealGhost: ok as ${user} scene=${post.scene} ingame=${post.ingame}`);
+    return post.ingame && post.scene >= 1;
+  } catch {
+    const diag = await sceneDiag(page).catch(() => null);
+    console.warn(
+      '[harness] stealGhost: after inject still not s1+',
+      diag ? JSON.stringify(diag) : await loginMes(page).catch(() => '')
+    );
+    return false;
+  }
+}
+
+/**
+ * rs2b0t-style inject — no canvas clicks.
+ * @returns {{ ok: boolean, alreadyLoggedIn?: boolean }}
+ */
+export async function loginInject(page, user, pass = 'test', opts = {}) {
+  const reconnect = !!opts.reconnect;
+  await page.waitForFunction(() => !!globalThis.__lc377?.ok, undefined, { timeout: 30_000 });
+  const dispatched = await page.evaluate(
+    ([u, p, recon]) => {
+      const h = globalThis.__lc377;
+      if (h?.login) return h.login(u, p, recon);
+      const c = h?.client;
+      if (!c?.login) return false;
+      c.loginUser = u;
+      c.loginPass = p;
+      void c.login(u, p, recon);
+      return true;
+    },
+    [String(user).slice(0, 12), String(pass ?? 'test'), reconnect]
+  );
+  if (!dispatched) {
+    console.warn('[harness] login inject not dispatched — falling back to title UI');
+    const ok = await loginTitleUi(page, user, pass);
+    return { ok, alreadyLoggedIn: false };
+  }
+
+  // Fail-fast on reply 5 ("already logged in") — do not burn LOGIN_MS on title.
+  const deadline = Date.now() + LOGIN_MS;
+  let lastLog = 0;
+  let stuckS1Since = 0;
+  while (Date.now() < deadline) {
+    const snap = await page.evaluate(() => {
+      const h = globalThis.__lc377;
+      if (!h) return { ingame: false, scene: -1, mes: '' };
+      return {
+        ingame: !!h.ingame?.(),
+        scene: h.sceneState?.() ?? -1,
+        mes: h.loginMes?.() ?? ''
+      };
+    });
+    if (snap.ingame && snap.scene === 2) return { ok: true };
+    if (snap.ingame && snap.scene === 1) {
+      if (!stuckS1Since) stuckS1Since = Date.now();
+      // 25s stuck at s1 → almost always versionlist/CRC; log loud (do not burn full LOGIN_MS silent)
+      if (Date.now() - stuckS1Since > 25_000 && Date.now() - lastLog > 8_000) {
+        lastLog = Date.now();
+        const diag = await sceneDiag(page).catch(() => null);
+        console.warn(
+          `[harness] STUCK sceneState=1 for ${Math.round((Date.now() - stuckS1Since) / 1000)}s — ` +
+            `usually versionlist HTTP≠disk or stale Playwright profile. diag=${diag ? JSON.stringify(diag) : 'n/a'}`
+        );
+      }
+    } else {
+      stuckS1Since = 0;
+    }
+    if (/already logged in/i.test(snap.mes)) {
+      console.log(`[harness] loginInject fail-fast: ${snap.mes}`);
+      return { ok: false, alreadyLoggedIn: true };
+    }
+    // Other hard title failures (invalid pass, full world, …) — stop early too
+    if (
+      /invalid username|account has been disabled|world is full|error connecting|unable to connect/i.test(
+        snap.mes
+      )
+    ) {
+      console.warn(`[harness] loginInject title failure: ${snap.mes}`);
+      return { ok: false, alreadyLoggedIn: false };
+    }
+    if (Date.now() - lastLog > 15_000 && snap.ingame) {
+      lastLog = Date.now();
+      console.log(
+        `[harness] login wait… ingame=${snap.ingame} scene=${snap.scene} mes='${snap.mes || ''}'`
+      );
+    }
+    await page.waitForTimeout(250);
+  }
+
+  const diag = await sceneDiag(page).catch(() => null);
+  console.warn(
+    `[harness] login wait timed out after ${LOGIN_MS}ms reconnect=${reconnect} (want ingame+scene 2):`,
+    diag ? JSON.stringify(diag) : await loginMes(page)
+  );
+  return { ok: false, alreadyLoggedIn: /already logged in/i.test(await loginMes(page).catch(() => '')) };
 }
 
 /** Snapshot of scene load blockers (sceneState 1 hang diagnosis). */
@@ -349,29 +985,72 @@ export async function setWorldSpeed(page, ms = 300) {
   return true;
 }
 
+/** Free inventory slots (28-pack). Non-stack food/gear each need one slot. */
+export async function invFreeSlots(page) {
+  return page.evaluate(() => {
+    const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+    return Math.max(0, 28 - inv.length);
+  });
+}
+
 /**
  * `::give <item> [amount]` — setup seed only (Decision 004).
  * Prefer calling after waitSceneReady when the bot will immediately use items
  * (scene=1 can drop inventory refresh / OP use-with thrash).
+ *
+ * **Inv-aware:** cooked food / many objs are non-stackable. A single
+ * `give lobster 20` needs 20 free slots or later items never land (Flamtaer
+ * oil kit lost tinder/plank). When free slots run out, remaining gives are
+ * skipped and listed in the return value / warn log.
+ *
  * @param {import('playwright').Page} page
  * @param {Array<[string, number]|{name:string, qty?:number}>} items
- * @param {{ waitScene?: boolean }} [opts] default waitScene=true
+ * @param {{ waitScene?: boolean, failOnFull?: boolean }} [opts]
+ *   waitScene default true; failOnFull default false (warn + skip)
+ * @returns {Promise<string[]>} failed or skipped commands
  */
 export async function giveItems(page, items, opts = {}) {
   const waitScene = opts.waitScene !== false;
+  const failOnFull = opts.failOnFull === true;
   if (waitScene) {
     const ok = await waitSceneReady(page, 45_000);
     if (!ok) console.warn('giveItems: scene not ready after 45s — sending give anyway');
   }
   /** @type {string[]} */
   const failed = [];
+  let free = await invFreeSlots(page);
+  const worstCaseSlots = items.reduce((n, entry) => {
+    const qty = Array.isArray(entry) ? entry[1] ?? 1 : entry.qty ?? 1;
+    return n + Math.max(1, qty | 0);
+  }, 0);
+  if (free < worstCaseSlots) {
+    console.warn(
+      `[harness] giveItems: free=${free} slots, list wants ≤${worstCaseSlots} if non-stack — will stop when full`
+    );
+  }
   for (const entry of items) {
     const name = Array.isArray(entry) ? entry[0] : entry.name;
-    const qty = Array.isArray(entry) ? entry[1] ?? 1 : entry.qty ?? 1;
-    const cmd = `give ${name} ${qty | 0}`;
-    if (!(await cheatQuiet(page, cmd, 300))) failed.push(cmd);
+    let qty = Array.isArray(entry) ? entry[1] ?? 1 : entry.qty ?? 1;
+    qty = Math.max(0, qty | 0);
+    if (qty < 1) continue;
+    free = await invFreeSlots(page);
+    if (free < 1) {
+      const skip = `give ${name} ${qty} (inv full)`;
+      failed.push(skip);
+      console.warn(`[harness] giveItems skip: ${skip}`);
+      if (failOnFull) break;
+      continue;
+    }
+    // Full qty in one cheat: stackables (runes) need 1 slot; engine stacks.
+    // Min(qty, free) wrongly truncates stackable runes to free slots (e.g. air 500→28).
+    const cmd = `give ${name} ${qty}`;
+    if (!(await cheatQuiet(page, cmd, 280))) {
+      failed.push(cmd);
+      continue;
+    }
+    free = await invFreeSlots(page);
   }
-  if (failed.length) console.warn('giveItems failed:', failed.join('; '));
+  if (failed.length) console.warn('giveItems failed/skipped:', failed.join('; '));
   return failed;
 }
 
@@ -443,6 +1122,30 @@ export async function getServerVarQuiet(page, name, attempts = 4) {
 export const OFF_ISLAND_TELE = '0,50,50,20,20';
 
 /**
+ * Soft tele Lumbridge after thrash resume (steal / pin-no-steal).
+ * Clears Castle Wars waiting room / last-fight dirt so product `pre_tele_checks`
+ * (sigil, jewellery, …) are not blocked by `in_castlewars_*`.
+ */
+export async function softTeleLumbridge(page, reason = 'resume') {
+  console.log(`[harness] soft tele Lumbridge (${reason}) ${OFF_ISLAND_TELE}`);
+  await cheatQuiet(page, `tele ${OFF_ISLAND_TELE}`, 600);
+  await page.waitForTimeout(800);
+  await waitSceneReady(page, 25_000).catch(() => {});
+  return worldTile(page);
+}
+
+/**
+ * Rough tutorial-island AABB (not map-perfect). Used only to skip mainland prep
+ * when a thrash pin sav already finished tutorial and is on the mainland.
+ */
+export function onTutorialIsland(tile) {
+  if (!tile || tile.x == null || tile.z == null) return true;
+  const x = tile.x | 0;
+  const z = tile.z | 0;
+  return x >= 3055 && x <= 3155 && z >= 3050 && z <= 3135;
+}
+
+/**
  * `logout:try_logout` — interface.pack id (same as rs2b0t / 274).
  * IF_BUTTON → content `[if_button,logout:try_logout]` → `p_logout` (clean server session).
  * Socket-drop `client.logout()` alone leaves the engine session hot → login reply 5 + long relog.
@@ -451,11 +1154,30 @@ export const LOGOUT_BUTTON_COM = 2458;
 
 /** After clean p_logout — short settle before re-login (override RELOG_COOLDOWN_CLEAN_MS). */
 const RELOG_COOLDOWN_CLEAN_MS = Number(process.env.RELOG_COOLDOWN_CLEAN_MS) || 2_000;
-/** After dirty/socket logout — engine may hold the player (override RELOG_COOLDOWN_MS). */
-const RELOG_COOLDOWN_DIRTY_MS = Number(process.env.RELOG_COOLDOWN_MS) || 20_000;
+/**
+ * After dirty kill / socket drop — player stays in World.playerLoop until
+ * TIMEOUT_NO_RESPONSE (100 ticks) with no packet. At speed 600ms ≈ 60s; at
+ * speed 300ms ≈ 30s.
+ *
+ * **Not a .sav flag** — `Player.save()` is pos/stats/vars/inv only.
+ * With LOGIN_SERVER=false (isolation), LoginThread is file-mode and never
+ * checks a logged_in bit; rejection is World RAM only (client reply 5).
+ * With LOGIN_SERVER=true, `account_login.logged_in` in db.sqlite is the
+ * multi-world lock (still not the sav).
+ *
+ * Prefer: clean IF logout before process exit. On reply 5, login() waits
+ * dirty hold then retries. DIRTY_LOGIN_STEAL=1 is experimental only.
+ * Override RELOG_COOLDOWN_MS.
+ */
+const RELOG_COOLDOWN_DIRTY_MS = Number(process.env.RELOG_COOLDOWN_MS) || 65_000;
 const RELOG_PROBE_MS = Number(process.env.RELOG_PROBE_MS) || 5_000;
 const RELOG_RETRY_MS = Number(process.env.RELOG_RETRY_MS) || 3_000;
 const RELOG_BUDGET_MS = Number(process.env.RELOG_BUDGET_MS) || 120_000;
+
+/** Wall-clock wait after unclean thrash kill before re-using the same username. */
+export function dirtyLogoutHoldMs() {
+  return RELOG_COOLDOWN_DIRTY_MS;
+}
 
 /**
  * Clean logout via game IF button (preferred). Falls back to socket-drop client.logout.
@@ -496,8 +1218,8 @@ export async function relog(page, user, pass = 'test') {
   const lo = await logoutSafe(page, 8_000);
   const cooldown = lo.clean ? RELOG_COOLDOWN_CLEAN_MS : RELOG_COOLDOWN_DIRTY_MS;
   console.log(
-    `  relog: logout clean=${lo.clean} sent=${lo.sent} → probe from ${Math.round(cooldown / 1000)}s ` +
-      `(RELOG_COOLDOWN_CLEAN_MS / RELOG_COOLDOWN_MS / RELOG_PROBE_MS / RELOG_RETRY_MS / RELOG_BUDGET_MS)`
+    `  relog: logout clean=${lo.clean} sent=${lo.sent} → wait ${Math.round(cooldown / 1000)}s ` +
+      `(clean IF vs dirty World hold; cold reconnect is not used)`
   );
 
   if (!lo.clean) {
@@ -515,22 +1237,8 @@ export async function relog(page, user, pass = 'test') {
   let attempt = 0;
   for (;;) {
     attempt++;
-    await page.evaluate(
-      ([u, p]) => globalThis.__lc377?.login?.(u, p, false),
-      [String(user).slice(0, 12), String(pass ?? 'test')]
-    );
-    const ok = await page
-      .waitForFunction(
-        () => {
-          const h = globalThis.__lc377;
-          return h && h.ingame() && h.sceneState() === 2;
-        },
-        undefined,
-        { timeout: RELOG_PROBE_MS }
-      )
-      .then(() => true)
-      .catch(() => false);
-    if (ok) {
+    const r = await loginInject(page, user, pass);
+    if (r.ok) {
       console.log(`  relog: back ingame (attempt ${attempt})`);
       return;
     }
@@ -540,7 +1248,7 @@ export async function relog(page, user, pass = 'test') {
       );
     }
     if (attempt === 1 || attempt % 3 === 0) {
-      console.log(`  relog: attempt ${attempt} not ingame yet — retry`);
+      console.log(`  relog: attempt ${attempt} not ingame yet — retry (alreadyLoggedIn=${!!r.alreadyLoggedIn})`);
     }
     await page.waitForTimeout(RELOG_RETRY_MS);
   }
@@ -554,6 +1262,14 @@ export async function relog(page, user, pass = 'test') {
  *   2. CLIENT_CHEAT tele off island + setvar tutorial 1000 (with getvar verify)
  *   3. relog so side icons / tutorial UI lock refresh
  *
+ * **Resume steal path** (dirty World ghost → s1-then-inject): login already
+ * unequipAll + clearinv. Skip tutorial setvar + relog (pin already mainlanded;
+ * stats/quest vars kept). Smokes re-seed inv as needed.
+ *
+ * **Thrash/pinned sav fast path:** if `tutorial` already 1000 and tile is not
+ * tutorial island, skip setvar + tele + relog (~15–30s). Force full path:
+ * `MAINLAND_FORCE_FULL=1`.
+ *
  * Uses packet cheats, not keyboard `::…` (island chat eats keystrokes).
  *
  * @param {import('playwright').Page} page already at harness.html after boot()
@@ -561,6 +1277,8 @@ export async function relog(page, user, pass = 'test') {
  * @param {string} [pass='test']
  */
 export async function mainlandAccount(page, user, pass = 'test') {
+  // Node console → headed panel LogBus (smokes rarely call thrashPoint)
+  installSmokePanelMirror(page);
   console.log(`mainlandAccount: login as '${user}'`);
   if (!(await login(page, user, pass))) {
     const diag = await sceneDiag(page).catch(() => null);
@@ -570,6 +1288,70 @@ export async function mainlandAccount(page, user, pass = 'test') {
       `mainlandAccount: login did not reach scene 2 within ${LOGIN_MS}ms — ` +
         `loginMes='${mes}' diag=${diag ? JSON.stringify(diag) : 'n/a'}`
     );
+  }
+
+  if (await didResumeSteal(page)) {
+    // Already wiped in login(); thrash pin keeps tutorial/stats/quest — just settle scene.
+    if (!(await waitSceneReady(page, 60_000))) {
+      console.warn('mainlandAccount: resume steal sceneState not 2 — continuing carefully');
+    }
+    // Leave CW / minigame / last thrash tile so product teles (sigil, etc.) work.
+    await softTeleLumbridge(page, 'resume steal');
+    const tile = await worldTile(page);
+    console.log(
+      `mainlandAccount: resume steal ready tile=${tile ? `${tile.x},${tile.z}` : '?'} ` +
+        `(wiped inv/worn; Lumb tele; skipped tutorial setvar + relog)`
+    );
+    return tile;
+  }
+
+  // Steal failed / off: thrash pin sav can still wear CW Hooded cloak etc.
+  // ~clearinv alone does not unequip — strip when tutorial already complete (reused sav).
+  const tutProbe = await getServerVarQuiet(page, 'tutorial').catch(() => null);
+  if (Number(tutProbe) === 1000) {
+    await wipeInvAndWorn(page, 'pin-no-steal');
+  }
+
+  const forceFull =
+    process.env.MAINLAND_FORCE_FULL === '1' || process.env.MAINLAND_FORCE_FULL === 'true';
+
+  // Thrash pins: sav already finished tutorial and sits on mainland — skip setvar+relog tax.
+  if (!forceFull) {
+    const tutNow = Number(tutProbe) === 1000 ? 1000 : await getServerVarQuiet(page, 'tutorial').catch(() => null);
+    const tileNow = await worldTile(page);
+    if (Number(tutNow) === 1000 && tileNow && !onTutorialIsland(tileNow)) {
+      if (!(await waitSceneReady(page, 45_000))) {
+        console.warn('mainlandAccount: sceneState not 2 (skip-mainland) — continuing carefully');
+      }
+      // Cold pin login also lands on last sav tile (often Castle Wars thrash dirt).
+      await softTeleLumbridge(page, 'pin-no-steal cold resume');
+      const tile = await worldTile(page);
+      console.log(
+        `mainlandAccount: skip prep (tutorial=1000 already) — wiped inv/worn; soft Lumb tele; ` +
+          `tile=${tile ? `${tile.x},${tile.z}` : '?'}`
+      );
+      return tile;
+    }
+    if (Number(tutNow) === 1000 && tileNow && onTutorialIsland(tileNow)) {
+      console.log(
+        `mainlandAccount: tutorial=1000 but still on island tile=${tileNow.x},${tileNow.z} — tele only + relog`
+      );
+      if (!(await cheatQuiet(page, `tele ${OFF_ISLAND_TELE}`))) {
+        throw new Error('mainlandAccount: tele not sent (not ingame?)');
+      }
+      await page.waitForTimeout(900);
+      await relog(page, user, pass);
+      if (!(await waitSceneReady(page, 60_000))) {
+        console.warn('mainlandAccount: sceneState not 2 after tele+relog — continuing carefully');
+      }
+      // Relog can restore worn from sav — wipe again after back
+      await wipeInvAndWorn(page, 'pin-after-relog');
+      const tile = await worldTile(page);
+      console.log(
+        `mainlandAccount: ready (scene 2) tile=${tile ? `${tile.x},${tile.z}` : '?'} (tele+relog, skipped setvar, wiped gear)`
+      );
+      return tile;
+    }
   }
 
   console.log(`mainlandAccount: tele ${OFF_ISLAND_TELE} + setvar tutorial 1000`);
@@ -714,6 +1496,226 @@ export async function snapshot(page) {
 }
 
 /**
+ * Dense thrash datapoint for productive headed sessions.
+ *
+ * Pulls client thrashSnap (tile, free, inv, worn, npcNames+dist, ground, chat,
+ * combat flags) + host `extra` (stage, phase, action, stick, …). Logs one line:
+ *   [thrash] {"tag":"mortton-remains","stage":70,...}
+ *
+ * Env:
+ *   THRASH_NDJSON=path  — append NDJSON for offline grepping
+ *   THRASH_POINT=0      — disable logging (still returns object)
+ *
+ * @param {import('playwright').Page} page
+ * @param {string} tag short phase id e.g. mortton-remains
+ * @param {Record<string, unknown>} [extra] host-side fields
+ * @returns {Promise<object|null>}
+ */
+/**
+ * Push a host smoke line into the in-page panel LogBus + cliResidual.host.
+ * Fire-and-forget; safe if page is mid-nav.
+ * @param {import('playwright').Page} page
+ * @param {string} msg
+ * @param {'info'|'warn'|'error'} [level]
+ */
+export function panelLog(page, msg, level = 'info') {
+  if (!page || page.isClosed?.()) return;
+  const text = String(msg ?? '').slice(0, 420);
+  if (!text) return;
+  page
+    .evaluate(
+      ({ m, lv }) => {
+        const bus = globalThis.__harnessLogBus;
+        if (bus?.add) bus.add(lv === 'warn' || lv === 'error' ? lv : 'info', m);
+        const h = globalThis.__lc377;
+        if (h) {
+          const prev = h.cliResidual && typeof h.cliResidual === 'object' ? h.cliResidual : {};
+          h.cliResidual = {
+            ...prev,
+            host: m,
+            at: Date.now()
+          };
+        }
+      },
+      { m: text, lv: level }
+    )
+    .catch(() => {});
+}
+
+/** Lines from Node smoke console that should show in the headed panel. */
+const PANEL_MIRROR_RE =
+  /\[thrash\]|\[harness\]|\[mm\]|\[mm-|\[quest-|\[reg|\[misc|\[myre|\[nav|\[slayer|\[farm|RESULT:|FAIL:|PASS \(|SOFT |product |useOn|use bar|useHeld|tele |mainlandAccount|stealGhost|pack health|login|greegree|firewall|enchanted|Wall of flame|OPLOCU|OPNPCU|missingModels|sceneState|STUCK/i;
+
+/**
+ * Mirror matching Node `console.log/warn/error` into the page panel LogBus.
+ * Call once after `newPage()` + before long thrash. Disable: `PANEL_MIRROR=0`.
+ * @param {import('playwright').Page} page
+ */
+export function installSmokePanelMirror(page) {
+  if (process.env.PANEL_MIRROR === '0' || process.env.PANEL_MIRROR === 'false') return;
+  if (page.__smokePanelMirror) return;
+  page.__smokePanelMirror = true;
+
+  const wrap =
+    (level, orig) =>
+    (...args) => {
+      orig(...args);
+      try {
+        const msg = args
+          .map(a => {
+            if (typeof a === 'string') return a;
+            if (a && typeof a === 'object') {
+              try {
+                return JSON.stringify(a);
+              } catch {
+                return String(a);
+              }
+            }
+            return String(a);
+          })
+          .join(' ');
+        if (level === 'info' && !PANEL_MIRROR_RE.test(msg)) return;
+        panelLog(page, msg, level);
+      } catch {
+        /* ignore */
+      }
+    };
+
+  console.log = wrap('info', console.log.bind(console));
+  console.info = wrap('info', console.info.bind(console));
+  console.warn = wrap('warn', console.warn.bind(console));
+  console.error = wrap('error', console.error.bind(console));
+}
+
+export async function thrashPoint(page, tag, extra = {}) {
+  if (process.env.THRASH_POINT === '0' || process.env.THRASH_POINT === 'false') {
+    return null;
+  }
+  let snap = null;
+  try {
+    snap = await page.evaluate(opts => {
+      const h = globalThis.__lc377;
+      if (typeof h?.thrashSnap === 'function') return h.thrashSnap(opts);
+      if (typeof h?.snapshot === 'function') return h.snapshot();
+      return null;
+    }, extra.snapOpts || {});
+  } catch (e) {
+    snap = { err: String(e?.message || e) };
+  }
+  const row = {
+    tag: String(tag || 'thrash'),
+    ...snap,
+    ...extra,
+    // don't re-embed opts in file
+    snapOpts: undefined
+  };
+  delete row.snapOpts;
+  const line = JSON.stringify(row);
+  console.log(`[thrash] ${line}`);
+  // Compact one-liner for the in-page panel log (full JSON stays Node/NDJSON).
+  const panelLine = compactThrashLine(row);
+  // Panel CLI residual block (multi-line; no Start/Stop) — keep fields readable.
+  const act =
+    row.pour?.action ||
+    row.step?.action ||
+    row.action ||
+    row.phase ||
+    null;
+  const detailBits = [];
+  if (row.pour && typeof row.pour === 'object') {
+    const p = row.pour;
+    for (const k of ['wall', 'broken', 'op', 'flaming', 'name', 'sancP', 'sancRaw']) {
+      if (p[k] != null && p[k] !== '') detailBits.push(`${k}=${p[k]}`);
+    }
+  }
+  if (row.sanc && typeof row.sanc === 'object') {
+    if (row.sanc.p != null) detailBits.push(`sancP=${row.sanc.p}`);
+    if (row.sanc.raw != null) detailBits.push(`sanc=${row.sanc.raw}`);
+  }
+  const status = {
+    tag: String(tag || 'thrash'),
+    phase: row.phase ?? null,
+    action: act,
+    stage: row.stage ?? null,
+    t: row.t ?? null,
+    tile: row.tile ? `${row.tile.x},${row.tile.z}` : null,
+    free: row.free ?? null,
+    detail: detailBits.length ? detailBits.join(' ') : null,
+    at: Date.now()
+  };
+  try {
+    await page.evaluate(
+      ({ msg, status: st }) => {
+        const h = globalThis.__lc377;
+        if (h) h.cliResidual = st;
+        const bus = globalThis.__harnessLogBus;
+        if (bus?.add) bus.add('info', msg);
+        else if (h?.log) h.log('info', msg);
+        else console.log(msg);
+      },
+      { msg: panelLine, status }
+    );
+  } catch {
+    /* page closed */
+  }
+  const nd = process.env.THRASH_NDJSON;
+  if (nd) {
+    try {
+      const fs = await import('node:fs/promises');
+      await fs.appendFile(nd, line + '\n');
+    } catch (e) {
+      console.warn('[thrash] NDJSON append failed', e?.message || e);
+    }
+  }
+  return row;
+}
+
+/** Human panel line from a thrash row (keep short). */
+export function compactThrashLine(row) {
+  if (!row || typeof row !== 'object') return String(row ?? '');
+  const t = row.tile ? `${row.tile.x},${row.tile.z}` : '?';
+  const has = row.has
+    ? Object.entries(row.has)
+        .filter(([, v]) => v)
+        .map(([k]) => k)
+        .join(',')
+    : '';
+  const npcs = row.npcNames
+    ? Object.entries(row.npcNames)
+        .map(([k, v]) => `${k}×${v}`)
+        .join(' ')
+    : '';
+  const act =
+    row.pour?.action ||
+    row.step?.action ||
+    row.action ||
+    row.phase ||
+    row.tag ||
+    'thrash';
+  const st = row.stage != null ? `s${row.stage}` : '';
+  const tick = row.t != null ? `t${row.t}` : '';
+  const free = row.free != null ? `free=${row.free}` : '';
+  const inv =
+    Array.isArray(row.inv) && row.inv.length
+      ? `inv=${row.inv
+          .slice(0, 5)
+          .map(n => String(n).slice(0, 16))
+          .join(',')}`
+      : '';
+  const locs =
+    Array.isArray(row.locs) && row.locs.length
+      ? `locs=${row.locs
+          .slice(0, 4)
+          .map(l => l?.name || `id${l?.id}`)
+          .join(',')}`
+      : '';
+  return [act, st, tick, `@${t}`, free, has && `[${has}]`, npcs, inv, locs]
+    .filter(Boolean)
+    .join(' ')
+    .slice(0, 380);
+}
+
+/**
  * Smoke fail-fast budget (rs2b0t-style: budget vs silent spin).
  *
  * Env:
@@ -853,9 +1855,6 @@ export async function waitSceneReady(page, timeoutMs) {
 export async function stillAlive(page) {
   return page.evaluate(() => !!globalThis.__lc377?.ingame());
 }
-
-/** Default shot root — local only (docs/ is gitignored). */
-export const DEFAULT_SHOT_DIR = path.join(ROOT, 'docs/plans/harness-shots');
 
 /**
  * Make a per-run shot directory: docs/plans/harness-shots/<runId>/

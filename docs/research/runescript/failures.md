@@ -15,5 +15,8 @@
 | Timer never fires | Never `settimer`; or NORMAL timer while always busy |
 | Worn item stuck | Timer never armed; or force-unequip aborted |
 | Scene stuck `sceneState=1` | versionlist HTTP ≠ flat after pack |
+| Items deleted, reward never appears | New OP mid-`p_delay` replaced `activeScript` (OPNPCU hand-in thrash) |
+| Chapter IF wrong / silent | Opened 289 `inter_199` on 377 — use **`scroll`** |
+| `[opnpc1,mm_foo]` no trigger | Map spawn is `mm_foo_aa` (pack type); bind that name |
 
 ---

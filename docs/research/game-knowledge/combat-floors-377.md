@@ -4,13 +4,14 @@ Sources: content `_unpack/377` `vislevel` / npc configs; smoke comments; period 
 
 | NPC / encounter | vislevel / notes | Smoke floor (setstat) | Recommended gear tier |
 |-----------------|------------------|----------------------|------------------------|
-| Loar shade (Mort’ton) | multi-aggro; smoke deaths @ low | high mid (see mortton smoke) | **steel** full + food×20 |
+| Loar shade/shadow (Mort’ton) | vislevel **40**; HP **38** ATK **45** STR **30** DEF **26** (crush); multi-aggro | ATK/STR **70** DEF **60** HP **80** | **adamant** full + kite + food×20 (steel@60 + thin food stalls residual hunt) |
 | Jogre (TBWT journal) | ~48 | ATK/STR 50 | steel+ |
 | Jr dagannoth / Horror mid | lighthouse | ATK 60 STR 60 DEF 50 HP 70 | steel+ / ranged 50 |
 | **The Draugen** (Fremennik) | **vislevel 69**; HP/ATK/STR/DEF **60**; melee def **100** | ATK/STR 60 DEF 50 HP 50+ | **adamant** host kit (steel timeouts mid32) |
 | Koschei forms 1–4 | HP 30/50/70/**255**; ATK 20/40/60/**255** (274) | ATK/STR 70 DEF 60 HP 70 unarmed (or staff in-pen) | **none** at entry — see Dramen note |
 | Mother (Horror complete) | later | TBD | TBD |
 | **Skeleton Hellhound** (Myreque ambush) | **vislevel 97**; 289 combat ATK **70** STR **110** DEF **100** HP **55** (crush) | ATK/STR **80** DEF **70** HP **85** | **adamant** scim + plate + legs + kite + lobster×20 |
+| **Tyras guard** (Regicide old camp) | **vislevel 110**; HP/ATK/STR/DEF inject **110/85/95/100** | ATK/STR **90** DEF **80** HP **90** | **dragon scim + gilded full** + shark (soft MM+DS for equip) |
 
 ### Draugen
 

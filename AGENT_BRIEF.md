@@ -91,6 +91,8 @@ Prefer top → bottom:
 
 RuneScript **language** semantics: **@JagexAsh** posts are authoritative for how scripts work; they do not authorize inventing May 2006 *content*.
 
+**RuneScript lessons same turn:** any non-trivial opcode/trigger/delay/protect/multi footgun → append **`docs/research/runescript/living-notes.md`** (not plan-only). Hub: `docs/research/runescript/README.md`.
+
 **Config unit before thrash:** port obj/npc/loc params before multi-minute smokes.
 
 ---
@@ -112,7 +114,7 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 | Authenticity bar | `docs/research/authenticity-stance.md` |
 | Intentional non-auth | `docs/research/deviations.md` |
 | Soft mids / not-yet-e2e | `docs/research/softpass.md` |
-| RuneScript language/runtime | `docs/research/runescript/README.md` |
+| RuneScript language/runtime | `docs/research/runescript/README.md` · **append** `living-notes.md` |
 | Anchors / combat floors / prep | `docs/research/game-knowledge/` |
 | Pack/folder inventories + rubric | `docs/research/corpus/` |
 | Fences / brand / thin public policy | `docs/decisions/` (004 · 009 · 010 · 011) |
@@ -125,5 +127,5 @@ AI/coding agents are **tools**. Disclose use; humans own authenticity claims. Sa
 
 ## 8. Current focus (dated — update at milestones)
 
-**2026-08-09:** Public open to **show work**; **Issues** welcome. **PR merge unpromised** — maintainer focus is content-complete; review/merge only if bandwidth. May change if contribs grow. Softpass = process stage.  
+**Public under Fairy-Ring.** **Issues** welcome. **PR merge unpromised** — maintainer focus is content-complete; review/merge only if bandwidth. May change if contribs grow. Softpass = process stage.  
 Brand: **Fairy Ring** (Decision **009**).

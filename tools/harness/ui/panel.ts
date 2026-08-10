@@ -1,23 +1,19 @@
 /**
- * Harness side panel — shaped like rs2b0t BotPanel.
+ * Harness side panel — **operator / agent eyes**, not a BotHost.
  *
- * Layout (flex column, fill viewport height):
- *   script (Start / Stop / WalkTo…)
- *   status
- *   log          ← largest scroll area
- *   inv + chat   ← split remaining space evenly
+ *   cli    — multicolor thrash/live box (no section-title underline)
+ *   status — state / tile / dialog / energy / walk
+ *   tools  — WalkTo / Clear / Shot / Reset +xp
+ *   stats  — eff/base + session +xp gains
+ *   log
  *
- * WalkTo: **modal** (presets + coords + map) — not inline form fields.
- * Same idea as rs2b0t “Edit parameters” / script config.
- *
- * @see tools/harness/ui/WalkToModal.ts
- * @see rs2b0t src/bot/ui/ParamsModal.ts
- * @see docs/plans/2026-08-04-harness-panel-mvp.md
+ * No Start/Stop, no inv/chat. Prefer the pretty `.rs2b0t-cli` box over a
+ * “cli residual” header with border-bottom.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
 
-import { el, sectionTitle, row, button } from './dom.ts';
+import { el, row, button } from './dom.ts';
 import { LogBus } from '../script/logBus.ts';
 import { getPanelWalkStatus, isPanelWalkActive, panelWalkStop } from './panelWalk.ts';
 import { WalkToModal, getLastWalkToSelection } from './WalkToModal.ts';
@@ -26,30 +22,99 @@ function abi(): Any {
     return (globalThis as Any).__lc377;
 }
 
+function navApi(): Any {
+    return (globalThis as Any).__lc377Nav;
+}
+
+const SKILL_ORDER: { i: number; short: string }[] = [
+    { i: 0, short: 'atk' },
+    { i: 1, short: 'def' },
+    { i: 2, short: 'str' },
+    { i: 3, short: 'hp' },
+    { i: 4, short: 'rng' },
+    { i: 5, short: 'pry' },
+    { i: 6, short: 'mag' },
+    { i: 7, short: 'cook' },
+    { i: 8, short: 'wc' },
+    { i: 9, short: 'flet' },
+    { i: 10, short: 'fish' },
+    { i: 11, short: 'fm' },
+    { i: 12, short: 'craft' },
+    { i: 13, short: 'smith' },
+    { i: 14, short: 'mine' },
+    { i: 15, short: 'herb' },
+    { i: 16, short: 'agi' },
+    { i: 17, short: 'thiev' },
+    { i: 18, short: 'slay' },
+    { i: 20, short: 'rc' }
+];
+
+type CliResidual = {
+    tag?: string;
+    phase?: string | null;
+    action?: string | null;
+    stage?: number | null;
+    t?: number | null;
+    at?: number;
+    tile?: string | null;
+    free?: number | null;
+    detail?: string | null;
+    /** Last host smoke line (installSmokePanelMirror / panelLog) */
+    host?: string | null;
+    inv?: string | null;
+    locs?: string | null;
+};
+
+/** Human activity from live snap — not “idle” just because path length is 0. */
+function liveActivity(snap: Any, r: Any): string {
+    if (snap?.combat || r?.inCombat?.()) {
+        const foe = nearestCombatNpc(snap);
+        return foe ? `combat · ${foe}` : 'combat';
+    }
+    if (r?.dialogOpen?.()) return 'dialog';
+    if (r?.modalMessage?.()) {
+        const m = String(r.modalMessage());
+        return m ? `modal: ${m.slice(0, 28)}` : 'modal';
+    }
+    if (snap?.moving || r?.playerMoving?.()) return 'walking';
+    const anim = snap?.anim ?? r?.selfAnim?.() ?? -1;
+    if (anim != null && anim >= 0) return `anim ${anim}`;
+    return 'standing';
+}
+
+function nearestCombatNpc(snap: Any): string | null {
+    const list = (snap?.npcs ?? []) as { name?: string; combat?: boolean; d?: number }[];
+    const foes = list
+        .filter(n => n.combat)
+        .sort((a, b) => (a.d ?? 99) - (b.d ?? 99));
+    return foes[0]?.name ?? null;
+}
+
 export class HarnessPanel {
     private root: HTMLElement;
-    private scriptName!: HTMLElement;
-    private startBtn!: HTMLButtonElement;
-    private stopBtn!: HTMLButtonElement;
+    private cliBox!: HTMLElement;
     private walkToBtn!: HTMLButtonElement;
     private clearBtn!: HTMLButtonElement;
     private shotBtn!: HTMLButtonElement;
-    private scriptStatus!: HTMLElement;
     private walkStatus!: HTMLElement;
     private walkToModal: WalkToModal;
     private stateCell!: HTMLElement;
     private tileCell!: HTMLElement;
-    private sceneCell!: HTMLElement;
     private dialogCell!: HTMLElement;
-    private hpCell!: HTMLElement;
     private energyCell!: HTMLElement;
-    private xpCell!: HTMLElement;
-    private invList!: HTMLElement;
-    private chatList!: HTMLElement;
+    private statsSec!: HTMLElement;
+    private statsTitle!: HTMLElement;
+    private statsBody!: HTMLElement;
+    private statsGrid!: HTMLElement;
+    private statsMeta!: HTMLElement;
+    private statsExpanded = false;
     private logBox!: HTMLElement;
-    /** Default Start target — path-abc = content roadmap step 1 (A+B+C). */
-    private selectedScript = 'path-abc';
     private lastRender = 0;
+    private lastThrashKey = '';
+    private lastThrashAt = 0;
+    private lastWalkKey = '';
+    private lastCliKey = '';
+    private xpBase: number[] | null = null;
     private unsubLog: (() => void) | null = null;
     private raf = 0;
 
@@ -70,79 +135,95 @@ export class HarnessPanel {
         title.appendChild(sub);
         root.appendChild(title);
 
-        // —— script (compact header) ——
-        const script = el('div', 'rs2b0t-section rs2b0t-section-fixed');
-        script.appendChild(sectionTitle('script'));
-        const pick = el('div', 'rs2b0t-buttons');
-        this.scriptName = el('span', 'rs2b0t-current-script');
-        this.scriptName.textContent = this.selectedScript;
-        this.scriptName.style.flex = '1';
-        this.scriptName.style.alignSelf = 'center';
-        pick.appendChild(this.scriptName);
-        script.appendChild(pick);
+        // Multicolor thrash/live box — no sectionTitle (user: keep box, skip header underline).
+        const cliSec = el('div', 'rs2b0t-section rs2b0t-section-fixed');
+        this.cliBox = el('div', 'rs2b0t-cli');
+        this.cliBox.textContent = 'idle — thrashPoint / live snap when smoke runs';
+        cliSec.appendChild(this.cliBox);
+        root.appendChild(cliSec);
 
-        const buttons = el('div', 'rs2b0t-buttons');
-        this.startBtn = button(buttons, 'Start', () => void this.handleStart());
-        this.stopBtn = button(buttons, 'Stop', () => this.handleStop());
-        this.walkToBtn = button(buttons, 'WalkTo…', () => this.handleWalkToOpen());
-        this.walkToBtn.title = 'Open WalkTo destination (presets, coords, map)';
-        this.clearBtn = button(buttons, 'Clear log', () => {
+        // Compact status rows — no sectionTitle (no underlined header).
+        // Thrash lives in the multicolor cli box above.
+        const status = el('div', 'rs2b0t-section rs2b0t-section-fixed');
+        this.stateCell = row(status, 'state');
+        this.tileCell = row(status, 'tile');
+        this.dialogCell = row(status, 'dialog');
+        this.energyCell = row(status, 'energy');
+        this.walkStatus = row(status, 'walk');
+        this.walkStatus.textContent = '—';
+        root.appendChild(status);
+
+        const tools = el('div', 'rs2b0t-buttons');
+        this.walkToBtn = button(tools, 'WalkTo…', () => this.handleWalkToOpen());
+        this.walkToBtn.title = 'Operator walk toy (after nav / client route)';
+        this.clearBtn = button(tools, 'Clear log', () => {
             LogBus.clear();
             this.renderLog();
         });
-        this.shotBtn = button(buttons, 'Shot', () => void this.handleShot());
-        script.appendChild(buttons);
-        this.scriptStatus = row(script, 'status');
-        this.walkStatus = row(script, 'walk');
-        this.walkStatus.textContent = 'idle';
-        root.appendChild(script);
+        this.shotBtn = button(tools, 'Shot', () => void this.handleShot());
+        const resetXp = button(tools, 'Reset +xp', () => {
+            this.xpBase = null;
+            this.renderStats();
+            LogBus.add('info', 'stats XP gain baseline reset');
+        });
+        resetXp.title = 'Re-baseline session XP gains';
+        root.appendChild(tools);
 
-        // —— status (compact; inv lives in its own scroll section below) ——
-        const status = el('div', 'rs2b0t-section rs2b0t-section-fixed');
-        status.appendChild(sectionTitle('status'));
-        this.stateCell = row(status, 'state');
-        this.tileCell = row(status, 'tile');
-        this.sceneCell = row(status, 'scene');
-        this.dialogCell = row(status, 'dialog');
-        this.hpCell = row(status, 'hp');
-        this.energyCell = row(status, 'energy');
-        this.xpCell = row(status, 'xp');
-        root.appendChild(status);
+        // Stats · +xp — collapsed by default (more room for log during thrash)
+        this.statsSec = el('div', 'rs2b0t-section rs2b0t-section-stats rs2b0t-stats-collapsed');
+        this.statsTitle = el('div', 'rs2b0t-section-title rs2b0t-stats-toggle');
+        this.statsTitle.setAttribute('role', 'button');
+        this.statsTitle.tabIndex = 0;
+        this.statsTitle.title = 'Click to expand/collapse XP panel';
+        this.statsTitle.addEventListener('click', () => this.toggleStats());
+        this.statsTitle.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.toggleStats();
+            }
+        });
+        this.statsSec.appendChild(this.statsTitle);
+        this.statsBody = el('div', 'rs2b0t-stats-body');
+        this.statsMeta = el('div', 'rs2b0t-stats-meta');
+        this.statsMeta.textContent = 'eff/base · gains only';
+        this.statsBody.appendChild(this.statsMeta);
+        this.statsGrid = el('div', 'rs2b0t-stats');
+        this.statsBody.appendChild(this.statsGrid);
+        this.statsSec.appendChild(this.statsBody);
+        root.appendChild(this.statsSec);
+        this.applyStatsCollapsed();
 
-        // —— log (largest flex region — tutorial dumps a lot) ——
+        // Log: no underlined section header either
         const logSection = el('div', 'rs2b0t-section rs2b0t-section-log');
-        logSection.appendChild(sectionTitle('log'));
         this.logBox = el('div', 'rs2b0t-log');
         logSection.appendChild(this.logBox);
         root.appendChild(logSection);
 
-        // —— inv + chat (split remaining space evenly) ——
-        const bottom = el('div', 'rs2b0t-bottom');
-
-        const inv = el('div', 'rs2b0t-section rs2b0t-section-grow');
-        inv.appendChild(sectionTitle('inv'));
-        this.invList = el('div', 'rs2b0t-inv');
-        inv.appendChild(this.invList);
-        bottom.appendChild(inv);
-
-        const chat = el('div', 'rs2b0t-section rs2b0t-section-grow');
-        chat.appendChild(sectionTitle('chat'));
-        this.chatList = el('div', 'rs2b0t-chat');
-        chat.appendChild(this.chatList);
-        bottom.appendChild(chat);
-
-        root.appendChild(bottom);
-
         this.unsubLog = LogBus.onChange(() => this.renderLog());
         this.renderLog();
-        this.renderScriptControls();
+        this.renderCli();
         this.scheduleLoop();
-        LogBus.add('info', 'harness panel ready (script · WalkTo… modal · log · inv · chat)');
+        LogBus.add('info', 'panel eyes: multicolor cli box (no residual header); live + thrashPoint');
     }
 
     destroy(): void {
         this.unsubLog?.();
         if (this.raf) cancelAnimationFrame(this.raf);
+    }
+
+    private toggleStats(): void {
+        this.statsExpanded = !this.statsExpanded;
+        this.applyStatsCollapsed();
+        if (this.statsExpanded) this.renderStats();
+    }
+
+    private applyStatsCollapsed(): void {
+        const open = this.statsExpanded;
+        this.statsSec.classList.toggle('rs2b0t-stats-collapsed', !open);
+        this.statsSec.classList.toggle('rs2b0t-section-stats', open);
+        this.statsTitle.textContent = open ? '▾ stats · +xp' : '▸ stats · +xp';
+        this.statsBody.hidden = !open;
+        this.statsTitle.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
 
     private scheduleLoop(): void {
@@ -158,50 +239,211 @@ export class HarnessPanel {
         if (now - this.lastRender < minMs) return;
         this.lastRender = now;
         this.renderStatus();
-        this.renderScriptControls();
+        this.renderCli();
+        this.renderWalk();
+        this.renderStats();
+        this.maybeThrashHeartbeat(now);
     }
 
-    private scriptsApi(): Any {
-        return abi()?.scripts ?? null;
+    /** Multicolor key/value thrash + live activity (no section header). */
+    private renderCli(): void {
+        const a = abi();
+        const api = a?.scripts ?? null;
+        const running = !!api?.running?.();
+        const scriptName = api?.current?.() ?? null;
+        const cli = (a?.cliResidual ?? null) as (CliResidual & { live?: string }) | null;
+        const ageMs =
+            cli?.at != null && typeof cli.at === 'number' ? Date.now() - cli.at : null;
+        const thrashFresh =
+            !!cli?.tag &&
+            cli.tag !== 'live' &&
+            ageMs != null &&
+            ageMs < 30000;
+        const hostFresh =
+            !!cli?.host && ageMs != null && ageMs < 45000;
+
+        const lines: { k: string; v: string; hi?: boolean }[] = [];
+
+        // Host smoke line first when fresh (operator eyes on CLI thrash)
+        if (hostFresh && cli?.host) {
+            lines.push({ k: 'host', v: String(cli.host), hi: true });
+        }
+
+        if (cli?.live) {
+            lines.push({
+                k: 'live',
+                v: String(cli.live),
+                hi: /combat|walk/i.test(String(cli.live))
+            });
+        }
+
+        if (thrashFresh && cli) {
+            lines.push({ k: 'tag', v: String(cli.tag), hi: true });
+            if (cli.phase && cli.phase !== cli.tag) {
+                lines.push({ k: 'phase', v: String(cli.phase) });
+            }
+            if (cli.action) lines.push({ k: 'action', v: String(cli.action), hi: true });
+            if (cli.stage != null) lines.push({ k: 'stage', v: String(cli.stage) });
+            if (cli.t != null) lines.push({ k: 'tick', v: `t${cli.t}` });
+        } else if (cli?.tag && cli.tag !== 'live') {
+            lines.push({
+                k: 'tag',
+                v: `${cli.tag} (stale)`,
+                hi: false
+            });
+            if (cli.action) lines.push({ k: 'last', v: String(cli.action) });
+        } else if (running) {
+            lines.push({
+                k: 'driver',
+                v: `in-page script: ${scriptName ?? '?'}`,
+                hi: true
+            });
+        } else if (!cli?.live && !hostFresh) {
+            lines.push({ k: 'driver', v: 'idle — launch CLI smoke' });
+        }
+
+        // Live density (always useful; thrashPoint optional). Scene is in status.state only.
+        if (cli?.tile) lines.push({ k: 'tile', v: String(cli.tile) });
+        if (cli?.free != null) lines.push({ k: 'free', v: String(cli.free) });
+        if (cli?.inv) lines.push({ k: 'inv', v: String(cli.inv) });
+        if (cli?.locs) lines.push({ k: 'locs', v: String(cli.locs) });
+        if (cli?.detail) lines.push({ k: 'detail', v: String(cli.detail) });
+        if (thrashFresh && ageMs != null) {
+            const stale = ageMs >= 15000;
+            lines.push({
+                k: 'age',
+                v: stale
+                    ? `${(ageMs / 1000).toFixed(0)}s (stale)`
+                    : `${(ageMs / 1000).toFixed(1)}s`,
+                hi: !stale
+            });
+        }
+
+        const key = lines.map(l => `${l.k}=${l.v}`).join('|');
+        if (key !== this.lastCliKey) {
+            this.lastCliKey = key;
+            this.cliBox.replaceChildren();
+            for (const { k, v, hi } of lines) {
+                const r = el('div', 'rs2b0t-cli-row');
+                const kk = el('span', 'rs2b0t-cli-k');
+                kk.textContent = k;
+                const vv = el('span', hi ? 'rs2b0t-cli-v rs2b0t-cli-v-hi' : 'rs2b0t-cli-v');
+                vv.textContent = v;
+                vv.title = v; // full text on hover when truncated in CSS
+                r.appendChild(kk);
+                r.appendChild(vv);
+                this.cliBox.appendChild(r);
+            }
+        }
+
+        this.shotBtn.disabled = typeof (globalThis as Any).__harnessShot !== 'function';
+        this.walkToBtn.textContent = isPanelWalkActive() ? 'Stop walk' : 'WalkTo…';
     }
 
-    private handleStart(): void {
-        const api = this.scriptsApi();
-        if (!api?.start) {
-            LogBus.add('error', 'scripts host not registered');
+    private maybeThrashHeartbeat(now: number): void {
+        const a = abi();
+        if (!a?.reader?.ingame?.() || (a.reader.sceneState?.() ?? 0) !== 2) return;
+        if (now - this.lastThrashAt < 1500) return;
+
+        let snap: Any = null;
+        try {
+            snap =
+                typeof a.thrashSnap === 'function'
+                    ? a.thrashSnap({ maxNpcs: 8, maxGround: 4, maxChat: 2, maxLocs: 8 })
+                    : null;
+        } catch {
             return;
         }
-        if (api.running?.()) {
-            LogBus.add('warn', 'script already running — stop first');
-            return;
-        }
-        const name = this.selectedScript;
-        LogBus.add('info', `start ${name}`);
-        // Fire-and-forget long run (same as Playwright page.evaluate start)
-        void api
-            .start(name, 25 * 60_000)
-            .then((r: string) => LogBus.add('info', `${name} → ${r}`))
-            .catch((e: unknown) => LogBus.add('error', `start failed: ${e}`));
-        this.renderScriptControls();
-    }
+        if (!snap) return;
 
-    private handleStop(): void {
-        const api = this.scriptsApi();
-        api?.stop?.();
-        panelWalkStop();
-        LogBus.add('info', 'stop requested (script + walkto + nav)');
-        this.renderScriptControls();
+        const tile = snap.tile
+            ? `${snap.tile.x},${snap.tile.z}` +
+              (snap.tile.level != null && snap.tile.level !== 0 ? ` L${snap.tile.level}` : '')
+            : '—';
+        const act = liveActivity(snap, a.reader);
+        const has = snap.has
+            ? Object.entries(snap.has as Record<string, boolean>)
+                  .filter(([, v]) => v)
+                  .map(([k]) => k)
+                  .join(',')
+            : '';
+        const npcs = snap.npcNames
+            ? Object.entries(snap.npcNames as Record<string, number>)
+                  .slice(0, 6)
+                  .map(([k, v]) => `${k}×${v}`)
+                  .join(' ')
+            : '';
+        const invArr = (snap.inv ?? []) as string[];
+        const inv =
+            invArr.length > 0
+                ? invArr
+                      .slice(0, 8)
+                      .map(n => String(n).replace(/\s+/g, ' ').slice(0, 22))
+                      .join(' · ') + (invArr.length > 8 ? ` +${invArr.length - 8}` : '')
+                : '∅';
+        const locArr = (snap.locs ?? []) as { name?: string; id?: number; d?: number }[];
+        const locs =
+            locArr.length > 0
+                ? locArr
+                      .slice(0, 6)
+                      .map(l => {
+                          const nm = l.name || `id${l.id ?? '?'}`;
+                          return l.d != null ? `${nm}@${l.d}` : nm;
+                      })
+                      .join(' · ')
+                : 'none';
+        const free = snap.free != null ? `free=${snap.free}` : '';
+        const key = `${tile}|${act}|${has}|${npcs}|${free}|${inv}|${locs}`;
+        // Standing with no inv/loc change: refresh CLI residual but don't spam log
+        const quietStand = act === 'standing' && key === this.lastThrashKey;
+        if (quietStand && now - this.lastThrashAt < 8000) return;
+        this.lastThrashKey = key;
+        this.lastThrashAt = now;
+
+        // Publish live activity for status.action; do not invent thrash tags.
+        const prev = (a.cliResidual ?? {}) as CliResidual;
+        const thrashFresh =
+            !!prev.tag &&
+            prev.tag !== 'live' &&
+            typeof prev.at === 'number' &&
+            Date.now() - prev.at < 20000;
+        const hostFresh =
+            !!prev.host && typeof prev.at === 'number' && Date.now() - prev.at < 45000;
+
+        a.cliResidual = {
+            ...prev,
+            // keep thrashPoint tag/phase/action when fresh; always refresh live fields
+            action: thrashFresh && prev.action ? prev.action : act,
+            live: act,
+            tile,
+            free: snap.free ?? null,
+            inv,
+            locs,
+            detail:
+                [has && `[${has}]`, npcs || null].filter(Boolean).join(' ') || prev.detail,
+            // Preserve host timestamp while host line is fresh
+            at: thrashFresh || hostFresh ? prev.at : Date.now()
+        };
+
+        // Only log when something meaningful moved (not idle standing spam)
+        if (!quietStand && act !== 'standing') {
+            LogBus.add(
+                'info',
+                ['live', act, `@${tile}`, free, has && `[${has}]`, npcs || 'npcs:none']
+                    .filter(Boolean)
+                    .join(' ')
+            );
+        }
     }
 
     private handleWalkToOpen(): void {
         if (isPanelWalkActive()) {
-            // Second click while walking: stop (same as Stop for walk)
             panelWalkStop();
-            this.renderScriptControls();
+            this.renderWalk();
             return;
         }
-        this.walkToModal.open({ onClosed: () => this.renderScriptControls() });
-        this.renderScriptControls();
+        this.walkToModal.open({ onClosed: () => this.renderWalk() });
+        this.renderWalk();
     }
 
     private async handleShot(): Promise<void> {
@@ -218,38 +460,91 @@ export class HarnessPanel {
         }
     }
 
-    private renderScriptControls(): void {
-        const api = this.scriptsApi();
-        const running = !!api?.running?.();
-        const walking = isPanelWalkActive();
-        const name = api?.current?.() ?? null;
-        this.startBtn.disabled = running || walking;
-        this.stopBtn.disabled = !running && !walking;
+    private renderWalk(): void {
         this.shotBtn.disabled = typeof (globalThis as Any).__harnessShot !== 'function';
-        this.walkToBtn.disabled = false;
-        this.walkToBtn.textContent = walking ? 'Stop walk' : 'WalkTo…';
+        this.walkToBtn.textContent = isPanelWalkActive() ? 'Stop walk' : 'WalkTo…';
 
-        if (!api) {
-            this.scriptStatus.textContent = 'no host';
-            this.scriptStatus.className = 'rs2b0t-value rs2b0t-dim';
-        } else if (running) {
-            this.scriptStatus.textContent = `running: ${name ?? '?'}`;
-            this.scriptStatus.className = 'rs2b0t-value rs2b0t-state-running';
-        } else {
-            this.scriptStatus.textContent = 'idle';
-            this.scriptStatus.className = 'rs2b0t-value';
+        let text = '—';
+        let cls = 'rs2b0t-value rs2b0t-dim';
+        let title = 'No active nav, route, or WalkTo';
+
+        try {
+            const path = navApi()?.PathPublish?.get?.();
+            if (path?.tiles?.length) {
+                const tiles = path.tiles as {
+                    x: number;
+                    z: number;
+                    label?: string;
+                }[];
+                const idx = Math.min(Math.max(path.pathIdx | 0, 0), tiles.length - 1);
+                const click =
+                    path.clickIdx >= 0 && path.clickIdx < tiles.length
+                        ? tiles[path.clickIdx]
+                        : null;
+                const next = tiles[idx];
+                const dest = tiles[tiles.length - 1];
+                const hop = click?.label || next?.label;
+                text = [
+                    'nav',
+                    hop || null,
+                    next ? `next ${next.x},${next.z}` : null,
+                    dest ? `→ ${dest.x},${dest.z}` : null,
+                    `${idx + 1}/${tiles.length}`
+                ]
+                    .filter(Boolean)
+                    .join(' · ');
+                cls = 'rs2b0t-value rs2b0t-state-running';
+                title = 'Active PathPublish nav walk';
+            }
+        } catch {
+            /* optional */
         }
 
-        const ws = getPanelWalkStatus();
-        if (ws.active && ws.dest) {
-            this.walkStatus.textContent = `→ ${ws.label}`;
-            this.walkStatus.className = 'rs2b0t-value rs2b0t-state-running';
-        } else {
-            const last = getLastWalkToSelection();
-            this.walkStatus.textContent = last
-                ? `${last.label} (${last.x},${last.z})`
-                : 'idle — WalkTo…';
-            this.walkStatus.className = 'rs2b0t-value rs2b0t-dim';
+        if (cls.includes('dim')) {
+            const route = this.clientRouteDest();
+            if (route) {
+                text = `route → ${route.x},${route.z} (${route.steps} left)`;
+                cls = 'rs2b0t-value rs2b0t-state-running';
+                title = 'Client player route queue';
+            }
+        }
+
+        if (cls.includes('dim')) {
+            const ws = getPanelWalkStatus();
+            if (ws.active && ws.dest) {
+                text = `WalkTo → ${ws.label}`;
+                cls = 'rs2b0t-value rs2b0t-state-running';
+                title = 'Panel WalkTo toy';
+            }
+        }
+
+        // Do not show stale “last Draynor bank” while thrashing Flamtaer —
+        // only active nav / route / WalkTo (shot 01-47-47 noise).
+
+        if (text !== this.lastWalkKey) {
+            this.lastWalkKey = text;
+            this.walkStatus.textContent = text;
+            this.walkStatus.className = cls;
+            this.walkStatus.title = title;
+        }
+    }
+
+    private clientRouteDest(): { x: number; z: number; steps: number } | null {
+        try {
+            const client = abi()?.client;
+            const p = client?.localPlayer;
+            if (!p) return null;
+            const len = (p.routeLength ?? 0) | 0;
+            if (len <= 0) return null;
+            const lx = (p.routeX?.[len - 1] ?? p.routeX?.[0]) | 0;
+            const lz = (p.routeZ?.[len - 1] ?? p.routeZ?.[0]) | 0;
+            const baseX = (client.mapBuildBaseX ?? 0) | 0;
+            const baseZ = (client.mapBuildBaseZ ?? 0) | 0;
+            const wx = lx > 2000 ? lx : baseX + lx;
+            const wz = lz > 2000 ? lz : baseZ + lz;
+            return { x: wx, z: wz, steps: len };
+        } catch {
+            return null;
         }
     }
 
@@ -262,7 +557,6 @@ export class HarnessPanel {
         const r = a.reader;
         const ingame = !!r.ingame?.();
         const scene = r.sceneState?.() ?? -1;
-        // "logged in" (ingame) ≠ world ready — scene must be 2 before OP/walk/seed use
         let stateLabel = 'title / offline';
         let stateClass = 'rs2b0t-value rs2b0t-dim';
         if (ingame && scene === 2) {
@@ -275,126 +569,167 @@ export class HarnessPanel {
         this.stateCell.textContent = stateLabel;
         this.stateCell.className = stateClass;
 
+        // Keep live activity on cliResidual for the multicolor box (renderCli).
+        if (ingame && scene === 2) {
+            try {
+                const snap =
+                    typeof a.thrashSnap === 'function'
+                        ? a.thrashSnap({ maxNpcs: 6, maxGround: 0, maxChat: 0 })
+                        : null;
+                if (snap) {
+                    const live = liveActivity(snap, r);
+                    const prev = (a.cliResidual ?? {}) as CliResidual & { live?: string };
+                    a.cliResidual = { ...prev, live };
+                }
+            } catch {
+                /* ignore */
+            }
+        }
+
         const tile = r.worldTile?.();
         this.tileCell.textContent = tile ? `${tile.x},${tile.z} (lv ${tile.level ?? 0})` : '—';
-        this.sceneCell.textContent = String(scene);
 
-        const mm = r.modalMessage?.() as string | null;
-        const dlg = !!r.dialogOpen?.();
-        if (mm) {
-            this.dialogCell.textContent = `modal: ${mm.slice(0, 40)}`;
-            this.dialogCell.className = 'rs2b0t-value rs2b0t-state-paused';
-        } else if (dlg) {
-            this.dialogCell.textContent = 'chat open';
-            this.dialogCell.className = 'rs2b0t-value rs2b0t-state-paused';
-        } else {
-            this.dialogCell.textContent = 'clear';
-            this.dialogCell.className = 'rs2b0t-value';
-        }
-
-        if (ingame) {
-            const hp = r.hitpoints?.() as { effective?: number; base?: number } | undefined;
-            if (hp) {
-                this.hpCell.textContent = `${hp.effective ?? '?'} / ${hp.base ?? '?'}`;
-                const low = (hp.effective ?? 99) < (hp.base ?? 10) * 0.4;
-                this.hpCell.className = `rs2b0t-value ${low ? 'rs2b0t-log-error' : ''}`;
+        // Isolate dialog/energy so one reader throw cannot leave both stuck at "—".
+        try {
+            const mm = r.modalMessage?.() as string | null;
+            const dlg = !!r.dialogOpen?.();
+            if (mm) {
+                this.dialogCell.textContent = `modal: ${mm.slice(0, 48)}`;
+                this.dialogCell.className = 'rs2b0t-value rs2b0t-state-paused';
+            } else if (dlg) {
+                this.dialogCell.textContent = 'chat open';
+                this.dialogCell.className = 'rs2b0t-value rs2b0t-state-paused';
             } else {
-                const s = r.stat?.(3);
-                this.hpCell.textContent = s ? `${s.effective} / ${s.base}` : '—';
-                this.hpCell.className = 'rs2b0t-value';
+                this.dialogCell.textContent = 'clear';
+                this.dialogCell.className = 'rs2b0t-value';
             }
-            const energy = r.energy?.() ?? 0;
-            const weight = r.weight?.() ?? 0;
-            this.energyCell.textContent = `${energy}% · ${weight} kg`;
-            this.energyCell.className = `rs2b0t-value ${energy < 20 ? 'rs2b0t-state-paused' : ''}`;
-        } else {
-            this.hpCell.textContent = '—';
-            this.hpCell.className = 'rs2b0t-value rs2b0t-dim';
-            this.energyCell.textContent = '—';
-            this.energyCell.className = 'rs2b0t-value rs2b0t-dim';
+        } catch {
+            this.dialogCell.textContent = 'err';
+            this.dialogCell.className = 'rs2b0t-value rs2b0t-state-paused';
         }
 
-        const xp = (i: number) => {
-            try {
-                return r.stat?.(i)?.xp ?? 0;
-            } catch {
-                return 0;
+        try {
+            if (ingame) {
+                const energy = r.energy?.() ?? 0;
+                const weight = r.weight?.() ?? 0;
+                this.energyCell.textContent = `${energy}% · ${weight} kg`;
+                this.energyCell.className = `rs2b0t-value ${energy < 20 ? 'rs2b0t-state-paused' : ''}`;
+            } else {
+                this.energyCell.textContent = '—';
+                this.energyCell.className = 'rs2b0t-value rs2b0t-dim';
             }
-        };
-        // Skill order: cooking=7, fishing=10, firemaking=11, mining=14, magic=6, ranged=4
-        this.xpCell.textContent = `fm ${xp(11)} cook ${xp(7)} mine ${xp(14)} rng ${xp(4)}`;
-
-        this.renderInv();
-        this.renderChat();
-    }
-
-    private renderInv(): void {
-        const a = abi();
-        const items = (a?.reader?.inventory?.() ?? []) as {
-            name?: string | null;
-            id?: number;
-            slot?: number;
-            count?: number;
-        }[];
-        this.invList.replaceChildren();
-        if (!items.length) {
-            const empty = el('div', 'rs2b0t-inv-line rs2b0t-dim');
-            empty.textContent = '(empty)';
-            this.invList.appendChild(empty);
-            return;
-        }
-        for (const it of items) {
-            const div = el('div', 'rs2b0t-inv-line');
-            const n = it.count != null && it.count > 1 ? ` ×${it.count}` : '';
-            const slot = it.slot != null ? `@${it.slot}` : '';
-            div.textContent = `${it.name ?? '?'}${n}${slot}`;
-            this.invList.appendChild(div);
+        } catch {
+            this.energyCell.textContent = 'err';
+            this.energyCell.className = 'rs2b0t-value rs2b0t-state-paused';
         }
     }
 
-    private renderChat(): void {
+    private renderStats(): void {
+        // Always track XP baseline while collapsed; only paint grid when open
         const a = abi();
         const r = a?.reader;
-        const lines = (r?.chat?.(14) ?? []) as { type?: number; username?: string | null; text?: string }[];
-        const atBottom =
-            this.chatList.scrollHeight - this.chatList.scrollTop - this.chatList.clientHeight < 24;
-        this.chatList.replaceChildren();
-        if (!lines.length) {
-            const empty = el('div', 'rs2b0t-chat-line rs2b0t-dim');
-            empty.textContent = '(no messages)';
-            this.chatList.appendChild(empty);
+        const ingame = !!r?.ingame?.() && (r.sceneState?.() ?? 0) === 2;
+
+        if (!ingame || !r?.stat) {
+            if (this.statsExpanded && this.statsGrid.childElementCount === 0) {
+                const empty = el('div', 'rs2b0t-stats-empty');
+                empty.textContent = 'waiting for scene 2…';
+                this.statsGrid.appendChild(empty);
+            }
             return;
         }
-        // chat ring is newest-first; show oldest→newest for natural reading
-        for (const line of [...lines].reverse()) {
-            const div = el('div', 'rs2b0t-chat-line');
-            const t = line.type ?? 0;
-            // Type colours roughly match chatback (game=0 cyan, public=2 white, private=3/6/7)
-            if (t === 0) div.classList.add('rs2b0t-chat-game');
-            else if (t === 1 || t === 2) div.classList.add('rs2b0t-chat-public');
-            else if (t === 3 || t === 6 || t === 7) div.classList.add('rs2b0t-chat-private');
-            div.textContent = line.username ? `${line.username}: ${line.text ?? ''}` : (line.text ?? '');
-            this.chatList.appendChild(div);
+
+        // Capture baseline even while collapsed so expand shows real +xp
+        if (!this.xpBase) {
+            try {
+                this.xpBase = SKILL_ORDER.map(s => (r.stat(s.i)?.xp ?? 0) | 0);
+            } catch {
+                /* ignore */
+            }
         }
-        if (atBottom) this.chatList.scrollTop = this.chatList.scrollHeight;
+        if (!this.statsExpanded) return;
+
+        const cur: { short: string; eff: number; base: number; xp: number }[] = [];
+        for (const s of SKILL_ORDER) {
+            try {
+                const st = r.stat(s.i);
+                cur.push({
+                    short: s.short,
+                    eff: (st?.effective ?? st?.base ?? 1) | 0,
+                    base: (st?.base ?? 1) | 0,
+                    xp: (st?.xp ?? 0) | 0
+                });
+            } catch {
+                cur.push({ short: s.short, eff: 1, base: 1, xp: 0 });
+            }
+        }
+
+        if (!this.xpBase) {
+            this.xpBase = cur.map(c => c.xp);
+            this.statsMeta.textContent = 'baseline set · +xp only';
+        }
+
+        this.statsGrid.replaceChildren();
+        let totalGain = 0;
+        for (let n = 0; n < cur.length; n++) {
+            const c = cur[n];
+            const baseXp = this.xpBase![n] ?? c.xp;
+            const d = Math.max(0, c.xp - baseXp);
+            totalGain += d;
+
+            const cell = el('div', 'rs2b0t-stat');
+            const name = el('span', 'rs2b0t-stat-name');
+            name.textContent = c.short;
+            const lvl = el('span', 'rs2b0t-stat-lvl');
+            lvl.textContent = `${c.eff}/${c.base}`;
+            if (c.eff < c.base) lvl.classList.add('rs2b0t-stat-down');
+            else if (c.eff > c.base) lvl.classList.add('rs2b0t-stat-up');
+
+            const delta = el('span', 'rs2b0t-stat-dx');
+            if (d > 0) {
+                delta.textContent = `+${formatXp(d)}`;
+                delta.classList.add('rs2b0t-stat-up');
+            } else {
+                delta.textContent = '·';
+                delta.classList.add('rs2b0t-dim');
+            }
+            cell.appendChild(name);
+            cell.appendChild(lvl);
+            cell.appendChild(delta);
+            this.statsGrid.appendChild(cell);
+        }
+
+        this.statsMeta.textContent =
+            totalGain > 0
+                ? `session +${formatXp(totalGain)} xp`
+                : 'no +xp yet · baseline locked';
     }
 
     private renderLog(): void {
         const atBottom =
             this.logBox.scrollHeight - this.logBox.scrollTop - this.logBox.clientHeight < 40;
         this.logBox.replaceChildren();
+        const t0 = LogBus.lines()[0]?.t ?? performance.now();
         for (const line of LogBus.lines()) {
             const div = el('div', 'rs2b0t-log-line');
             if (line.level === 'warn') div.classList.add('rs2b0t-log-warn');
             if (line.level === 'error') div.classList.add('rs2b0t-log-error');
-            div.textContent = line.msg;
+            const sec = ((line.t - t0) / 1000).toFixed(1);
+            div.textContent = `+${sec}s  ${line.msg}`;
             this.logBox.appendChild(div);
         }
         if (atBottom) this.logBox.scrollTop = this.logBox.scrollHeight;
     }
 }
 
-/** Mount into `#bot-panel` (rs2b0t id). Safe to call once after adapter install. */
+function formatXp(n: number): string {
+    const a = Math.abs(n);
+    if (a >= 1_000_000) return `${(a / 1_000_000).toFixed(2)}m`;
+    if (a >= 10_000) return `${(a / 1000).toFixed(1)}k`;
+    if (a >= 1000) return `${(a / 1000).toFixed(2)}k`;
+    return String(n);
+}
+
 export function mountHarnessPanel(selector = '#bot-panel'): HarnessPanel | null {
     const root = document.querySelector(selector) as HTMLElement | null;
     if (!root) {

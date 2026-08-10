@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-09T21:27Z
+Generated: 2026-08-10T14:36Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -41,10 +41,14 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/corpus/verification-rubric.md
 ./docs/research/deviations.md
 ./docs/research/game-knowledge/anchors-ape-atoll.md
+./docs/research/game-knowledge/anchors-crash-island.md
 ./docs/research/game-knowledge/anchors-isafdar.md
+./docs/research/game-knowledge/anchors-karamja-shipyard.md
+./docs/research/game-knowledge/anchors-miscellania.md
 ./docs/research/game-knowledge/anchors-mort-myre.md
 ./docs/research/game-knowledge/anchors-rellekka.md
 ./docs/research/game-knowledge/combat-floors-377.md
+./docs/research/game-knowledge/flamtaer-residual-377.md
 ./docs/research/game-knowledge/harness-prep-and-gear.md
 ./docs/research/game-knowledge/harness-tele-stand.md
 ./docs/research/game-knowledge/README.md
@@ -102,11 +106,13 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/inject-client.mjs
 ./tools/harness/level-up-smoke.mjs
 ./tools/harness/lib/harness.mjs
+./tools/harness/lib/mm-reinit-solver.mjs
 ./tools/harness/lib/randomEvents.mjs
 ./tools/harness/login-walk-smoke.mjs
 ./tools/harness/logout-clean-smoke.mjs
 ./tools/harness/map/build-basemap.ts
 ./tools/harness/map/encodePng.ts
+./tools/harness/mm-fw-diag.mjs
 ./tools/harness/mm-greegree-smoke.mjs
 ./tools/harness/nav-hop-smoke.mjs
 ./tools/harness/nav/arrival.ts
@@ -190,6 +196,8 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/probe-scenery-anim.mjs
 ./tools/harness/quest-eadgar-smoke.mjs
 ./tools/harness/quest-horror-smoke.mjs
+./tools/harness/quest-misc-smoke.mjs
+./tools/harness/quest-mm-smoke.mjs
 ./tools/harness/quest-mortton-smoke.mjs
 ./tools/harness/quest-myreque-smoke.mjs
 ./tools/harness/quest-regicide-smoke.mjs

@@ -10,7 +10,7 @@ export type LogLine = {
     t: number;
 };
 
-const MAX = 400;
+const MAX = 800;
 const lines: LogLine[] = [];
 const listeners = new Set<() => void>();
 
@@ -20,7 +20,21 @@ export const LogBus = {
     },
 
     add(level: LogLevel, msg: string): void {
-        lines.push({ level, msg: String(msg), t: performance.now() });
+        const m = String(msg);
+        // Collapse consecutive identical lines (live heartbeat spam)
+        const last = lines[lines.length - 1];
+        if (last && last.level === level && last.msg === m) {
+            last.t = performance.now();
+            for (const cb of listeners) {
+                try {
+                    cb();
+                } catch {
+                    /* ignore */
+                }
+            }
+            return;
+        }
+        lines.push({ level, msg: m, t: performance.now() });
         if (lines.length > MAX) lines.splice(0, lines.length - MAX);
         for (const cb of listeners) {
             try {

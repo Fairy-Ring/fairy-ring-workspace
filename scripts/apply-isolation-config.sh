@@ -32,6 +32,9 @@ WEB_MANAGEMENT_PORT=8899
 NODE_PORT=43595
 NODE_ID=37
 NODE_DEBUG=true
+# Debug thrash: suppress genie/MOM/swarm/skill macros (afk_event). Default true in engine.
+# Set NODE_RANDOM_EVENTS=true for authentic randoms. Isolation-only — not product authenticity.
+NODE_RANDOM_EVENTS=false
 BUILD_SRC_DIR=../content
 BUILD_STARTUP=true
 # TBWT (and other) free-ID varp appends change authentic CRC — keep pack working until reconciled.

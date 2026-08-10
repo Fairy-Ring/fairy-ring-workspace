@@ -111,7 +111,7 @@ docs/                 bridge: what worked, failed, SHAs, deviations
 ```
 
 Details: [`docs/decisions/004-client-bot-harness-boundary.md`](docs/decisions/004-client-bot-harness-boundary.md).  
-Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decisions/010-qol-client-runelite-style.md) — after **public open** and content thrash / pure freeze, in a debug/improve PR phase (not the ship client at flip).
+Later QoL client: [`docs/decisions/010-qol-client-runelite-style.md`](docs/decisions/010-qol-client-runelite-style.md) — after content thrash / pure freeze, in a debug/improve PR phase (not the ship client).
 
 ## License
 
