@@ -10,7 +10,7 @@ This tree ships a **thin** documentation set only.
 | **RuneScript manual** | Session thrash plans |
 | **Game knowledge** (anchors, combat floors, prep) | Verify-queue / re-measure choreography |
 | **Corpus inventories** + verification rubric | Full unit readiness XL |
-| Root `AGENT_BRIEF.md` | Harness screenshot archives |
+| Root `AGENTS.md` (from `docs/export/AGENTS.md`) | Harness screenshot archives |
 | Thin runbooks | |
 
 Need depth on a **named** unit? Open a GitHub issue — Decision **011**.

@@ -113,6 +113,17 @@ Notes:
 - Pack after adding cheats: `BUILD_VERIFY=false npm run build` + restart or `::rebuild`.
 - Forward-ported from Server `_test/scripts/cheats/` (`cheat_other`, `cheat_maxme`, `cheat_item`) 2026-08-04.
 
+### Wait for product writes (ticks, not instant getvar)
+
+**Most world actions take 3–5 ticks** before stage/var/inv settle (`action_delay`, `p_delay`, mining-style continue loops). Smokes that `menuAction` / `opLoc` then **immediately** `getvar` / assert falsely FAIL.
+
+| Helper | Use |
+|--------|-----|
+| **`waitTicks(page, n)`** | Sleep `n ×` world tick ms (from last `setWorldSpeed` / `WORLD_SPEED_MS`) |
+| **`waitServerVar(page, name, { from, attempts, ticksBetween })`** | Poll `getvar` every few ticks until value changes |
+
+Do **not** spam the same OPLOC every wall-clock frame while content is mid-swing — that restarts `action_delay` / firstswing and never rolls success (Managing heather weed is a textbook case).
+
 ### TaskBot pacing (game tick)
 
 `TaskBot` / quest / tutorial bots wait on **`Client.loopCycle`** via `reader.loopCycle()` (`Execution.delayTicks`), **not** a fixed 600 ms rs2b0t-style wall-clock loop.

@@ -1,14 +1,13 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-10T17:04Z
+Generated: 2026-08-12T22:03Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
 ./.github/ISSUE_TEMPLATE/bug-report.md
 ./.github/ISSUE_TEMPLATE/context-request.md
 ./.gitignore
-./AGENT_BRIEF.md
 ./AGENTS.md
 ./cache/README.md
 ./CONTRIBUTING.md
@@ -24,6 +23,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/decisions/010-qol-client-runelite-style.md
 ./docs/decisions/011-public-docs-surface-and-agent-brief.md
 ./docs/decisions/012-midi-java-impl-xp-soundfont.md
+./docs/decisions/013-lc-parity-internal-names.md
 ./docs/README.md
 ./docs/research/authenticity-stance.md
 ./docs/research/corpus/inventory-274-vs-377-quest-delta.md
@@ -113,8 +113,13 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/logout-clean-smoke.mjs
 ./tools/harness/map/build-basemap.ts
 ./tools/harness/map/encodePng.ts
+./tools/harness/midi-ingame-swap-probe.mjs
+./tools/harness/midi-loop-if-probe.mjs
+./tools/harness/midi-miscellania-probe.mjs
+./tools/harness/midi-swap-probe.mjs
 ./tools/harness/mm-fw-diag.mjs
 ./tools/harness/mm-greegree-smoke.mjs
+./tools/harness/mm-surface-smoke.mjs
 ./tools/harness/nav-hop-smoke.mjs
 ./tools/harness/nav/arrival.ts
 ./tools/harness/nav/browser/cameraFollow.ts
@@ -197,6 +202,12 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/probe-scenery-anim.mjs
 ./tools/harness/quest-eadgar-smoke.mjs
 ./tools/harness/quest-horror-smoke.mjs
+./tools/harness/quest-managing-labour-hard-smoke.mjs
+./tools/harness/quest-managing-m2-mapzone-smoke.mjs
+./tools/harness/quest-managing-m3-daily-smoke.mjs
+./tools/harness/quest-managing-m4-if-smoke.mjs
+./tools/harness/quest-managing-m5-slider-deposit-smoke.mjs
+./tools/harness/quest-managing-smoke.mjs
 ./tools/harness/quest-misc-smoke.mjs
 ./tools/harness/quest-mm-smoke.mjs
 ./tools/harness/quest-mortton-smoke.mjs
@@ -204,6 +215,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/quest-regicide-smoke.mjs
 ./tools/harness/quest-tbwt-smoke.mjs
 ./tools/harness/quest-viking-smoke.mjs
+./tools/harness/quest-viking-yrsa-shop-smoke.mjs
 ./tools/harness/runtime/Settings.ts
 ./tools/harness/scene1-diag.mjs
 ./tools/harness/script/browser/api.ts

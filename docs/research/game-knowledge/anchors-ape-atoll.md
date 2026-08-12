@@ -29,6 +29,22 @@ Smoke stand (VERIFIED product): **2755,2795** L0 (mapsquare 43,43 local ~43,43).
 | ~~wrong wall~~ | ~~2776,9194~~ | m43_143 **LOC** `0 24 42: 1425` — not NPC |
 | ~~wrong square~~ | ~~2804,9208~~ | m43_143 (map 143) — Zooknock is on **142** |
 
+## Combat floors (pointer)
+
+Wave B remains combat is **289 `quest_mm.npc` injected** onto `_unpack/377/all.npc` — **not** OSRS CLs. Full table: [`combat-floors-377.md`](combat-floors-377.md) § Monkey Madness remains.
+
+| Debugname | vislevel | ATK/DEF/STR/HP (377 = 289) |
+|-----------|---------:|----------------------------|
+| `mm_monkey_guard` | **149** | 130s (+ magic 130) |
+| archers (3 types) | **86** | 80/80/80/50 + ranged **110** |
+| `mm_padulah` / `mm_uodai` | **149** | 130s |
+| religious gorilla (2 types) | **167** | 130/**200**/130/130 |
+| zombie small | **82** | 100/60/60/60 |
+| zombie large | **98** | 150/60/60/60 |
+| zombie large guard | **129** | 150/90/110/90 |
+
+**Hunt:** 289/product `aa_aggressive_*` use `check_invcat=worn,mm_greegree,<1` — skip a player **wearing** `mm_greegree`. Treat as live only **once the engine hunt decode is packed and running**. `mm_monkey_guard` / `mm_uodai` have no `huntmode`.
+
 ## Soft / product
 
 | Soft | Product |
@@ -40,4 +56,6 @@ Account **PASS:** `mmgsjpjnu0` (leave-zone). Content `b548d4ce9` / later greegre
 ## Related
 
 - `docs/research/mm-greegree-377-pack-audit.md`
+- `docs/research/mm-waveb-config-unit-377.md` — remains combat + hunt parked/landed
+- [`combat-floors-377.md`](combat-floors-377.md) — vislevel / ATK–HP (289 + 377 unpack)
 - `docs/research/runescript/residuals-inbox.md` (null oc_category, settimer order)

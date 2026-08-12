@@ -27,6 +27,8 @@ A soft mid that **product-writes** the next stage is progress. It is **not** res
 
 **Misclaim (still wrong):** logging soft `setvar` of the *claimed* stage as residual **PASS**, or soft-greening without a row here.
 
+**Shots:** Managing M1–M3 PASSes (`managsorn41j` / `managsp5quji` / `managsp7jcl1`) are **log-only** — host ran `SHOTS=0` and M2/M3 had no shot bridge. Discipline slipped while vault `AGENTS.md` was the thin public file. Do **not** re-smoke those just for PNGs; M4+ default shots on.
+
 ## Process ladder (use all three)
 
 ```text
@@ -38,6 +40,12 @@ A soft mid that **product-writes** the next stage is progress. It is **not** res
 ## Soft mid / thrash rows
 
 | Date | Unit | Soft entry / prep | Product under test | Account / note | Next (toward HARD/SEG) |
+| 2026-08-12 | Viking Yrsa shop | soft `viking` 10 | product Trade op3 → `shop_template` **3824** + `viking_clothes_shop` stock 21 | **PASS** `vikshsqlcwee` (shot `harness-shots/vik-shop_vikshsqlcwee/…_after-trade.png`) | other 5 keepers same params, unsmoked |
+| 2026-08-12 | Managing Misc M5 | soft Throne 100 + coffers 0 + coins 50k | product slider `com_11` mine **0→3**; deposit `com_88` + count **10000** | **PASS** `managsqk4sz9` (first fail `managsqjj4jm`: `::getvar` on protect varbit closed IF) | labour HARD; flax era-candidate |
+| 2026-08-12 | Managing Misc M4 | soft Throne 100 + restotal 0 | product Ghrim faring → open `misc_both_manage` **19159** | **PASS** `managsqgpr8r` shot `harness-shots/manage-m4_managsqgpr8r/…_pass-if-open.png` (log `.tmp/manage-m4-smoke2.log`). Earlier `managsqgjtqh` was log-only (`SHOTS=0`) | M5 **PASS**; labour HARD |
+| 2026-08-11 | Managing Misc M3 | soft Throne 100 + coffers 500k + mine 10 + varp_360 past | product daily (coffers↓ restotal↑) + Ghrim collect coal | **PASS** `managsp7jcl1` (`.tmp/manage-m3-smoke2.log`) | M4 IF / labour residual; HARD from 0 |
+| 2026-08-11 | Managing Misc M2 | fresh (varp_360=0) | mapzone `0_39_60` → product `varp_360` + `misc_approval=32` | **PASS** `managsp5quji` (`.tmp/manage-m2-smoke1.log`) | M3 daily/resource; other labours; HARD from 0 |
+| 2026-08-11 | Managing Misc M1 | Throne complete (100) + approval 90 | Weed herbs → approval +1 (90→91) | `managsorn41j` PASS — product write confirmed, chat proof "You swing your sickle..." | M2 mapzone seed; full labour cycle residual |
 |------|------|-------------------|--------------------|----------------|------------------------|
 | 2026-08-05 | Mort’ton mid | ~~give remains~~ **removed** | Ground Take → 50 | Soft `mtnsgrgevp` superseded by HARD `mtnsgsppgf` | — |
 | 2026-08-05 | Mort’ton mid | setstat + steel/food + tele Ulsquire | brew/Talk/Attack path | prep class (TBWT/Horror) | optional thinner prep |

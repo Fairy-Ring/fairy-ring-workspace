@@ -79,6 +79,16 @@ Therefore the product split is intentional:
 | Client import | `playMidi` / `stopMidi` / `setMidiVolume` from MidiFacade |
 | Deploy | `client.js` + `spessasynth_processor.min.js` + `SCC1_Florestan.sf2` |
 
+### Dependency shape (npm pin, not submodule)
+
+| | tinymidipcm (old LC pattern) | Spessa (product) |
+|--|----------------------------|------------------|
+| Upstream form | Small wasm + glue often as **git submodule** | Full TS library; **npm** ships prebuilt `dist/` + processor |
+| GitHub source | ships runnable wasm in-tree | **source only** — `dist/` is build output (`prepack`), not on `v4.3.13` tree without build |
+| Client-TS choice | **Removed** submodule gitlink `3rdparty/tinymidipcm` | **`package.json` pin** `spessasynth_lib@4.3.13` + lockfile; deploy copies processor from `node_modules` |
+
+A Spessa **submodule** would need a client-side build of Spessa (and still pull `spessasynth_core` via npm) — worse than LC’s tinymidi submodule pattern. Pin + lockfile is the upstream-friendly way to freeze Spessa without inventing a second build graph.
+
 ---
 
 ## What the “sliders” map to
@@ -91,7 +101,9 @@ In-game music options (clientcode 3) set **signlink.midivol**:
 | Medium (default) | 96 |
 | Low | 64 |
 | Quieter | 32 |
-| Off | mute (`midiActive=false` + stop) |
+| Off | mute (`midiActive=false` + `stopMidi`) |
+
+Java **does not restart on mute**. Mute only `stopMidi`. **Unmute** (`midiActive` false→true) re-requests `nextMidiSong` from the start. Volume steps while already on are `voladjust` only. Client-TS matches `Client.java` clientcode 3.
 
 MidiFacade maps midivol → master gain (Java-style curve family) and applies:
 
@@ -100,6 +112,41 @@ MidiFacade maps midivol → master gain (Java-style curve family) and applies:
 - **loop** when midifade marks a zone song; **once** for jingles  
 
 That is the “Jagex synth play with the sliders” metaphor: **same knobs, same timing policy**, stock sequencer underneath.
+
+### Volume (Spessa) — CC injection (Java MidiPlayer path)
+
+Java does **not** use a single outer fader. `MidiPlayer` sits between Sequencer and Synthesizer and:
+
+1. On play / voladjust / fade: writes **CC7 + CC39** on all 16 channels from `getVolume` (channel base 12800 × midivol, sqrt).
+2. On sequence **CC7/CC39**: intercepts, updates per-channel base, re-emits scaled by midivol (so song automation still respects options).
+3. On reset-all (CC121): resets channel base to 12800.
+
+**Product (SpessaBackend)** — intentional platform adaptation (not “optional authenticity” of song CCs):
+
+| Layer | Who owns it |
+|-------|-------------|
+| **Song MIDI** (notes, program, pan, **CC7 automation in the SMF**) | Spessa plays the file as-is |
+| **midivol** (options 128/96/64/32 + fade) | **Not in the SMF** — outer **GainNode** with Java getVolume *relative* curve |
+
+Java MidiPlayer applied midivol by injecting/rescaling CC7/39 *inside* the synth. We do **not** ship that path here: live intercept thrashed FPS; `lockController` muted Spessa. **Best compromise under browser + Spessa constraints:** master gain for midivol; Spessa owns the sequence.
+
+**Must keep:** `eventsEnabled: true` (else `songChange` never reaches main thread → load/play timeout → mute).
+
+### Browser autoplay / unfocused window
+
+Chromium keeps `AudioContext` **`suspended`** until a user gesture (or harness flags).  
+`ctx.resume()` can **hang until focus** — if Spessa `ensure()` / `play()` await it unbounded, SF2 init and song load look like the **client is stuck** until you click the window; music then starts.
+
+| Mitigation | Where |
+|------------|--------|
+| Bounded `tryResume` (short timeout) + gesture/`visibilitychange` unlock | `spessaBackend.ts` |
+| Shorter `loadNewSongList` timeout when suspended | `spessaBackend.ts` |
+| **Track swap (2026-08-12):** `stop()` is pause + `stopAll` only — **do not** seek to `duration` (Spessa `pausedTime` becomes the old length → new song starts minutes in) | `spessaBackend.ts` |
+| After `loadNewSongList`: `currentTime = 0` then `play()` | `spessaBackend.ts` |
+| `play()` does **not** apply master gain — facade owns fade ±8 / midivol | `spessaBackend.ts` + `MidiFacade.ts` |
+| Playwright `--autoplay-policy=no-user-gesture-required` | `tools/harness/lib/harness.mjs` `launchBrowser` |
+
+This is **platform**, not Java authenticity. Manual browser: first click still unlocks audio (normal web).
 
 ---
 

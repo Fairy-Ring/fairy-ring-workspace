@@ -6,6 +6,7 @@ Record **intentional product / platform differences** from historical May 2006 /
 
 | Date | Area | Deviation | Why | Owner |
 |------|------|-----------|-----|-------|
+| 2026-08-12 | Content / music LOOP mes | “Music looping now enabled/disabled.” | 377 IF + `musicloop` varp are period; **mes text** cited in 274 as July 2006 (post-tip). Button behaviour is 274 loop timer + `midi_length` | agent |
 | 2026-08-03 | Ports | WEB **81**, GAME **43595** (not stock 80/43594) | Isolation from live 274; Java client requires WEB=`80+offset`, GAME=`43594+offset` with same offset | ops |
 | 2026-08-03 | Ports | Was briefly WEB **8891** (wrong) | Broke CRC; fixed back to **81** | ops |
 | 2026-08-04 | Content / skill guide IF | Pack root **18800** (`skill_guide` + comps 18801–18951), not 274’s **8714** | On 377 pack, **8714=`inter_183`** (occupied). Free range after TBWT scroll. **Behaviour** from 274; **id** is content-local invent. Audit: `skill-guide-377-id-audit.md` | agent |
@@ -47,6 +48,9 @@ Record **intentional product / platform differences** from historical May 2006 /
 | 2026-08-10 | Client-TS MIDI (parked) | Webpage SF2 upload / multi-bank shell | Intentional deviation later; upload branch parked | agent |
 | 2026-08-10 | Client-TS MIDI backend | Spessa + Web Audio instead of `javax.sound.midi` | Decision 012: stock Spessa; Jagex control plane; Florestan bank | agent |
 | 2026-08-10 | Client-TS MIDI (removed) | FluidSynth / tinymidipcm multi-backend | Spike A/B only; Spessa won; dead code deleted from tree | agent |
+| 2026-08-12 | Content / Managing Miscellania IF | Pack root **19159** (`misc_both_manage` + comps 19160–19268); 289 used **10984** | 377 cache has no Managing UI; 289 ID collides. Free high range used per TBWT/skill-guide/horror/MM reinit pattern; ID allocation logged. See `port-mg-managing-misc-289-to-377.md` | agent |
+| 2026-08-12 | Content / Managing IF models | `model_4617`…`4626` rebound to 377 pack names (`com_i327`…); `if_north_arrow` → **`com_i155`** (same id **3039** as 289) | Packer requires named models; numeric ids unchanged | agent |
+| 2026-08-12 | Content / Leif intercept XP | `leif_intercept_wood` awards **woodcutting** (289 copy-pasted `stat_advance(mining)`) | 289 typo from Magnus; chopping maple is WC. Logged so LC can revert if they want the 289 bug | agent |
 
 Template for new rows:
 

@@ -87,6 +87,13 @@ require_vault_sources() {
     rel="${rel%"${rel##*[![:space:]]}"}"
     [[ -z "${rel}" ]] && continue
 
+    if [[ "${rel}" == "AGENTS.md" ]]; then
+      if [[ ! -f "${ROOT}/docs/export/AGENTS.md" ]]; then
+        echo "MISSING vault source: docs/export/AGENTS.md (feeds public AGENTS.md)" >&2
+        missing=1
+      fi
+      continue
+    fi
     if [[ "${rel}" == "docs/README.md" ]]; then
       if [[ ! -f "${ROOT}/docs/export/README.md" ]]; then
         echo "MISSING vault source: docs/export/README.md (feeds docs/README.md)" >&2
@@ -229,9 +236,17 @@ copy_dir_filtered() {
   echo "  + ${rel}/ (filtered)"
 }
 
-for f in README.md AGENT_BRIEF.md AGENTS.md NOTICE.md LICENSE CONTRIBUTING.md; do
+for f in README.md NOTICE.md LICENSE CONTRIBUTING.md; do
   copy_file "${f}"
 done
+# Root AGENTS.md in the vault is operator-full; public ships the thin export copy
+# (same pattern as docs/README.md ← docs/export/README.md).
+if [[ ! -f "${ROOT}/docs/export/AGENTS.md" ]]; then
+  echo "REFUSE: missing docs/export/AGENTS.md (public thin agent rules)" >&2
+  exit 1
+fi
+cp -a "${ROOT}/docs/export/AGENTS.md" "${STAGE}/AGENTS.md"
+echo "  + AGENTS.md (from docs/export/AGENTS.md — vault root AGENTS is operator-full)"
 
 cat > "${STAGE}/.gitignore" <<'EOF'
 # --- deps / secrets / runtime ---

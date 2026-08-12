@@ -42,7 +42,7 @@ This may **loosen over time** if the project gains contributors or the maintaine
 
 ## Before you open a PR (or issue)
 
-1. Read [README](README.md), [NOTICE](NOTICE.md), and **[`AGENT_BRIEF.md`](AGENT_BRIEF.md)** (token-light rules).  
+1. Read [README](README.md), [NOTICE](NOTICE.md), and **[`AGENTS.md`](AGENTS.md)** (token-light rules).  
 2. Read the authenticity bar: [`docs/research/authenticity-stance.md`](docs/research/authenticity-stance.md).  
 3. Product purity fence: [`docs/decisions/004-client-bot-harness-boundary.md`](docs/decisions/004-client-bot-harness-boundary.md).  
 4. Prefer **honest FAIL / softpass labels** over soft greens sold as authenticity.  
@@ -54,7 +54,7 @@ This repo is intentionally **thin**: enough for bootstrap, accuracy bar, and evi
 
 | On this tree | Ask via issue (not assumed in-tree) |
 |--------------|-------------------------------------|
-| README, NOTICE, LICENSE, CONTRIBUTING, `AGENT_BRIEF` | Full session thrash logs |
+| README, NOTICE, LICENSE, CONTRIBUTING, `AGENTS.md` | Full session thrash logs |
 | Decisions + authenticity-stance + **deviations** | Long readiness XL / unit port dumps |
 | Thin runbooks + harness **code** | Harness screenshot dumps |
 

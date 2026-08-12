@@ -312,6 +312,16 @@ export function wantHeaded() {
  *   HARNESS_EPHEMERAL=1       no userDataDir (always cold)
  *   SLOWMO=ms                 only applied when headed (default 200)
  */
+/**
+ * Chromium flags so Spessa AudioContext is not stuck `suspended` until focus.
+ * Without this, MidiFacade init/play can wait on resume() and feel like the
+ * client is held until the harness window is clicked (browser autoplay policy).
+ */
+const HARNESS_CHROMIUM_ARGS = [
+  '--autoplay-policy=no-user-gesture-required',
+  '--disable-features=AudioServiceOutOfProcess'
+];
+
 export async function launchBrowser() {
   const { chromium } = loadPlaywright();
   const headed = wantHeaded();
@@ -319,7 +329,7 @@ export async function launchBrowser() {
 
   if (process.env.HARNESS_EPHEMERAL === '1') {
     console.log(`[harness] ephemeral browser headed=${headed} (no profile — cold ondemand)`);
-    return chromium.launch({ headless: !headed, slowMo });
+    return chromium.launch({ headless: !headed, slowMo, args: HARNESS_CHROMIUM_ARGS });
   }
 
   const userDataDir = process.env.HARNESS_PROFILE
@@ -337,7 +347,8 @@ export async function launchBrowser() {
   return chromium.launchPersistentContext(userDataDir, {
     headless: !headed,
     slowMo,
-    viewport: HARNESS_VIEWPORT
+    viewport: HARNESS_VIEWPORT,
+    args: HARNESS_CHROMIUM_ARGS
   });
 }
 
@@ -982,7 +993,63 @@ export async function setWorldSpeed(page, ms = 300) {
     console.warn(`setWorldSpeed: speed ${n} not sent`);
     return false;
   }
+  // Stash for waitTicks — most product ops need 3–5 ticks before var/mes settle.
+  page.__lc377_worldSpeedMs = n;
   return true;
+}
+
+/**
+ * Wait N **world ticks** (not wall-clock guesses).
+ *
+ * Most RS2 product writes (oploc success, stage/var set, inv_add after p_delay)
+ * land after **3–5 ticks**. Smokes that `getvar` immediately after menuAction
+ * falsely FAIL. Prefer this over bare `waitForTimeout(200)`.
+ *
+ * Tick length = last `setWorldSpeed` on this page, else `WORLD_SPEED_MS`, else 300.
+ *
+ * @param {import('playwright').Page} page
+ * @param {number} [ticks=5]
+ * @param {{ tickMs?: number }} [opts]
+ */
+export async function waitTicks(page, ticks = 5, opts = {}) {
+  const n = Math.max(0, Number(ticks) || 0);
+  if (n === 0) return;
+  const tickMs = Math.max(
+    20,
+    Number(opts.tickMs) ||
+      Number(page?.__lc377_worldSpeedMs) ||
+      Number(process.env.WORLD_SPEED_MS) ||
+      300
+  );
+  await page.waitForTimeout(n * tickMs);
+}
+
+/**
+ * Poll until `getServerVarQuiet(varName)` satisfies `pred`, waiting `ticksBetween`
+ * world ticks between samples. Default pred: value changed from `from`.
+ *
+ * @param {import('playwright').Page} page
+ * @param {string} varName
+ * @param {{ from?: number|string|null, pred?: (v: number|null) => boolean, attempts?: number, ticksBetween?: number }} [opts]
+ * @returns {Promise<number|null>} last value (or null)
+ */
+export async function waitServerVar(page, varName, opts = {}) {
+  const attempts = Math.max(1, Number(opts.attempts) || 12);
+  const ticksBetween = Math.max(1, Number(opts.ticksBetween) || 4);
+  const from = opts.from;
+  const pred =
+    typeof opts.pred === 'function'
+      ? opts.pred
+      : from !== undefined
+        ? v => v != null && Number(v) !== Number(from)
+        : v => v != null;
+  let last = null;
+  for (let i = 0; i < attempts; i++) {
+    if (i > 0) await waitTicks(page, ticksBetween);
+    last = await getServerVarQuiet(page, varName);
+    if (pred(last)) return last;
+  }
+  return last;
 }
 
 /** Free inventory slots (28-pack). Non-stack food/gear each need one slot. */
@@ -1086,6 +1153,10 @@ export function teleCheat(tile) {
  * getvar via CLIENT_CHEAT + chat mirror (server truth — not client varp[]).
  * Needed because many progress varps are not transmitted.
  * Retries: setstat spam can push the getvar line out of a tiny chat window.
+ *
+ * Side effect: authentic `::getvar` on a **protect** varp (or a varbit whose
+ * basevar is protect) calls `closeModal`. Do not read those while a main IF
+ * under test is open — click first, getvar after.
  */
 export async function getServerVarQuiet(page, name, attempts = 4) {
   const want = `get ${String(name).toLowerCase()}:`;

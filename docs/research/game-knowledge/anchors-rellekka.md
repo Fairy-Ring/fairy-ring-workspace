@@ -19,6 +19,7 @@ World tiles used by `quest-viking-smoke.mjs` and content (m41_57 unless noted). 
 | Sigli | 2660, 3653 | map `0 36 5: 1281` |
 | Thorvald | 2666, 3693 | map `0 42 45: 1289` |
 | Olaf | 2673, 3683 | map `0 49 35: 1269` |
+| **Yrsa** (`viking_clothing_shopkeeper` **1301**) | **2625, 3675** | `m41_57.jm2` NPC `0 1 27: 1301`; smoke stand **2625,3674** |
 | Draugen hunt box | x 2625–2740, z 3605–3725 | talisman bearing; no Seers hop |
 | Draugen spawn (content random) | map 41–42 / 56–58 forests + crabs | `spawn_draugen_butterfly` |
 

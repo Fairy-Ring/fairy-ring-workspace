@@ -11,7 +11,7 @@
 
 1. **This GitHub workspace ships a thin docs surface**, not every research note or thrash log.  
 2. **Product trees (content / engine / client-ts) open alongside** the thin workspace when remotes go public — not a monorepo dump of game trees into this repo.  
-3. **Agents get a curated brief** (`AGENT_BRIEF.md`), not hundreds of session plans.  
+3. **Agents get a curated brief** (public root `AGENTS.md` from `docs/export/AGENTS.md`), not hundreds of session plans.  
 4. **Sharing more on request is welcome.** Thin defaults are for **token cost and noise**, not secrecy.  
    Humans or agents may open a **GitHub issue** for a **named** content/engine/client unit.  
    Maintainers may share a **scoped extract** after a smell test — not a wholesale dump of private process notes.
@@ -38,7 +38,7 @@ Session thrash can stay private process. The **public surface** still carries th
 | Path / artifact | Role |
 |-----------------|------|
 | `README.md` · `NOTICE.md` · `LICENSE` · `CONTRIBUTING.md` | Brand, legal, how to contribute |
-| `AGENT_BRIEF.md` · `AGENTS.md` | Token-light + full agent rules |
+| Public `AGENTS.md` (from `docs/export/AGENTS.md`) | Token-light agent rules (vault root `AGENTS.md` stays operator-full) |
 | `docs/decisions/*` | Product fences (004 · 009 · 010 · 011, …) |
 | `docs/research/authenticity-stance.md` | Accuracy bar |
 | **`docs/research/deviations.md`** | Intentional product/platform non-auth |
@@ -63,7 +63,9 @@ Session thrash can stay private process. The **public surface** still carries th
 
 ---
 
-## `AGENT_BRIEF.md` (required shape)
+## Public `AGENTS.md` (required shape)
+
+This is the token-light brief. **`AGENT_BRIEF.md` was absorbed into it on 2026-08-12** after export started shipping `docs/export/AGENTS.md` instead of the vault operator file. A second short file would only duplicate this one.
 
 1. What / era / not Lost City  
 2. Accuracy bar (product vs toys; residual = live stage)  
@@ -72,9 +74,13 @@ Session thrash can stay private process. The **public surface** still carries th
 5. Research ladder (no invent)  
 6. Never push LostCityRS; AI is a tool  
 7. Docs map + **deviations** pointer  
-8. Current focus (one short dated paragraph)
+8. Current focus (one short dated paragraph, optional)
 
 **Do not put in the brief:** thrash tick logs, absolute machine paths, secrets, soft-green authenticity claims.
+
+### Amendment (2026-08-12)
+
+When Decision **011** landed, public `AGENTS.md` was going to be the huge vault operator file, so a separate `AGENT_BRIEF.md` was the token-light entry. Export later copies **`docs/export/AGENTS.md`** to public root `AGENTS.md`. That thin file already covers the brief. Keep one public rules file; do not resurrect `AGENT_BRIEF.md`.
 
 ---
 
@@ -108,4 +114,4 @@ Session thrash can stay private process. The **public surface** still carries th
 - Decision **009** — branding  
 - `docs/research/authenticity-stance.md`  
 - `docs/research/deviations.md` · `docs/research/softpass.md`  
-- `CONTRIBUTING.md` · `AGENT_BRIEF.md`
+- `CONTRIBUTING.md` · public `AGENTS.md`

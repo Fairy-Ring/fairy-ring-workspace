@@ -28,6 +28,7 @@
 | 2026-08-07 | `queue(name, delay, arg)` needs **two** ints on 377 | greegree force_unequip |
 | 2026-08-07 | Trail APIs: 377 `trail_puzzle_complete()` 0-arg; `give_trail_puzzle` 2-arg | `lord_iorwerth.rs2` |
 | 2026-08-08 | `softtimer` vs `settimer`: NORMAL timers blocked when delayed/modal; soft may still fire | residuals-inbox; `Player.ts` |
+| 2026-08-11 | Harness must wait full delay cycle (firstswing 5t + continue) before re-firing opLoc — new OP mid-delay replaces `Player.activeScript` | Managing M1 weed_herbs.rs2; `managsorn41j` PASS |
 | 2026-08-08 | Myreque cutscene port: **no** `~chatnc_cutscene` on 377 → `~chatnpc_specific`; pack NPC renames | `routequest_vanstorm` / cutscene-80 plan |
 | 2026-08-08 | Complete stage often `queue(…_complete)` after talk — smoke must wait stage/var, not modal alone | Flamtaer Ulsquire; Myreque Vanstrom |
 | 2026-08-08 | Quest complete **scroll IF** can be empty/missed if thrash dismisses or shot races `mainModal=-1` | Flamtaer complete residual |

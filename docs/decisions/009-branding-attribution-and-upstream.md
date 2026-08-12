@@ -75,7 +75,7 @@
 - [x] GitHub org **Fairy-Ring**: `fairy-ring-workspace` + `FR-{content,engine,client-ts}`; vault private  
 - [x] NOTICE + derivation + AI disclosure  
 - [x] Vendor README/NOTICE brand pass (no “going public” leftover)  
-- [x] Thin contributor surface + AGENT_BRIEF (Decision **011**)  
+- [x] Thin contributor surface + public `AGENTS.md` (Decision **011**; `AGENT_BRIEF` absorbed 2026-08-12)  
 - [x] GH descriptions / org profile: Fairy Ring; rev 377; derived from Lost City; not official LC/Jagex  
 - [x] Never push to LostCityRS without permission — restated on public READMEs
 
@@ -86,4 +86,4 @@
 - `docs/research/authenticity-stance.md`  
 - `docs/decisions/004-client-bot-harness-boundary.md`  
 - `docs/decisions/011-public-docs-surface-and-agent-brief.md`  
-- `AGENTS.md` · `AGENT_BRIEF.md` · `README.md`  
+- `AGENTS.md` · `docs/export/AGENTS.md` · `README.md`  

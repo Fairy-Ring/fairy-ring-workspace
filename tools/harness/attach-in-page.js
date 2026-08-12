@@ -13,7 +13,8 @@
  * @see rs2b0t docs/ARCHITECTURE.md
  */
 
-import { stopMidi } from '../../vendor/client-ts/src/3rdparty/tinymidipcm.js';
+// Decision 012: Spessa + MidiFacade (not tinymidipcm)
+import { stopMidi, debugMidi } from '../../vendor/client-ts/src/sound/MidiFacade.js';
 
 // MiniMenuAction (377) — wire values from vendor/client-ts MiniMenuAction
 const OP_LOC = [625, 721, 743, 357, 1071]; // OP_LOC1..5
@@ -35,6 +36,8 @@ const INV_BUTTON = [582, 113, 555, 331, 354]; // INV_BUTTON1..5
 const TUT_CLICKSIDE = 119;
 
 const CLIENT_CHEAT = 56;
+/** ClientProt.RESUME_P_COUNTDIALOG — p_countdialog / last_int */
+const RESUME_P_COUNTDIALOG = 75;
 const BUTTON_OK = 1;
 const BUTTON_CONTINUE = 6;
 const BUTTON_TARGET = 2;
@@ -737,6 +740,25 @@ export function install(client, hooks = {}) {
     invHas(nameSubstr) {
       const want = String(nameSubstr).toLowerCase();
       return reader.inventory().find(i => i.name && i.name.toLowerCase().includes(want)) ?? null;
+    },
+    /** Interface inv by packed com id (e.g. shop_template:inv 3900). */
+    ifInv(comId) {
+      const com = ifGet(comId | 0);
+      if (!com?.linkObjType) return [];
+      const out = [];
+      for (let i = 0; i < com.linkObjType.length; i++) {
+        const idPlusOne = com.linkObjType[i] | 0;
+        if (idPlusOne <= 0) continue;
+        const id = idPlusOne - 1;
+        const ot = objList(id);
+        out.push({
+          slot: i,
+          id,
+          count: com.linkObjNumber?.[i] | 0,
+          name: ot?.name ?? null
+        });
+      }
+      return out;
     },
 
     /**
@@ -1584,6 +1606,17 @@ export function install(client, hooks = {}) {
       client.out.pjstr(body);
       return true;
     },
+    /** Product p_countdialog resume (Java Enter on amount). */
+    resumeCountDialog(value) {
+      if (!client.ingame || !client.out) return false;
+      const n = Number(value) | 0;
+      client.out.p1Enc(RESUME_P_COUNTDIALOG);
+      client.out.p4(n);
+      client.chatbackInputOpen = 0;
+      client.dialogInputOpen = false;
+      client.redrawChat = true;
+      return true;
+    },
     /**
      * Injected title login (rs2b0t tools/lib/harness.ts).
      * Sets loginUser/loginPass and calls Client.login — no canvas typing.
@@ -1628,14 +1661,14 @@ export function install(client, hooks = {}) {
       }
     },
     /**
-     * Stop tinymidipcm + clear Client midi bookkeeping so the next MIDI_SONG
-     * from the server is not blocked by nextMidiSong === songId (title scape_main).
+     * Stop MIDI (MidiFacade/Spessa) + clear Client midi bookkeeping so the next
+     * MIDI_SONG from the server is not blocked by nextMidiSong === songId (title scape_main).
      */
     clearMidiState(reason = '') {
       try {
         stopMidi(false);
       } catch {
-        /* wasm may not be ready */
+        /* backend may not be ready */
       }
       try {
         client.midiSong = -1;
@@ -1753,10 +1786,12 @@ export function install(client, hooks = {}) {
     loginMes: () => reader.loginMes(),
     loginscreen: () => reader.loginscreen(),
     varp: id => reader.varp(id),
+    ifInv: id => reader.ifInv(id),
     worldTile: () => reader.worldTile(),
     walkTo: (lx, lz) => actions.walkTo(lx, lz),
     walkRel: (dx, dz) => actions.walkRel(dx, dz),
     cheat: cmd => actions.cheat(cmd),
+    resumeCountDialog: n => actions.resumeCountDialog(n),
     menuAction: (a, b, c, d) => actions.menuAction(a, b, c, d),
     snapshot: () => reader.snapshot(),
     /** Dense thrash telemetry (one JSON line host-side). */
@@ -1770,7 +1805,15 @@ export function install(client, hooks = {}) {
     /** Opcode-18 login after softDrop / mid-session seed. */
     reconnectLogin: (u, p) => actions.reconnectLogin(u, p),
     /** Stop title/scape_main and clear midiSong bookkeeping. */
-    clearMidiState: reason => actions.clearMidiState(reason)
+    clearMidiState: reason => actions.clearMidiState(reason),
+    /** MidiFacade fade/play snapshot (track-swap once-over). */
+    debugMidi: () => {
+      try {
+        return debugMidi();
+      } catch {
+        return { error: 'debugMidi failed' };
+      }
+    }
   };
 
   globalThis.__lc377 = abi;

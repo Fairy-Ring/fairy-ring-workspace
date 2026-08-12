@@ -25,6 +25,8 @@
 | **Prince Brand** | m39_60 | **2502,3852** L1 | same | awful anthem **40→50** |
 | **Queen Sigrid** | m40_60 | **2612,3877** L1 | same | peace **10→20**, **30→40**, treaty **60→70** |
 | **Derrik** (`misc_smithy`) | m39_60 | **2551,3897** L0 | same | giant nib at stage **80** + iron bar |
+| **Gardener Gunnhild** | m39_60 | **2525,3850** L0 | same | labour talk; find `0_39_60_29_10` |
+| **Heather / Herbs labour stand** | m39_60 | loc cluster ~2525–2528,3848–3855 | **2524,3851** L0 | host stand local **28,11** free floor; **not** 2524,3849 (**oldcastlewall**) |
 | Rellekka sailor | m41_57 | **2629,3693** L0 | | longboat **source-stub** (289 too) |
 
 ## Stage ladder (soft-pass truth)

@@ -164,13 +164,15 @@ fs.copyFileSync(
   path.join(OUT_DIR, 'attach-in-page.js')
 );
 
-// MIDI assets next to harness-client.js — tinymidipcm fetches via import.meta.url
-// (same origin path as the bundle: /harness/… not /client/…)
+// MIDI assets (Decision 012 Spessa). MidiFacade fetches Florestan from
+// /client/… or /harness/…; worklet is always /client/spessasynth_processor.min.js
+// (same origin). Keep Florestan beside harness-client for /harness/ fallback.
 function copyBeside(name, candidates) {
   const dst = path.join(OUT_DIR, name);
   for (const src of candidates) {
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, dst);
+      console.log(`[harness] ${name} ← ${src}`);
       return src;
     }
   }
@@ -178,18 +180,31 @@ function copyBeside(name, candidates) {
   return null;
 }
 
-copyBeside('tinymidipcm.wasm', [
-  path.join(ROOT, 'vendor/client-ts/out/tinymidipcm.wasm'),
-  path.join(ROOT, 'vendor/engine/public/client/tinymidipcm.wasm')
-]);
+// Drop legacy tinymidipcm wasm if present (product is Spessa only)
+try {
+  fs.unlinkSync(path.join(OUT_DIR, 'tinymidipcm.wasm'));
+} catch {
+  /* ignore */
+}
 
-// Soundfont required for SFX-adjacent music (scape_main etc.)
 copyBeside('SCC1_Florestan.sf2', [
   path.join(ROOT, 'vendor/engine/public/client/SCC1_Florestan.sf2'),
   path.join(ROOT, 'vendor/client-ts/out/SCC1_Florestan.sf2'),
   path.join(ROOT, 'assets/SCC1_Florestan.sf2')
 ]);
 
+// Worklet must live under /client/ (PROCESSOR_URL in spessaBackend) — also ensure present
+const clientPub = path.join(ROOT, 'vendor/engine/public/client');
+const procName = 'spessasynth_processor.min.js';
+const procSrc = path.join(ROOT, 'vendor/client-ts/node_modules/spessasynth_lib/dist', procName);
+const procDst = path.join(clientPub, procName);
+if (fs.existsSync(procSrc)) {
+  fs.mkdirSync(clientPub, { recursive: true });
+  fs.copyFileSync(procSrc, procDst);
+  console.log(`[harness] ${procName} → public/client/`);
+} else if (!fs.existsSync(procDst)) {
+  console.warn(`[harness] missing ${procName} — MIDI will fail (bun install in vendor/client-ts)`);
+}
 // Collision pack for world walker (classic PathFinder)
 const packGz = path.join(ROOT, 'tools/harness/nav/out/collision.lcnav.gz');
 if (fs.existsSync(packGz)) {

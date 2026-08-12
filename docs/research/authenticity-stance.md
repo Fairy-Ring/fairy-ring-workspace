@@ -31,8 +31,9 @@ Soft mid thrash is a **normal stage of the process**, not a moral fail. You stil
 
 ## Rules for agents and humans
 
-1. **Do not invent content.** No new quests, drops, mechanics, messages, or “QoL” that did not exist in the target era unless the human explicitly accepts a logged **deviation**.  
-   **Client track:** do not invent client behaviour either — **exact port of Client-Java 377** to TS (research notes when present).
+1. **Do not invent player-facing or cache-absent *content*.** No new quests, drops, mechanics, messages, IDs, or “QoL” that did not exist in the target era unless the human accepts a logged **deviation**.  
+   **Client track:** do not invent client behaviour — **exact port of Client-Java 377** to TS.  
+   **Internal names are LC-parity, not Jagex-or-nothing** (Decision **013**): classic 377 configs do **not** store debugnames. LC’s `*.pack` labels (`[mapletree]`, `%misc_last_update`) are reconstruction so scripts compile. We may name leftover `varp_N` / `npc_N` / `loc_N` the same way when the **row exists**, the name is **sensible**, and it does **not** collide with an existing 377 debugname. Do not claim those labels are Jagex-internal. Prefer an LC 274/289 name that already exists and era-fits.
 2. **Follow the research source ladder** (below). Higher rungs beat lower ones.
 3. **Intentional product non-auth** → [`deviations.md`](deviations.md). **Soft mids / not-yet-e2e** → [`softpass.md`](softpass.md).
 4. **Missing triggers / stubs:** leave incomplete or finish from research — do not invent filler dialogue/loot to silence `no trigger for …`.
@@ -208,5 +209,5 @@ A stack you can log into and **observe** behaviour so humans can **find and fix 
 - `docs/research/deviations.md` — intentional product/platform non-auth  
 - `docs/research/softpass.md` — soft mids / not-yet-e2e process ledger  
 - `docs/runbooks/playable.md` — when present  
-- `AGENTS.md` / `AGENT_BRIEF.md` — working rules  
+- `AGENTS.md` / `docs/export/AGENTS.md` — working rules (vault vs public)  
 

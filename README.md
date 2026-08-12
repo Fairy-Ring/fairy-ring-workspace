@@ -56,7 +56,7 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 
 | Included | Not included |
 |----------|----------------|
-| Thin process docs: brief, decisions, authenticity stance, **deviations log** | Full session plans / thrash dumps |
+| Thin process docs: public `AGENTS.md`, decisions, authenticity stance, **deviations log** | Full session plans / thrash dumps |
 | Test harness under `tools/harness/` (Decision 004 fence) | OpenRS2 cache / packed server data **in git** |
 | Automation scripts, isolation helpers | Live 274 / production worlds |
 | Pointers to separate content / engine / client-ts remotes | A claim that rev 377 work is already complete |
@@ -67,8 +67,7 @@ AI does **not** replace the accuracy bar: live `.rs2` stage-writes, research lad
 
 | Audience | Path |
 |----------|------|
-| **Agents (token-light)** | **[`AGENT_BRIEF.md`](AGENT_BRIEF.md)** first |
-| **Agents (rules)** | **[`AGENTS.md`](AGENTS.md)** |
+| **Agents** | **[`AGENTS.md`](AGENTS.md)** (public token-light rules) |
 | **Humans / contributors** | This README · [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`NOTICE.md`](NOTICE.md) |
 | **Rules / fences** | [`docs/decisions/`](docs/decisions/) (004 · **009** · **010** · **011**) |
 | **Intentional non-auth** | [`docs/research/deviations.md`](docs/research/deviations.md) |

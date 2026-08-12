@@ -1,9 +1,12 @@
 # Agent entrypoint — Fairy Ring
 
+> **Public thin export.** Maintainer vault uses a **fuller** root `AGENTS.md` (isolation paths, idle queue, FR-vault remotes).  
+> Edit **this file** for public wording; export copies it to public root as `AGENTS.md`.
+
 **Brand:** **Fairy Ring** — independent pre-EOC **RS2-era** preservation (method differs from Lost City; long horizon similar).  
 **This tree’s focus:** historical **rev 377** (~May 2006) — not a permanent brand lock to one revision.  
 **Derived from** Lost City / LostCityRS open work — **not** official Lost City.  
-**Start here for agents:** [`AGENT_BRIEF.md`](AGENT_BRIEF.md) (token-light). This file is the rule set.
+**This file is the public token-light rule set** (Decision **011**). The maintainer vault keeps a fuller root `AGENTS.md`.
 
 Env root:
 
@@ -61,6 +64,8 @@ Branding: Decision **009**. Thin public surface: Decision **011**.
 | Management | **8899** |
 | Node id / revision | **37** / **377** |
 
+Browser TS talks **WebSocket on the web port**, not TCP 43595.
+
 ```text
 vendor/content|engine|client-ts   # git clones (not monorepo blobs)
 cache/                            # local OpenRS2 download only — see cache/README.md
@@ -97,7 +102,6 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 
 | Need | Path |
 |------|------|
-| Rules (short) | **`AGENT_BRIEF.md`** |
 | Rules (this file) | **`AGENTS.md`** |
 | Authenticity | `docs/research/authenticity-stance.md` |
 | Intentional non-auth | `docs/research/deviations.md` |
@@ -121,7 +125,8 @@ This surface does **not** ship full session plans or the entire research corpus.
 1. Changes under `vendor/client-ts|content|engine` → accuracy audience; cite sources.  
 2. Changes under `tools/harness` only → toys OK; **label** soft proofs.  
 3. Prefer honest mid-gates over green bars.  
-4. **Config unit before thrash** when porting quests: obj/npc/loc params before multi-minute smokes.
+4. **Config unit before thrash** when porting quests: obj/npc/loc params before multi-minute smokes.  
+5. **Crumbs:** tele **next to** locs; gear matches setstat; no quest-critical `give` on residual claims.
 
 ### Long jobs
 

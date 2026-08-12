@@ -28,13 +28,13 @@ Cold resume: agents should **read this folder** before inventing `giveItems` / `
 |-----|----------|
 | [`harness-prep-and-gear.md`](harness-prep-and-gear.md) | **Host prep policy** — setstat + give + equip; match gear to combat floor |
 | [`harness-tele-stand.md`](harness-tele-stand.md) | **Tele / stand** — next to loc, not on it; Flamtaer courtyard vs altar |
-| [`combat-floors-377.md`](combat-floors-377.md) | Known NPC levels / smoke combat floors |
+| [`combat-floors-377.md`](combat-floors-377.md) | Known NPC levels / smoke combat floors — **MM remains** vis/ATK–HP from 289 `quest_mm.npc` + 377 unpack (not OSRS CLs) |
 | [`anchors-rellekka.md`](anchors-rellekka.md) | Fremennik / Rellekka tiles used by Viking smokes (workman **2655,3592** — not town z-band) |
 | [`anchors-mort-myre.md`](anchors-mort-myre.md) | Cyreg **3522,3284**, Curpile **3508,3440**, Vanstrom multi **3503,3477**, hideout n54_153 |
 | [`flamtaer-residual-377.md`](flamtaer-residual-377.md) | **Flamtaer residual ops** — stages 50→85, sanc/repaired_p, 49t pyre, bar §2 checklist |
 | [`anchors-isafdar.md`](anchors-isafdar.md) | Iorwerth **2205,3252**, Tyras guards, Idris residual |
 | [`anchors-miscellania.md`](anchors-miscellania.md) | Vargas **2501,3859** L1, door guard **2505,3856** L1; Throne start ≥10 |
-| [`anchors-ape-atoll.md`](anchors-ape-atoll.md) | Greegree zone / smoke stand **2755,2795** |
+| [`anchors-ape-atoll.md`](anchors-ape-atoll.md) | Greegree zone / smoke stand **2755,2795**; MM remains vis pointer + greegree hunt skip |
 | [`anchors-crash-island.md`](anchors-crash-island.md) | MM Crash Island fly land **2893,2725**; Lumdo/Waydar; ch2 cutscene m40_71 |
 | [`anchors-karamja-shipyard.md`](anchors-karamja-shipyard.md) | MM seal gate **2945,3041**, stand **2943,3040**, guard **2944,3040**, Caranock **2956,3025** |
 | [`../map-npc-spawns-jm2-377.md`](../map-npc-spawns-jm2-377.md) | How map NPC spawns work in `.jm2` (when present on this surface) |
