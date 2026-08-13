@@ -380,6 +380,85 @@ export function boot(page) {
   );
 }
 
+/** GET full body via node:http (IPv4). */
+async function httpGetBuffer(url) {
+  const httpMod = await import('node:http');
+  const http = httpMod.default ?? httpMod;
+  const u = new URL(url);
+  return new Promise((resolve, reject) => {
+    const req = http.request(
+      {
+        hostname: u.hostname === 'localhost' ? '127.0.0.1' : u.hostname,
+        port: u.port || 80,
+        path: u.pathname + u.search,
+        method: 'GET',
+        family: 4,
+        timeout: 15_000
+      },
+      res => {
+        const chunks = [];
+        res.on('data', c => chunks.push(c));
+        res.on('end', () =>
+          resolve({ status: res.statusCode | 0, buf: Buffer.concat(chunks) })
+        );
+      }
+    );
+    req.on('error', reject);
+    req.on('timeout', () => req.destroy(new Error('timeout')));
+    req.end();
+  });
+}
+
+/** Jagex CRC32 (Client.ts Packet.getcrc / engine Packet.getcrc). */
+function jagCrc32(src) {
+  const POLY = 0xedb88320;
+  if (!jagCrc32.table) {
+    const table = new Int32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let r = i;
+      for (let bit = 0; bit < 8; bit++) {
+        r = (r & 1) === 1 ? (r >>> 1) ^ POLY : r >>> 1;
+      }
+      table[i] = r;
+    }
+    jagCrc32.table = table;
+  }
+  let crc = 0xffffffff;
+  for (let i = 0; i < src.length; i++) {
+    crc = (crc >>> 8) ^ jagCrc32.table[(crc ^ src[i]) & 0xff];
+  }
+  return ~crc | 0;
+}
+
+/**
+ * Client getJagCrc self-check: 9×i32 jag CRCs + rolling hash
+ *   hash = 1234; for i in 0..8: hash = ((hash << 1) + crc[i]) | 0
+ * Fail → title "checksum problem" then "Game updated - please reload page".
+ */
+function checkCrcTable(buf) {
+  if (!buf || buf.length < 40) {
+    return { ok: false, note: `/crc len ${buf?.length ?? 0} (want 40)` };
+  }
+  const crcs = [];
+  for (let i = 0; i < 9; i++) crcs.push(buf.readInt32BE(i * 4));
+  const expected = buf.readInt32BE(36);
+  let hash = 1234;
+  for (let i = 0; i < 9; i++) {
+    hash = ((hash << 1) + crcs[i]) | 0;
+  }
+  if (hash !== expected) {
+    return {
+      ok: false,
+      crcs,
+      note: `/crc self-check fail hash=${hash} expected=${expected} (client: Game updated). Restart engine after pack; wipe .tmp/playwright-harness-profile`
+    };
+  }
+  if (crcs[8] === 0) {
+    return { ok: false, crcs, note: '/crc sounds crc is 0 — getJagCrc loops forever' };
+  }
+  return { ok: true, crcs };
+}
+
 /** GET body byte length via node:http (IPv4). */
 async function httpBodySize(url) {
   const httpMod = await import('node:http');
@@ -468,14 +547,40 @@ export async function checkEnginePackHealth(base = 'http://127.0.0.1:81') {
   // Known-good flat size ~81054; HTTP must match disk (not a smaller stale cache).
   const match = versionlistHttp > 0 && versionlistHttp === versionlistDisk;
   const configOk = configHttp > 100_000;
-  const ok = match && configOk;
+
+  // /crc self-check is what Client.getJagCrc actually gates on. Size match can
+  // still be green after a live pack left CrcBuffer stale → "Game updated".
+  let crcOk = false;
+  let crcNote;
+  try {
+    const crcRes = await httpGetBuffer(`${origin}/crc`);
+    const table = checkCrcTable(crcRes.buf);
+    crcOk = crcRes.status === 200 && table.ok;
+    crcNote = table.ok ? undefined : table.note;
+    if (crcOk && table.crcs) {
+      const tex = await httpGetBuffer(`${origin}/textures`);
+      if (tex.status === 200 && tex.buf.length) {
+        const got = jagCrc32(tex.buf);
+        if (got !== table.crcs[6]) {
+          crcOk = false;
+          crcNote = `/textures crc ${got} ≠ table[6] ${table.crcs[6]} (stale CrcBuffer after pack). Restart engine; wipe .tmp/playwright-harness-profile`;
+        }
+      }
+    }
+  } catch (e) {
+    crcNote = `/crc fetch failed: ${e?.message || e}`;
+  }
+
+  const ok = match && configOk && crcOk;
   const note = ok
     ? undefined
-    : !match
-      ? `versionlist HTTP ${versionlistHttp} ≠ disk ${versionlistDisk} — scene1 hang risk. ` +
-        `Fix: BUILD_VERIFY=false npm run build in vendor/engine + restart; wipe .tmp/playwright-harness-profile`
-      : `config HTTP size ${configHttp} looks empty/bad`;
-  return { ok, versionlistHttp, versionlistDisk, configHttp, note };
+    : crcNote
+      ? crcNote
+      : !match
+        ? `versionlist HTTP ${versionlistHttp} ≠ disk ${versionlistDisk} — scene1 hang risk. ` +
+          `Fix: BUILD_VERIFY=false npm run build in vendor/engine + restart; wipe .tmp/playwright-harness-profile`
+        : `config HTTP size ${configHttp} looks empty/bad`;
+  return { ok, versionlistHttp, versionlistDisk, configHttp, crcOk, note };
 }
 
 /**
@@ -495,7 +600,7 @@ export async function assertEnginePackHealth(base = 'http://127.0.0.1:81') {
     // 0-byte HTTP = engine down or mid-reload; mismatch = real scene1 risk
     const transient = h.versionlistHttp === 0 || h.configHttp === 0;
     console.log(
-      `[harness] pack health wait #${attempt} vl_http=${h.versionlistHttp} vl_disk=${h.versionlistDisk} config=${h.configHttp}` +
+      `[harness] pack health wait #${attempt} vl_http=${h.versionlistHttp} vl_disk=${h.versionlistDisk} config=${h.configHttp} crc=${h.crcOk}` +
         (transient ? ' (engine not ready yet)' : '') +
         (h.note ? ` note=${h.note}` : '')
     );
@@ -504,7 +609,7 @@ export async function assertEnginePackHealth(base = 'http://127.0.0.1:81') {
     h = await checkEnginePackHealth(base);
   }
   console.log(
-    `[harness] pack health vl_http=${h.versionlistHttp} vl_disk=${h.versionlistDisk} config=${h.configHttp} ok=${h.ok}`
+    `[harness] pack health vl_http=${h.versionlistHttp} vl_disk=${h.versionlistDisk} config=${h.configHttp} crc=${h.crcOk} ok=${h.ok}`
   );
   if (!h.ok) {
     fail(h.note || 'engine pack health check failed');

@@ -2,7 +2,7 @@
 
 **Tag default:** **VERIFIED** = `_unpack/377` + `m38_52.jm2` / `m57_54` / `m41_57` (2026-08-12 deepen).  
 **Source:** [`../making-history-garden-cache-first-377.md`](../making-history-garden-cache-first-377.md) §2 + §9.  
-**Not:** start dialogue. Period **22 Nov 2005** news / Jorral transcript still missing — no `[opnpc1]` from this file.
+**Not:** start dialogue. Official news **VERIFIED 22 Nov 2005** (names Jorral + Lathas; no first-talk). Jorral transcript **still missing** — no `[opnpc1]` from this file.
 
 ## Start surface
 

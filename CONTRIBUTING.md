@@ -126,7 +126,8 @@ Do not point experiments at live 274 production trees.
 | | |
 |--|--|
 | **Commits** | Stay **small and frequent** — durable units of work, not chat. |
-| **Pushes** | **Only when a maintainer asks.** Vault, `FR-*`, and the public export wait. Silence on GH does not mean work stopped. |
+| **Private vault** | Maintainers may push `FR-vault` often (private backup). |
+| **Public remotes** | **Only when a maintainer asks.** `FR-*` and `fairy-ring-workspace` wait. Silence on GH does not mean work stopped. |
 
 ## PR expectations
 

@@ -2219,6 +2219,7 @@ try {
 
     // Fight forms. Display name stays "Koschei the deathless" across changetype —
     // mid31 only counted despawn (form1). Also count form-transition chat once each.
+    // Dedicated residual (pack ids 1290–1293): quest-viking-koschei-forms-smoke.mjs
     budget.check('thorvald-fight');
     let forms = 0;
     const seenFormChat = new Set();

@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-13T01:54Z
+Generated: 2026-08-13T15:49Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -24,6 +24,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/decisions/011-public-docs-surface-and-agent-brief.md
 ./docs/decisions/012-midi-java-impl-xp-soundfont.md
 ./docs/decisions/013-lc-parity-internal-names.md
+./docs/decisions/014-next-revision-410.md
 ./docs/README.md
 ./docs/research/authenticity-stance.md
 ./docs/research/corpus/inventory-274-vs-377-quest-delta.md
@@ -48,6 +49,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-miscellania.md
 ./docs/research/game-knowledge/anchors-mort-myre.md
 ./docs/research/game-knowledge/anchors-outpost.md
+./docs/research/game-knowledge/anchors-ratcatchers.md
 ./docs/research/game-knowledge/anchors-rellekka.md
 ./docs/research/game-knowledge/anchors-varrock-garden.md
 ./docs/research/game-knowledge/anchors-wanted-ahoy.md
@@ -90,16 +92,19 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./scripts/deploy-client-ts.sh
 ./scripts/export-public-workspace.sh
 ./scripts/fetch-openrs2-cache.sh
+./scripts/fetch-openrs2-client.sh
 ./scripts/inventory-skipped-config-refs.py
 ./scripts/kill-harness-smoke.sh
 ./scripts/smoke-client-ts.mjs
 ./scripts/snapshot-status.sh
+./scripts/unpack-openrs2-pack200.py
 ./scripts/verify-client-cache-parity.mjs
 ./tools/client-smoke/package-lock.json
 ./tools/client-smoke/package.json
 ./tools/harness/.generated/Client.ts
 ./tools/harness/.gitignore
 ./tools/harness/attach-in-page.js
+./tools/harness/bank-deposit-box-smoke.mjs
 ./tools/harness/build-client.mjs
 ./tools/harness/cheat-paths-smoke.mjs
 ./tools/harness/client-entry.ts
@@ -205,6 +210,8 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/path-abc-smoke.mjs
 ./tools/harness/probe-scenery-anim.mjs
 ./tools/harness/quest-eadgar-smoke.mjs
+./tools/harness/quest-flamtaer-status-smoke.mjs
+./tools/harness/quest-horror-metaldoor-smoke.mjs
 ./tools/harness/quest-horror-smoke.mjs
 ./tools/harness/quest-managing-kill-minus6-smoke.mjs
 ./tools/harness/quest-managing-labour-hard-smoke.mjs
@@ -214,11 +221,29 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/quest-managing-m5-slider-deposit-smoke.mjs
 ./tools/harness/quest-managing-smoke.mjs
 ./tools/harness/quest-misc-smoke.mjs
+./tools/harness/quest-mm-reinit-if-smoke.mjs
 ./tools/harness/quest-mm-smoke.mjs
 ./tools/harness/quest-mortton-smoke.mjs
+./tools/harness/quest-myreque-boat-if-smoke.mjs
 ./tools/harness/quest-myreque-smoke.mjs
+./tools/harness/quest-regicide-craft-fuse-smoke.mjs
 ./tools/harness/quest-regicide-smoke.mjs
+./tools/harness/quest-regicide-still-bomb-smoke.mjs
+./tools/harness/quest-regicide-still-fuse-smoke.mjs
+./tools/harness/quest-regicide-still-open-smoke.mjs
+./tools/harness/quest-regicide-still-smoke.mjs
 ./tools/harness/quest-tbwt-smoke.mjs
+./tools/harness/quest-viking-brundt-complete-smoke.mjs
+./tools/harness/quest-viking-combo-smoke.mjs
+./tools/harness/quest-viking-jingle-zone-smoke.mjs
+./tools/harness/quest-viking-koschei-forms-smoke.mjs
+./tools/harness/quest-viking-lalli-spin-smoke.mjs
+./tools/harness/quest-viking-lalli-stew-smoke.mjs
+./tools/harness/quest-viking-mural-smoke.mjs
+./tools/harness/quest-viking-olaf-vote-smoke.mjs
+./tools/harness/quest-viking-peer-worn-deposit-repro.mjs
+./tools/harness/quest-viking-shoestore-smoke.mjs
+./tools/harness/quest-viking-sigmund-vote-smoke.mjs
 ./tools/harness/quest-viking-smoke.mjs
 ./tools/harness/quest-viking-yrsa-shop-smoke.mjs
 ./tools/harness/runtime/Settings.ts
@@ -252,6 +277,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/script/run.mjs
 ./tools/harness/skill-guide-smoke.mjs
 ./tools/harness/slayer-s0-smoke.mjs
+./tools/harness/surface-meat-unbankable-smoke.mjs
 ./tools/harness/ui/basemapLocalCache.ts
 ./tools/harness/ui/basemapRegen.ts
 ./tools/harness/ui/confirmDialog.ts

@@ -36,7 +36,7 @@ try {
   await mainlandAccount(page, username, password);
   if (shot) await shot('mainland');
 
-  // Pack IDs: stats:attack=8654, stats:mining=8656 → skill_guide main=18800
+  // Pack IDs: stats:attack=8654, stats:mining=8656 → skill_guide main=8714 (289/cache)
   // @see vendor/content/pack/interface.pack
   const open = await page.evaluate(async () => {
     const h = globalThis.__lc377;
@@ -50,9 +50,9 @@ try {
       h.actions.ifButton?.(comId);
       await new Promise(r => setTimeout(r, 700));
       const main = r.modals?.()?.main ?? -1;
-      // skill_guide root is 18800
-      if (main === 18800 || (main !== -1 && main !== before)) {
-        return { ok: true, comId, main, skillGuide: main === 18800 };
+      // skill_guide root is 8714 (was free-ID 18800)
+      if (main === 8714 || (main !== -1 && main !== before)) {
+        return { ok: true, comId, main, skillGuide: main === 8714 };
       }
     }
     return {

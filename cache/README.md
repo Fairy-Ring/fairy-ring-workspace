@@ -3,7 +3,7 @@
 **Never commit cache blobs to this repository.**  
 `.gitignore` excludes `cache/**` except this README (and optional `.gitkeep`).
 
-Game data for **RuneScape revision 377** (~2 May 2006) is available on the open internet via **OpenRS2**. You download it yourself into this folder (or another path your pack/engine docs use).
+Game data for **RuneScape revision 377** (~2 May 2006) and the **next-target 410** dump (~26 May 2006) is available on the open internet via **OpenRS2**. You download it yourself into this folder (or another path your pack/engine docs use). **Product pack is still 377.**
 
 ## OpenRS2 — use cache id **657**, not path “377”
 
@@ -35,9 +35,21 @@ cache/openrs2-377/
 Helper (workspace root):
 
 ```bash
-bash scripts/fetch-openrs2-cache.sh
-# downloads into cache/openrs2-377/ (creates dirs)
+bash scripts/fetch-openrs2-cache.sh          # 377 / OpenRS2 657 → cache/openrs2-377/
+bash scripts/fetch-openrs2-cache.sh 410      # 410 / OpenRS2 1254 → cache/openrs2-410/
 ```
+
+### Next target — OpenRS2 id **1254** (build **410**)
+
+| Field | Value |
+|-------|--------|
+| **RS build** | **410** (~2006-05-26) |
+| **OpenRS2 cache ID** | **`1254`** |
+| Detail page | https://archive.openrs2.org/caches/runescape/1254 |
+| Local | `cache/openrs2-410/` (JS5 `.dat2` + `idx0`–`idx11` + `idx255`) |
+| Research | [`docs/research/cache-410.md`](../docs/research/cache-410.md) |
+
+**Do not** point the 377 engine pack at this dump.
 
 ### Checksums (as published / measured in research)
 

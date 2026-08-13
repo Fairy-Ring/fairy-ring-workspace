@@ -39,7 +39,9 @@ Cold resume: agents should **read this folder** before inventing `giveItems` / `
 | [`anchors-karamja-shipyard.md`](anchors-karamja-shipyard.md) | MM seal gate **2945,3041**, stand **2943,3040**, guard **2944,3040**, Caranock **2956,3025** |
 | [`anchors-outpost.md`](anchors-outpost.md) | Making History: Jorral **2437,3347** (next-to, not on rug); later Melina/Droalak/Dron/Blanin |
 | [`anchors-varrock-garden.md`](anchors-varrock-garden.md) | Garden: Ellamaria **3228,3477**; palace patches; four farmers (Elstan **3053,3308** …) |
+| [`../farming-tool-leprechaun-377.md`](../farming-tool-leprechaun-377.md) | Falador Tool Leprechaun **3053,3305**; **do not pin** (2013 QoL). Gardeners roam. |
 | [`anchors-wanted-ahoy.md`](anchors-wanted-ahoy.md) | Tiffy **2997,3373** (RD hub); Velorina **3678,3510** (Ahoy). Period media still blocks `[opnpc1]` |
+| [`anchors-ratcatchers.md`](anchors-ratcatchers.md) | Phingspet **3245,9868** / Grimesquit **3243,9866**. Official news = day only; leftover `inter_322` not start |
 | [`../map-npc-spawns-jm2-377.md`](../map-npc-spawns-jm2-377.md) | How map NPC spawns work in `.jm2` (when present on this surface) |
 | [`../corpus/README.md`](../corpus/README.md) | Measured pack/folder inventories (when present) |
 

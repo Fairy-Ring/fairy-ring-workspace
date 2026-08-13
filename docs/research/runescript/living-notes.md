@@ -29,6 +29,7 @@
 | 2026-08-07 | Trail APIs: 377 `trail_puzzle_complete()` 0-arg; `give_trail_puzzle` 2-arg | `lord_iorwerth.rs2` |
 | 2026-08-08 | `softtimer` vs `settimer`: NORMAL timers blocked when delayed/modal; soft may still fire | residuals-inbox; `Player.ts` |
 | 2026-08-12 | `p_opnpc(2)` re-enters `[opnpc2]` after `npc_queue` applies the killing blow — `npc_stat(hitpoints)=0` there is where 289 applies Misc **−6** approval | `misc_people.rs2` · `player_melee.rs2` |
+| 2026-08-12 | Regicide still: `softtimer,still_progress` at `still_total≥26` **resets** total (no naphtha). Award is only `[if_close]` while total still ≥26 — 2t window. Tar 31 + valve 26 = +2 pressure/2t (gauge moves). Tar 31 + valve 27 = net 0 (gauge parks). **`$bit > 12` → `~reset_regicide_still` + `pressure_toohigh` is a FAIL** (needle falls). | `regicide_fractionalizing_still.rs2` |
 | 2026-08-12 | `loc_findallzone`/`loc_findnext` **replace** active loc. A `~proc` that scans a zone before `loc_param`/`loc_change` on the clicked loc will read the **last** zone loc (often `next_loc_stage=null`). Save `loc_coord`+`loc_type`, restore with `loc_find`. | Flamtaer `~recalc_temple_repaired_p` after 703c6181c; `mtnsqq1bke` |
 | 2026-08-11 | Harness must wait full delay cycle (firstswing 5t + continue) before re-firing opLoc — new OP mid-delay replaces `Player.activeScript` | Managing M1 weed_herbs.rs2; `managsorn41j` PASS |
 | 2026-08-08 | Myreque cutscene port: **no** `~chatnc_cutscene` on 377 → `~chatnpc_specific`; pack NPC renames | `routequest_vanstorm` / cutscene-80 plan |

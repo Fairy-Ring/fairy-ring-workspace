@@ -5,9 +5,9 @@
  *   WORLD_SPEED_MS=300 node tools/harness/quest-managing-m4-if-smoke.mjs
  *
  * Soft entry: misc_quest 100, restotal 0 (no collect branch).
- * Product: Talk Ghrim → "How is the Kingdom faring?" → open IF (main modal 19159).
+ * Product: Talk Ghrim → "How is the Kingdom faring?" → open IF (main modal 10984).
  *
- * Pack IDs 19159–19268 (289 10984 occupied on 377). See deviations.md.
+ * Pack IDs 10984+ (289/cache leftover join). Free-ID 19159 is unused. See deviations.md.
  *
  * @see docs/plans/2026-08-12-m4-misc-both-manage-id-claim.md
  */
@@ -33,7 +33,7 @@ const { username, password } = resolveAccount(rest, 'managem4');
 const shotsEnabled = process.env.SHOTS !== '0' && process.env.SHOTS !== 'false';
 
 const GHRIM = { x: 2499, z: 3857, level: 1 };
-const IF_ROOT = 19159;
+const IF_ROOT = 10984;
 
 async function main() {
   await assertEnginePackHealth(base);
@@ -92,7 +92,7 @@ async function main() {
         }
         await new Promise(res => setTimeout(res, 380));
         const main = r.modals?.()?.main ?? -1;
-        if (main === 19159) break;
+        if (main === 10984) break;
       }
       const mods = r.modals?.() ?? {};
       return { ok, picks: picks.slice(0, 8), main: mods.main ?? -1, mods };

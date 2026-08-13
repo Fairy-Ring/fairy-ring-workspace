@@ -4,7 +4,8 @@
 > Edit **this file** for public wording; export copies it to public root as `AGENTS.md`.
 
 **Brand:** **Fairy Ring** — independent pre-EOC **RS2-era** preservation (method differs from Lost City; long horizon similar).  
-**This tree’s focus:** historical **rev 377** (~May 2006) — not a permanent brand lock to one revision.  
+**This tree’s focus:** historical **rev 377** (~2 May 2006) — not a permanent brand lock to one revision.  
+**Next target (not this pack):** **rev 410** (~26 May 2006). Product stays 377 until a 410 track is opened.  
 **Derived from** Lost City / LostCityRS open work — **not** official Lost City.  
 **This file is the public token-light rule set** (Decision **011**). The maintainer vault keeps a fuller root `AGENTS.md`.
 
@@ -25,7 +26,7 @@ cd "$RS2_R377_ROOT"
 | Defendable to LC-style accuracy readers | Fast thrash; **label** soft proofs |
 
 1. **Do not invent** content, client handlers, dialogue, or loot.  
-2. **Research ladder** (top → bottom): period cache/pack → Client-Java 377 → period media → other LC branches (prefer era-check / 274) → **OSRS last resort** (not RS3).  
+2. **Research ladder** (top → bottom): period cache/pack → Client-Java 377 → period media → other LC branches (prefer era-check / 274) → **OSRS last resort** (not RS3). **274/289 is the usual start** for era-correct systems; **LC is not infallible** — if this tree’s research (cache, Update:, headed proof) differs, prefer that. Full: `docs/research/authenticity-stance.md`.  
 3. **PASS** for a quest/skill stage means **live `.rs2` wrote that stage** — not host `setvar` of the claimed stage.  
 4. Residual bar: one soft entry setvar → e2e with setstat/generic only; honest **FAIL** on the residual span, no false green.  
 5. Soft mids are a **process stage** (still implement varps/client behaviour) — log in **`docs/research/softpass.md`**. Misclaim = selling soft as residual complete.  
@@ -144,7 +145,8 @@ This surface does **not** ship full session plans or the entire research corpus.
 ### Git
 
 - **Commits stay frequent.** Small commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …). Chat is not a backup.  
-- **Do not push unless asked.** Fairy-Ring remotes are live/public. Agents commit locally; they **do not** `git push` vault, `FR-*`, or `fairy-ring-workspace` unless a maintainer asked **this turn**.  
+- **Private vault may push often.** Maintainer `FR-vault` is private laptop backup.  
+- **Do not push public remotes unless asked.** Agents **do not** `git push` `FR-content` / `FR-engine` / `FR-client-ts` or `fairy-ring-workspace` unless a maintainer asked **this turn**.  
 - Never force-push shared branches unless maintainers explicitly ask.  
 - Never point `origin` at LostCityRS for experiment push.  
 - Never push to `LostCityRS/*`.

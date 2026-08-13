@@ -90,9 +90,9 @@ Full note: [`docs/research/runescript/README.md`](runescript/README.md) § Autho
 | Priority | Source | Role |
 |---------:|--------|------|
 | **1** | Lost City **`377-wip`** engine + content | **Starting tree only** — **untrusted / unverified** until checked against higher rungs (see below) |
-| **2** | Historical **377 cache** (OpenRS2 id **657** = build **377**, 2006-05-02) | Authority for assets / many configs |
+| **2** | Historical **377 cache** (OpenRS2 id **657** = build **377**, 2006-05-02) | Authority for **377 product** assets / many configs. **Next-rev** dump: OpenRS2 **1254** = build **410** (2006-05-26) in `cache/openrs2-410/` — idle / 410 track only |
 | **3** | **Decompiled 377 client** (Java deob in `vendor/client-java`) | Protocol, client-side constraints, UI |
-| **4** | **Period media** (~2005–mid-2006): Jagex **Update:** news (OSRS wiki *Historical updates* marked “copied verbatim” from the RS site), era videos/screenshots | **Release day** is RS2-accurate from those posts. The **news body** is period. The rest of the modern wiki (walkthrough, reqs, later mechanics) is **not** |
+| **4** | **Period media** (~2005–mid-2006): Jagex **Update:** news (OSRS wiki *Historical updates* **and** [runescape.wiki](https://runescape.wiki) pages marked “copied verbatim” from the RS site), era videos/screenshots | **Release day** is RS2-accurate from those posts. The **news body** is period. The rest of either modern wiki (walkthrough, reqs, later mechanics) is **not**. See § RS3 wiki below. |
 | **5** | **Other LC branches** (content/engine) — **prefer reusing LC work** | See next section. Deduplicates effort vs re-implementing from scratch. Prefer **274** (and other pre-377 LC) when 377-wip is wrong or empty |
 | **6** | **OSRS 2007-base** (Aug 2007 RS2 backup + wiki Changes) | **Last resort** on this ladder — not a stall. When 1–5 do not answer, take 2007-base (minus later Changes) and **finish** the in-scope unit. **Not** modern OSRS. |
 
@@ -124,7 +124,8 @@ LC maintains **multiple revision branches**. Several may be **more fleshed out**
 | **`289`** | ~Jan 2005 (wip in Server revInfo) | Slayer / Barrows era — often richer than 377-wip for those systems |
 | **`377-wip`** | ~May 2006 | **Our base** — incomplete content, many missing triggers |
 | `377-node` | older 377 experiment | Prefer **377-wip** tip over this |
-| Later wip (e.g. `530-wip`) | post-377 | **Do not** pull post-May-2006 systems; only use if a snippet is proven unchanged from 2006 |
+| Later wip (e.g. `530-wip`) | post-377 | **Do not** pull post-May-2006 systems into **377 product**; only use if a snippet is proven unchanged from 2 May 2006 |
+| **410** (next target) | ~26 May 2006 | Decision **014**. Post–16 May overhaul + Royal Trouble. **Not** this pack. Construction is **412**. |
 
 Exact branch lists: `git ls-remote` on `LostCityRS/Content` and `Engine-TS`. Fetch into **this** workspace’s vendor remotes as read-only refs; never push.
 
@@ -135,6 +136,22 @@ Exact branch lists: `git ls-remote` on `LostCityRS/Content` and `Engine-TS`. Fet
 3. **Port, don’t wholesale-merge:** Cherry-pick scripts/configs into `vendor/content` on `rs2-r377`. Adjust IDs/pack names/opcodes if the 377 cache differs.
 4. **Engine:** Prefer 377-wip engine. Only cherry-pick **logic** from other engine branches when 377-wip lacks an opcode/handler; do not merge 274/289 engine wholesale (protocol/config model differ).
 5. **Cite** the source branch + commit/path in the feature’s research note.
+
+### 274/289 is the usual start — LC is not infallible (operator 2026-08-13)
+
+For systems that **existed by May 2006**, **start from 274/289** (script shape, params, titles). That is still the correct default. It is **not** a veto of our own work.
+
+Lost City people (and LC agents) **also make mistakes**: stub reward strings, 289-full rates, leftover IF copy, comments that guess. When **this tree’s research** disagrees — 377 cache, Client-Java, period **Update:** / screenshots, or a headed proof we already landed — **prefer that research**. Cite both. Do **not** “win” by inventing a third script.
+
+| Prefer | When |
+|--------|------|
+| **274/289** | Era-correct system; we have **no** conflicting cache/period/our-doc evidence |
+| **Our research** | Cache, period media, or a landed `docs/research/` / headed PASS **contradicts** 274/289 |
+| **Neither** | Higher rungs silent — last-resort 2007-base, then finish |
+
+Worked example: 377 `inter_238` 6th arg. 274 `send_quest_complete` has **no** reward lines. LC 377 stubs (`"3 Quest Points"`) duplicated `com_9`. We filled lines from **this file’s** `stat_advance` / `inv_add` ([`quest-complete-scroll-377.md`](quest-complete-scroll-377.md)) — not from inventing OSRS scroll prose, and not from treating the 274 5-arg hole as “no rewards exist.”
+
+Same class: Managing labour 289-full 100/50 is shipped **REVISIT**; period rate still unknown — do not invent 0.1 just because later OSRS said so.
 
 ### ⚠ LC branch tips are not pure era snapshots
 
@@ -206,6 +223,22 @@ Same catch as dialogue, for most things (reqs, mid steps, leftover IF meaning). 
 1. **Cite** transcript / page + which Changes you subtracted (or “no Change row, 2007-base”).
 2. Land it in `docs/research/` for that unit. If we *know* it is post-2-May-2006 RS2, one line in [`deviations.md`](deviations.md).
 3. Prefer last-resort 2007-base over a hole. Prefer a hole over **2013+** OSRS.
+
+### RS3 wiki (`runescape.wiki`) — history index, not RS3 data
+
+Operator 2026-08-13: we are **not** using RS3 game data. We **are** allowed to read that wiki for **historical references** (shared RS2 lineage; their change lists are often longer than OSRS).
+
+| Use | Do not use |
+|-----|------------|
+| `Update:…` pages marked **copied verbatim** from the RS site (same rung **4** as OSRS Historical updates) | Article **body** (yield calculators, Invention, ultracompost, tool belt, Vinesweeper, 120 Farming) |
+| `==Update history==` dated rows as an **index** — follow the linked `Update:` / patch note | Shipping an RS3 ninja/QoL as 377 (e.g. 18 Jul 2022 “leps and farmers remain in place”) |
+| Confirm a change **existed on the live RS2→RS3 tree** and **when** it landed | Treating wikified history bullets as verbatim Jagex (RS:HIP: text *may* be rewritten; “some updates may not be included”) |
+
+**Method:** climb 1–5; open the RS3 article’s history table; keep only dates in scope (≤2 May 2006 product, or ≤Aug 2007 last-resort window); open the linked official post. Subtract later Changes the same way as OSRS.
+
+**After ~August 2007:** this tree stays on the **original RS2 road** (410, then later revs). OSRS forks there. `runescape.wiki` **Update history** becomes the better Change index for that road. Still not RS3 systems.
+
+Worked: Tool Leprechaun — OSRS pinned wander **23 May 2013**; RS3 live tree pinned **18 Jul 2022**. Both are **after** 2007-base. 377 product keeps wander (engine default). [`farming-tool-leprechaun-377.md`](farming-tool-leprechaun-377.md).
 
 ### What not to take from modern OSRS
 

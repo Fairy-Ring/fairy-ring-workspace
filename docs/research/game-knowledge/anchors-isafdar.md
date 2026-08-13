@@ -33,6 +33,10 @@
 | **Idris arm zone** | 0_36_50 well exit | **2312,3216** L0 | same | Soft tele for ambush when stage **2** |
 | **Arianwyn zone** | `0_40_51_24_32` | **2584,3296** L0 | same | stage **13** + `regicide_iorwerth_message` → product ≥14 |
 | **Lathas (start / complete)** | Ardougne L1 | **2578,3293** | beside | Start ≥2; complete ≥15 with message + stage **14** |
+| **Al-Kharid furnace** (`furnace1` **2781**) | m51_49 `0 8 49` | **3272,3185** SW 3×3 | **3275,3186** | limestone → quicklime; `forceapproach=east` |
+| **Regicide loom** **787** | m34_50 `0 22 49` | **2198,3249** | **2199,3249** | wool×4 → cloth |
+| **Fractionalizing still** **4026** | m45_50 `0 47 12` | **2927,3212** | adjacent | Rimmington; still UI residual |
+| **Tar collection** **3975** | m35_48 `0 22 55` | **2262,3127** | adjacent | empty barrel → tar; still residual |
 
 ### Exactmove / dense forest (mandatory)
 

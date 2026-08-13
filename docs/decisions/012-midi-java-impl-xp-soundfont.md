@@ -177,6 +177,7 @@ This is **platform**, not Java authenticity. Manual browser: first click still u
 
 1. Volume steps + mute match Java ladder behaviour.  
 2. Song cross-fade: out then in with midifade; hard cut only where Java cuts (jingles).  
+2b. After a jingle, **zone `nextMidiSong` resumes** when `nextMusicDelay` hits 0 (client cycle **20 ms**; delay is ms). See [`midi-jingle-then-zone-377.md`](../research/midi-jingle-then-zone-377.md). Do not tick MIDI policy faster than 20 ms.  
 3. Boot loads Florestan; title/zone music audible.  
 4. Track swap does not stack overlapping copies of the same song (one sequencer).  
 

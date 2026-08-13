@@ -161,6 +161,18 @@ Do **not** treat “logged in” as “can fire OPNPC.” After tele/reload, sce
 
 **Policy:** harness may grow **test tools** beyond a typical bot-script corpus (prep, thrash, clean logout). Keep them under `tools/harness/lib/*` (severable) for later rs2b0t forward-port — Decision 004 §9.
 
+### Music vs pure client (operator 2026-08-13)
+
+Harness **game** music often starts **later** than `/rs2.html`. That is mostly **host path**, not a product MIDI bug.
+
+| Cause | Why harness is later |
+|-------|----------------------|
+| **`mainlandAccount` steal + `resyncMusicAfterSteal`** | Reconnect reply **15** does not re-run mapzone → `midi_song`. Host hops off the mapsquare and back so `[mapzone]` fires. Pure login gets mapzone on first enter. |
+| **Lazy Florestan** | `MidiFacade.playMidi` → `ensureInit` fetches **3.1 MB** `SCC1_Florestan.sf2` + Spessa worklet. First `saveMidi` queues until ready. Same stack as pure; steal/relog just delays the first in-world `saveMidi`. |
+| **Title vs region** | Steal can leave **scape_main** until the hop; sounds like “silence then late song.” |
+
+Do **not** invent a second synth or skip the hop to “fix” this. Product knobs stay Decision **012**. If someone measures a real extra delay **after** mapzone + `[midi] … ready` on harness-only, log it here — do not treat late music as a content fail.
+
 **Mid-quest item seeds** (progress debug, Death Plateau-style):
 
 ```text
@@ -205,7 +217,7 @@ After changing RuneScript under `vendor/content/` (this tree only):
 
 Success (debug): world broadcast `Loaded N scripts.`
 
-**Load bar “Game updated - please reload page”:** usually `/config` HTTP 500 after a failed pack (`.varp checksum mismatch`), not a polite UI tip. Fix pack/`BUILD_VERIFY`, then wipe `.tmp/playwright-harness-profile` if IndexedDB still has stale CRCs. See `docs/runbooks/quest-impl.md` §7.
+**Load bar “Game updated - please reload page”:** `/config` HTTP 500 after a failed pack, **or** live `/crc` self-check fail after packing while the engine stayed up (versionlist **size** can still match). Fix pack/`BUILD_VERIFY`, **restart engine**, wipe `.tmp/playwright-harness-profile`. See `docs/runbooks/quest-impl.md` §5b.
 
 ### Auto-run (rs2b0t `RunManager`)
 

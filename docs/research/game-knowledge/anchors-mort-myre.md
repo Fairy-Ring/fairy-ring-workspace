@@ -52,7 +52,8 @@
 | ≥5 start | `druidspirit 110` | Talk Vanstrom multi |
 | ≥15 Cyreg | steel weapons set | Cyreg multi path |
 | ≥20 repaired | pouch×5 + plank×3 | Give planks |
-| ≥25 hollows | coins; boat bind | Board/Pay (IF tele-stub OK) |
+| ≥25 hollows | coins; boat bind | Board/Pay → `swamp_boatjourney` **11902** (no tele-stub) |
+| boat IF return | soft ≥25 | hollows loc **3498,3377** → Mort’ton **3522,3284** |
 | ≥52+ Curpile | tele **3508,3440** | Product quiz |
 | ≥80 cutscene | FROM=65 + bits 31 + weapons | Veliaf handoff + cutscene |
 | ≥85 hellhound | FROM=80 + adamant combat floor | Kill Skeleton Hellhound |

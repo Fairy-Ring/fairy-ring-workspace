@@ -2,7 +2,7 @@
 
 **Tag default:** **VERIFIED** = `_unpack/377` + `m50_54.jm2` and farmer maps (2026-08-12 deepen).  
 **Source:** [`../making-history-garden-cache-first-377.md`](../making-history-garden-cache-first-377.md) §3 + §9.  
-**Not:** start dialogue or `inter_303` list strings. Period **30 Aug 2005** news / Ellamaria transcript still missing — no `[opnpc1]` from this file.
+**Not:** start dialogue or `inter_303` list strings. Official news **VERIFIED 30 Aug 2005** (“Speak to Queen Ellamaria…”; no first-talk). Ellamaria transcript **still missing** — no `[opnpc1]` from this file.
 
 ## Start surface
 

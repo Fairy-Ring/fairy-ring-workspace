@@ -8,7 +8,9 @@
  * (Tool Leprechaun 3053,3305) and use-with / OPLOC from range.
  *
  * Product: rake weeds 0→3 → plant 3 potato seeds (dibber) → harvest (spade).
- * Soft (labeled): setstat/give/tele; SOFT grow `setvar varbit_708 10` (skip CANDIDATE 40m).
+ * Soft (labeled): setstat/give/tele; default SOFT grow `setvar farming_allotment_varp_1_0_7 10`.
+ * Real grow: `FARMING_F1_REAL_GROW=1` waits `[timer,farming_potato_grow]` 6→10.
+ *   Prefer `WORLD_SPEED_MS=20` (engine min) so 4×1000t ≈ 80s. No watering.
  * Soft weeded is **not** default — product rake must clear; fail if varbit stays 0.
  *
  * @see docs/research/farming-377-f1-potato-map-audit.md
@@ -29,7 +31,8 @@ import {
   setStats,
   setWorldSpeed,
   teleTo,
-  waitSceneReady
+  waitSceneReady,
+  waitTicks
 } from './lib/harness.mjs';
 
 const { base, rest } = parseArgs(process.argv.slice(2));
@@ -50,6 +53,8 @@ const STAND = { x: 3049, z: 3307, level: 0 };
 /** farming_veg_patch_1 SW sample tile — for loc snap only, not tele */
 const PATCH = { x: 3050, z: 3307, level: 0 };
 const VEG_PATCH_1_ID = 8550;
+/** Pack id 708 — leftover name `varbit_708` is not a getvar debugname. */
+const PATCH_VAR = 'farming_allotment_varp_1_0_7';
 const STAGE_WEEDED = 3;
 const STAGE_PLANTED = 6;
 const STAGE_FULLYGROWN = 10;
@@ -78,6 +83,18 @@ async function invCount(page, nameSubstr) {
   }, nameSubstr);
 }
 
+async function invCountExact(page, name) {
+  return page.evaluate(want => {
+    const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+    let n = 0;
+    const w = String(want).toLowerCase();
+    for (const x of inv) {
+      if (String(x?.name ?? '').toLowerCase() === w) n += x.count | 0 || 1;
+    }
+    return n;
+  }, name);
+}
+
 async function patchLocSnap(page) {
   return page.evaluate(
     ([wx, wz, id]) => {
@@ -93,7 +110,8 @@ async function patchLocSnap(page) {
 }
 
 async function getStage(page) {
-  const v = await getServerVarQuiet(page, 'varbit_708');
+  const v = await getServerVarQuiet(page, PATCH_VAR);
+  if (v == null || Number.isNaN(Number(v))) return null;
   return Number(v);
 }
 
@@ -120,7 +138,11 @@ try {
 
   await mainlandAccount(page, username, password);
   await waitSceneReady(page, 45_000);
-  await setWorldSpeed(page, Number(process.env.WORLD_SPEED_MS) || 300).catch(() => {});
+  const tickMs = Math.max(
+    20,
+    Number(process.env.WORLD_SPEED_MS) || (softGrow ? 300 : 20)
+  );
+  await setWorldSpeed(page, tickMs).catch(() => {});
 
   await setStats(page, { farming: 1 }).catch(() => {});
   await giveItems(page, [
@@ -139,10 +161,10 @@ try {
   console.log('[farming-f1] farming stat0', xp0);
 
   // Soft reset weeds only (host prep) — product rake must clear from here
-  await cheatQuiet(page, 'setvar varbit_708 0', 500);
+  await cheatQuiet(page, `setvar ${PATCH_VAR} 0`, 500);
   let stage = await getStage(page);
   console.log('[farming-f1] stage after reset', stage);
-  if (stage !== 0) fail(`expected varbit_708=0 after soft reset, got ${stage}`);
+  if (stage !== 0) fail(`expected ${PATCH_VAR}=0 after soft reset, got ${stage}`);
 
   let loc = await patchLocSnap(page);
   console.log('[farming-f1] patch loc', loc);
@@ -185,21 +207,28 @@ try {
     await new Promise(r => setTimeout(r, 300));
   }
   stage = await getStage(page);
-  console.log('[farming-f1] stage after rake', stage);
+  const weedsAfterRake = await invCount(page, 'Weeds');
+  console.log('[farming-f1] stage after rake', stage, 'weeds', weedsAfterRake);
   if (shot) await shot('after-rake');
 
+  if (stage == null) {
+    fail(`getvar ${PATCH_VAR} returned null after rake (do not treat as 0)`);
+  }
   if (stage < STAGE_WEEDED) {
     if (softWeedOk) {
       console.log(
-        `[farming-f1] SOFT setvar varbit_708 ${STAGE_WEEDED} — product rake failed (stage=${stage}); NOT a hard PASS`
+        `[farming-f1] SOFT setvar ${PATCH_VAR} ${STAGE_WEEDED} — product rake failed (stage=${stage}); NOT a hard PASS`
       );
-      await cheatQuiet(page, `setvar varbit_708 ${STAGE_WEEDED}`, 500);
+      await cheatQuiet(page, `setvar ${PATCH_VAR} ${STAGE_WEEDED}`, 500);
       stage = STAGE_WEEDED;
     } else {
       fail(
-        `product rake FAIL: varbit_708=${stage} want≥${STAGE_WEEDED} (patch still weeds — check after-rake shot; stand beside not on loc). Set FARMING_F1_SOFT_WEED=1 only to soft-continue.`
+        `product rake FAIL: ${PATCH_VAR}=${stage} want≥${STAGE_WEEDED} (patch still weeds — check after-rake shot; stand beside not on loc). Set FARMING_F1_SOFT_WEED=1 only to soft-continue.`
       );
     }
+  }
+  if (weedsAfterRake < 3 && !softWeedOk) {
+    fail(`product rake weeds FAIL: inv Weeds=${weedsAfterRake} want≥3 (obj 6055)`);
   }
 
   // Product plant
@@ -220,7 +249,7 @@ try {
   if (shot) await shot('after-plant');
 
   if (stage < STAGE_PLANTED) {
-    fail(`product plant FAIL: varbit_708=${stage} want≥${STAGE_PLANTED}`);
+    fail(`product plant FAIL: ${PATCH_VAR}=${stage} want≥${STAGE_PLANTED}`);
   }
   if (seedsAfter > seedsBefore - 3) {
     fail(`expected −3 potato seeds, ${seedsBefore}→${seedsAfter}`);
@@ -231,40 +260,81 @@ try {
 
   if (softGrow) {
     console.log(
-      `[farming-f1] SOFT setvar varbit_708 ${STAGE_FULLYGROWN} (skip CANDIDATE 40m growth — labeled soft)`
+      `[farming-f1] SOFT setvar ${PATCH_VAR} ${STAGE_FULLYGROWN} (skip CANDIDATE 40m growth — labeled soft)`
     );
-    await cheatQuiet(page, `setvar varbit_708 ${STAGE_FULLYGROWN}`, 600);
+    await cheatQuiet(page, `setvar ${PATCH_VAR} ${STAGE_FULLYGROWN}`, 600);
   } else {
-    fail('FARMING_F1_REAL_GROW not wired for smoke budget');
+    // Product timer: ^farming_potato_stage_ticks = 1000; 4 advances; no watering.
+    const stageTicks = 1000;
+    const advances = STAGE_FULLYGROWN - STAGE_PLANTED;
+    const wallSec = (advances * stageTicks * tickMs) / 1000;
+    console.log(
+      `[farming-f1] REAL grow: timer ${STAGE_PLANTED}→${STAGE_FULLYGROWN} no watering tickMs=${tickMs} budget~${wallSec.toFixed(0)}s`
+    );
+    let lastGrow = stage;
+    const pollTicks = 50;
+    const maxPolls = Math.ceil((advances * stageTicks * 1.6) / pollTicks) + 20;
+    for (let i = 0; i < maxPolls; i++) {
+      await waitTicks(page, pollTicks);
+      const now = await getStage(page);
+      if (now !== lastGrow) {
+        console.log(`[farming-f1] grow ${lastGrow}→${now} (timer, no water) poll=${i}`);
+        lastGrow = now;
+      }
+      if (now >= STAGE_FULLYGROWN) break;
+    }
+    stage = await getStage(page);
+    if (stage < STAGE_FULLYGROWN) {
+      fail(
+        `product grow FAIL: ${PATCH_VAR}=${stage} want≥${STAGE_FULLYGROWN} after timer wait (no watering; not a setvar jump)`
+      );
+    }
   }
   if (shot) await shot('fullygrown');
 
-  const harvest = await page.evaluate(async ([wx, wz]) => {
-    const a = globalThis.__lc377?.actions;
-    if (!a) return { error: 'no actions' };
-    const ok =
-      a.opLocAt?.(wx, wz, 'Harvest') ||
-      a.opLoc1At?.(wx, wz) ||
-      a.opLocAt?.(wx, wz, '');
-    await new Promise(res => setTimeout(res, 1400));
-    return { ok: !!ok, wx, wz };
-  }, [PATCH.x, PATCH.z]);
-  console.log('[farming-f1] harvest', harvest);
-  await new Promise(r => setTimeout(r, 400));
-
+  // Loc band 10→11→12→weeded (3). Parent loc often has empty ops — OP_LOC1 snap.
+  let lastXp = xpPlant;
+  for (let h = 0; h < 3; h++) {
+    loc = (await patchLocSnap(page)) ?? loc;
+    const harvest = await page.evaluate(async ([wx, wz, snap]) => {
+      const a = globalThis.__lc377?.actions;
+      if (!a) return { error: 'no actions' };
+      const byName = !!a.opLocAt?.(wx, wz, 'Harvest');
+      const byOp1 = !!a.opLoc1At?.(wx, wz);
+      let bySnap = false;
+      if (snap?.typecode && a.menuAction) {
+        bySnap = !!a.menuAction(625, snap.typecode | 0, snap.lx | 0, snap.lz | 0);
+      }
+      await new Promise(res => setTimeout(res, 2200));
+      return {
+        byName,
+        byOp1,
+        bySnap,
+        snap: snap ? { id: snap.id, typecode: snap.typecode, lx: snap.lx, lz: snap.lz } : null
+      };
+    }, [PATCH.x, PATCH.z, loc]);
+    await waitTicks(page, 8);
+    const potatoes = await invCountExact(page, 'Potato');
+    const xpH = await farmingXp(page);
+    stage = await getStage(page);
+    console.log(`[farming-f1] harvest${h}`, harvest, `potatoes=${potatoes} stage=${stage}`, xpH);
+    if (shot) await shot(`after-harvest-${h}`);
+    if (potatoes < h + 1) {
+      fail(`harvest ${h}: potato count ${potatoes} want≥${h + 1}`);
+    }
+    if (!((xpH?.xp ?? 0) > (lastXp?.xp ?? 0))) {
+      fail(`harvest ${h} XP did not rise: ${JSON.stringify({ lastXp, xpH })}`);
+    }
+    lastXp = xpH;
+  }
   const inv = await invNames(page);
-  const xpH = await farmingXp(page);
-  stage = await getStage(page);
-  console.log('[farming-f1] inv', inv, 'stage', stage, 'xp', xpH);
-  if (shot) await shot('after-harvest');
-
-  const hasPotato = inv.some(n => /potato/i.test(n) && !/seed/i.test(n));
-  if (!hasPotato) fail(`no potato in inv: ${JSON.stringify(inv)}`);
-  if (!((xpH?.xp ?? 0) > (xpPlant?.xp ?? 0))) {
-    fail(`harvest XP did not rise: ${JSON.stringify({ xpPlant, xpH })}`);
+  if (stage !== STAGE_WEEDED) {
+    fail(`after 3 harvests stage=${stage} want ${STAGE_WEEDED} (loc band 10–12)`);
   }
 
-  const softParts = ['softGrow'];
+  const softParts = [];
+  if (softGrow) softParts.push('softGrow');
+  else softParts.push('productTimer');
   if (softWeedOk && process.env.FARMING_F1_SOFT_WEED) softParts.push('softWeed');
   console.log(
     `RESULT: PASS farming-f1 potato (stand beside; product rake+plant+harvest; ${softParts.join('+')}; XP CANDIDATE)`

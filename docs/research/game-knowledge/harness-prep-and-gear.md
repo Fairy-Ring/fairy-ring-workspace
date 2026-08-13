@@ -57,6 +57,18 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 | Viking Sigli (pre-fix) | 60/60/50/50 | **bronze sword + sq + lobster×10** | **no** | **Wrong — fixed → steel kit + equip** |
 | Viking Sigli (policy) | 60/60/50/50 HP≥50 | **adamant** scim + plate + legs + kite + lobster×20 | **yes** | Draugen vislevel **69**, melee def **100** — steel too slow (mid32 timeout) |
 | Viking Thorvald/Koschei | 70/70/60/70 unarmed | **empty** after Peer bank; food only | n/a | `can_enter_thorvald_trial` bans weapon/armour cats. **Only soft weapon path:** `dramen_branch` + fletching `knife` → fletch **in pen** to staff (staff itself blocked at entry — `weapon_staff`). See `combat-floors-377.md` §Koschei |
+| Viking Koschei form-detect | 70/70/60/70 unarmed | wipe + lobster×25 (no combat gear → skip Peer) | n/a | Dedicated `quest-viking-koschei-forms-smoke.mjs`. Eat 1–3; **stop food** on id **1293** / f3 chat (honour). Do not invent F1 watering. |
+| Farming F1 potato grow | farming **1** | rake + dibber + spade + potato_seed×12 | n/a | Falador stand **3049,3307**; getvar **`farming_allotment_varp_1_0_7`** (not leftover `varbit_708`). REAL grow: `FARMING_F1_REAL_GROW=1` + `WORLD_SPEED_MS=20`. Lep **3053,3305** may wander (do not pin). |
+| Viking Lalli stew | none | cabbage + potato + onion (generic) | n/a | Soft `viking` 6. Product rock from Askeladden; **do not** give fleece/wool. |
+| Viking fleece spin | none | give `viking_golden_fleece` (stew already product) | n/a | Lumbridge wheel **3209,3213** L1. Rellekka wheel refuses if `viking` < 10. |
+| Viking Sigmund merchant | none | coins **5000** (Askeladden) | n/a | Product full ask+reverse chain. Soft `viking` 7. Do not talk Brundt after vote (completes). |
+| Viking Brundt complete | none | none | n/a | Soft `viking` 8 + bits 0. Do **not** `closeModal` — that dismisses `inter_238` **12140**. |
+| Myreque swamp-boat IF | none | coins **50** | n/a | Soft `routequest` **20**. Stand **3522,3284** (not on loc **3523,3284**). Hollows boat **3498,3377**. Do not `getvar` while IF **11902** open. |
+| Horror metaldoor | none | none | n/a | Soft `horrorquest` **2**. Stand **2514,4626** L1 (south of wall **2514,4627**). IF **10116**. |
+| Viking mural | none | none | n/a | Stand **2634,3664** (not on mural **2634,3663**). IF **9929**. |
+| Peer combo IF | none | none | n/a | Soft `viking_bits` **262144**. Stand **2630,3667** (outside door1). IF **10051**. |
+| Yrsa shoestore | none | coins **500** | n/a | Soft `viking` **10**. Stand **2625,3674**. IF **9947**. |
+| Flamtaer overlay | craft **20** | hammer + plank×4 + swamppaste×20 + limestone×4 | n/a | Soft `morttonquest` **50**. Courtyard **3505,3315**. Overlay **4959**. |
 | Myreque hellhound ≥85 | 80/80/70/85 | **adamant** scim + platebody + platelegs + kite + lobster×20 | **yes** | vislevel **97**; DEF **100** crush (289 port); soft `MYREQUE_FROM=80` |
 | Regicide Tyras guard ≥9 | 90/90/80/90 | **d scim + full gilded** + shark×12 | **yes** | soft `mm_main 10` + `dragonquest 10`; product death write; soft ~npc once |
 | Regicide camp enter ≥10 | agi **56** | none combat | n/a | stand **2188,3168** only — see anchors-isafdar |
@@ -76,6 +88,8 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 | MM temple M'speak | none | soft `mm_enchanted_gold_bar` + `mm_monkey_amulet_mould` + `ball_of_wool` | n/a | tele **2810,9191 L0** (not L1); product OPLOCU bar→Wall of flame + string; UI **M'speak amulet** |
 | Managing labour HARD | ATK 40 + WC 70 / mining 60 / fishing 50 | rune axe + rune pick + lobster pot | **yes** | maple/coal/rarefish intercepts; not flax |
 | Managing kill −6 | ATK/STR **40** | `bronze_scimitar` | **yes** | Ragnar vislevel **1** HP **1**; stand **2517,3859** |
+| Regicide craft fuse | Crafting **10** | naphtha + sulphur + limestone + pot + pestle + wool×4 + leather gloves | **yes** gloves | no give fused; Al-Kharid furnace + Isafdar loom |
+| Regicide still / still→fuse | Crafting **10** | tar + **coal×8** (unstackable) + sulphur + limestone + pot + pestle + wool×4 + gloves first | **yes** gloves | **Coal does not stack** (377 `[coal]` has no `stackable=`; ores never did). `give coal 20` fills inv. |
 
 ---
 

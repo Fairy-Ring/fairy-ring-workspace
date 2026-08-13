@@ -64,6 +64,16 @@ Sticky wall target + only re-walk when `cheb(me, stand) > 1` — do not re-home 
 
 ---
 
+## Deposit box (2026-08-13)
+
+| Role | Tile | Notes |
+|------|-----:|--------|
+| Smoke loc (Falador west) | **2943,3369** | `m45_52` `0 63 41`; `forceapproach=south` |
+| Host stand | **2943,3368** | One tile south |
+| Draynor loc (do **not** smoke here) | **3094,3240** | `m48_50` `0 22 40` — dark wizards curse/kill a fresh account (`You feel weakened.`) |
+
+IF root **4465** `bank_deposit_box` (was leftover `inter_95`). Loc ledger slug + `bank_main`/`bank_side` family.
+
 ## Flamtaer anchors (proved / soft)
 
 | Role | Tile | Notes |

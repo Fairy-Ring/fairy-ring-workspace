@@ -5,7 +5,7 @@
  *   WORLD_SPEED_MS=300 node tools/harness/quest-managing-m5-slider-deposit-smoke.mjs
  *
  * Soft: misc_quest 100, coffers 0, points 0, give coins 50k.
- * Product: open IF → ifButton mine+ (com_11=19167) → deposit (com_88=19202) + count 10000.
+ * Product: open IF → ifButton mine+ (com_11=10996) → deposit (com_88=11073) + count 10000.
  *
  * @see vendor/content/.../managing_miscellania_ui.rs2
  */
@@ -33,9 +33,9 @@ const { username, password } = resolveAccount(rest, 'managem5');
 const shotsEnabled = process.env.SHOTS !== '0' && process.env.SHOTS !== 'false';
 
 const GHRIM = { x: 2499, z: 3857, level: 1 };
-const IF_ROOT = 19159;
-const COM_MINE_UP = 19167; // misc_both_manage:com_11
-const COM_DEPOSIT = 19202; // misc_both_manage:com_88
+const IF_ROOT = 10984;
+const COM_MINE_UP = 10996; // misc_both_manage:com_11
+const COM_DEPOSIT = 11073; // misc_both_manage:com_88
 
 async function openKingdomIf(page) {
   return page.evaluate(async () => {
@@ -67,7 +67,7 @@ async function openKingdomIf(page) {
       }
       await new Promise(res => setTimeout(res, 380));
       const main = r.modals?.()?.main ?? -1;
-      if (main === 19159) break;
+      if (main === 10984) break;
     }
     const mods = r.modals?.() ?? {};
     return { ok, main: mods.main ?? -1 };
