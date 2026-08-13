@@ -124,6 +124,8 @@ Notes:
 
 Do **not** spam the same OPLOC every wall-clock frame while content is mid-swing — that restarts `action_delay` / firstswing and never rolls success (Managing heather weed is a textbook case).
 
+**Full checklist:** [`smoke-best-practices.md`](smoke-best-practices.md) — one click then wait; filter getvar out of chat proof; `opLocAt` on the known tile; do not walk through a closed loc ring.
+
 ### TaskBot pacing (game tick)
 
 `TaskBot` / quest / tutorial bots wait on **`Client.loopCycle`** via `reader.loopCycle()` (`Execution.delayTicks`), **not** a fixed 600 ms rs2b0t-style wall-clock loop.

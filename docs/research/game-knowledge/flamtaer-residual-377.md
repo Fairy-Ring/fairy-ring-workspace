@@ -33,6 +33,29 @@ Complete const: `^mortton_quest_complete = 85` (`quest.constant`).
 | **`%temple_sanctity` / `_p`** | Personal sanc; drain timer | **Player** — light/pour gates |
 | **`%temple_repaired_p`** | Wall build % overlay | **Player** display / stage 60 |
 
+**25% is a cap, not a stall:** with **zero** `templewall_10` / `templewallcorner_10` segs, `~recalc_temple_repaired_p` is `min(25, current_temple_build/150)`. Sanctity can climb while this stays 25 until the **first** wall finishes the 0→10 loc chain (`next_loc_stage`). Do not flee the courtyard to “fix” 25.
+
+**Two kinds of “rubble” (do not mix):**
+
+| Loc | Pack | Name / ops | Interact? |
+|-----|------|------------|-----------|
+| `templewall_base` / `templewallcorner_base` **4068/4079** | Flamtaer ring (15 segs) | **Broken Wall** · desc *pile of ancient rubble* · **Repair** | **Yes** — that *is* the wall at stage 0 |
+| `rubble_1` / `rubble_2` **174/175**, `crumblywalllow` **1629/1630**, gravel | Ground dressing just outside the ring (e.g. **3510,3317**) | no `name=`, **no ops**, packed `active=0` | **No** |
+
+**Chat proof (`mtnsqpat1r` t=60, `mtnsqpq8nk` t=20/60 shots):** `No trigger for [oploc3,rubble_1]` then `Nothing interesting happens.` Player tile **3510,3317** = `rubble_1`. Packed loc has **ops=null**. Debug-only mes (`Player.defaultOp`); `NODE_PRODUCTION` drops the packet. Do **not** add an `[oploc3,rubble_1]` script.
+
+**Ring vs dressing (jm2 m54_51, VERIFIED):** 15 segs **3504–3508 × 3314–3318** (`0 48–52, 50–54` → 4068/4079). East wall is **x=3508**. **3510,3317** is two tiles east of that wall — not a Repair tile. Overlay can still climb (real wall ops between rubble clicks) while `loc_change` never names a Temple wall.
+
+**`mtnsqq1bke` / `mtnsqqm0bg`:** `loc_findallzone` in `~recalc_temple_repaired_p` had been stomping the wall before `loc_change` (703c6181c). Restored with `loc_find`. Straights then climb 4068→4078. **Four corners** (`4079` @ 3504/3508 × 3314/3318) only took **one** step (name flips to Temple wall, still `op1=Repair`) unless the harness keeps Repairing them — do not prefer leftover Broken *name* over mid-stage corners.
+
+**`mtnsqrx5wo` 60-85n:** `repaired_p=85` with Temple×12 is `30+(12−1)×5`, not a cap stall. Last 3 Broken (incl. **3504,3318**) never started: adjacent `wait-move` treated leftover `playerMoving()` (route/exactMove onto the loc tile) as busy, while `p_oploc` Reinforce on finished segs climbed sanctity (93%). Courtyard thrash now: prefer leftover Broken; `wait-move` only while pathing (`distWall>1`); adjacent → Repair even if route flag is sticky.
+
+**`mtnsqsiutp` 60-85o:** all 15 named Temple, stuck **95%** (14× `_10`). Last seg **3508,3318**. Approach tile **3509,3318** is one east of the ring — stay-box must include that tile (or walk-back, never tele). Tele cancels `p_oploc` and the last `loc_change` (level 9 → `templewallcorner_10`, needs `%current_temple_build > 3900`).
+
+**Closed-ring pathfind (60-85p):** once 15 segs exist, `walkWorld` to the altar/courtyard from a wall tile or 3509 **circumnavigates** the temple (no gap). That walk cancels the Repair `p_oploc` that just started. Adjacent (cheb≤1), inside or outside → click Repair. Never walk to `3506,3316`.
+
+**60-85q `mtnsqtdlia` SEG PASS (2026-08-12):** one soft `setvar morttonquest 60`. World walls already 15× `_10`. Product olive→sacred **65**, pyre logs **70**, logs-on **75**, light **80**, Ulsquire **85**. Chat *Congratulations! Quest complete!* + herblore. Not HARD 50→85.
+
 | Gate | Needs |
 |------|--------|
 | Light Fire altar | `sanctity_p ≥ 10` (raw ≥ 300) + tinder + unlit/nofire form |
@@ -95,7 +118,16 @@ Complete const: `^mortton_quest_complete = 85` (`quest.constant`).
 
 ### E. Complete (→85)
 
-Ulsquire path after lit pyre (80). Product dialog / remains hand-in — thrash after 80.
+Ulsquire **Talk** after lit pyre (80) writes `queue(mortton_quest_complete)` → **85**.
+
+Talk must hit `@ulsquire_talk` (`ulsquire_shauncy.rs2`). **Afflicted Talk** without serum is `@afflicted_talk` (gibberish) and does **not** complete.
+
+| Do | Don’t |
+|----|--------|
+| Use **Serum 207** (`mort_serum3`) on Afflicted / Ulsquire (product `opnpcu`) then Talk | `setvar morttonmulti` to fake `ulsquire_visible` |
+| Soft give serum as generic (mid brew already HARD; Razmire stock) | Soft `setvar 85` |
+
+Harness residual 60→85 gives serum at the 80 gate only.
 
 ---
 

@@ -36,6 +36,7 @@
 | **Ulsquire (afflicted)** | m54_51 `1251` | **3496,3289** L0 | Temple dialog / complete |
 | **Razmire (afflicted)** | nearby multi | ~**3489,3296** | Remains hand-in mid-temple |
 | **Flamtaer courtyard stand** | inside wall ring | **3505,3315** L0 | Never tele onto altar **3506,3316** |
+| **Flamtaer wall ring** | m54_51 loc 4068/4079 | **3504–3508 × 3314–3318** | 15 segs. East wall **x=3508**. **3510,3317** is `rubble_1` (not Repair) |
 | **Fire altar loc** | `0_54_51_50_52` | **3506,3316** L0 | Broken / Fire / Flaming forms |
 | **Funeral pyre loc** | m54_51 `0 9 19` | **3465,3283** L0 | typecodes 4093→4094→4100 |
 | **Funeral pyre stand** | adjacent | **3466,3283** | Stage 70–80 place/light |

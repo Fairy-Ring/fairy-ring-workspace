@@ -117,11 +117,22 @@ const FLAMTAER_ALTAR = { x: 54 * 64 + 50, z: 51 * 64 + 52, level: 0 };
  */
 const FLAMTAER_COURTYARD = { x: 3505, z: 3315, level: 0 };
 /**
- * Soft re-tele / “still inside temple” box (outer inclusive).
- * Walls form a ring around the altar; thrash **stands inside** and Repair-ops
- * adjacent segs — never walkWorld onto outer tiles.
+ * Walk target clamp (inclusive). Stand here to Repair; do not walk onto the ring.
+ * **3510,3317 is rubble_1**, two tiles east of east wall x=3508 — never a stand.
  */
-const TEMPLE_BOX = { x0: 3502, z0: 3312, x1: 3510, z1: 3320 };
+const TEMPLE_BOX = { x0: 3505, z0: 3315, x1: 3507, z1: 3317 };
+/**
+ * “Still at Flamtaer” — do **not** fail-tele. Includes the 15 wall tiles.
+ * Tight TEMPLE_BOX as stay-box yanked anyone who stepped onto 3504/3508
+ * (corners) and aborted the 4079 chain (`mtnsqqm0bg`).
+ */
+// Ring + one tile of approach. 3509,3318 is the client path dest for the
+// NE corner (3508,3318). Old 3504–3508 stay fail-tele’d that tile and
+// cancelled p_oploc on the last seg (60-85o repaired_p=95). 3510 is
+// still out — rubble_1.
+const TEMPLE_STAY = { x0: 3503, z0: 3313, x1: 3509, z1: 3319 };
+/** Wall loc tiles only — Repair targets (11× 4068 + 4× 4079 corners). */
+const TEMPLE_WALLS = { x0: 3504, z0: 3314, x1: 3508, z1: 3318 };
 /** Geometric centre for “step wall → inside” projection (may equal altar; not a tele). */
 const TEMPLE_CENTER = { x: FLAMTAER_ALTAR.x, z: FLAMTAER_ALTAR.z };
 
@@ -214,14 +225,26 @@ async function templeOilAggroGate(page) {
         else a?.takeGround?.(String(rem.name), 6);
       }
     }
-    if (combat) {
-      // Break multi — walk south; do not Attack (never clears).
+    // Only flee if a Loar is *inside* the courtyard. Outside shades must not
+    // yank us south (that was the run-around / repaired_p stall).
+    const box = TEMPLE_BOX;
+    let loarInside = 0;
+    for (const n of npcs) {
+      const nm = String(n?.name ?? '');
+      const id = n?.id | 0;
+      if (!(/^Loar (Shadow|Shade)$/i.test(nm) || id === 1240 || id === 1241)) continue;
+      const nx = n.tile?.x ?? n.wx ?? n.x;
+      const nz = n.tile?.z ?? n.wz ?? n.z;
+      if (nx >= box.x0 && nx <= box.x1 && nz >= box.z0 && nz <= box.z1) loarInside++;
+    }
+    if (combat && loarInside > 0) {
       a?.walkWorld?.(flee.x, flee.z);
       return {
         action: 'flee-aggro',
         combat: true,
         ate,
         loarNear,
+        loarInside,
         tile: me,
         flee
       };
@@ -363,8 +386,10 @@ try {
   // 55 = first repair · 60 = repaired_p=100 · 65 = olive oil on lit altar
   if (fromStage >= 50) {
     const target = Math.max(55, toStage);
-    /** Rebuild thrash when soft entry is still below can-light (60). */
-    const doRebuild = fromStage < 60 && target >= 55;
+    // Soft 60 only sets the quest var. Fresh world walls are still Broken.
+    // First-oil's Repair click never finished the 0→10 loc chain (repaired_p
+    // capped at 25). Use the proven rebuild sticky path until repaired_p=100.
+    const doRebuild = target >= 55 && fromStage < 80;
     let stage = fromStage;
 
     if (doRebuild) {
@@ -466,10 +491,10 @@ try {
       const t = await page.evaluate(() => globalThis.__lc377?.worldTile?.());
       if (!t) return false;
       return (
-        t.x >= TEMPLE_BOX.x0 &&
-        t.x <= TEMPLE_BOX.x1 &&
-        t.z >= TEMPLE_BOX.z0 &&
-        t.z <= TEMPLE_BOX.z1
+        t.x >= TEMPLE_STAY.x0 &&
+        t.x <= TEMPLE_STAY.x1 &&
+        t.z >= TEMPLE_STAY.z0 &&
+        t.z <= TEMPLE_STAY.z1
       );
     };
 
@@ -507,15 +532,28 @@ try {
         }
       }
       if (ticks % 8 === 0 && !(await inTemple())) {
-        console.log('[quest-mortton] SOFT re-tele courtyard (death/random fail-tele out of temple)');
-        stickyWall = null;
-        await teleTo(page, FLAMTAER_COURTYARD, 2, 25_000);
-        await waitSceneReady(page, 15_000);
-        await restock();
+        const t = await page.evaluate(() => globalThis.__lc377?.worldTile?.());
+        const far =
+          !t ||
+          Math.max(
+            Math.abs(t.x - TEMPLE_CENTER.x),
+            Math.abs(t.z - TEMPLE_CENTER.z)
+          ) > 12;
+        if (far) {
+          console.log(
+            '[quest-mortton] SOFT re-tele courtyard (death/random fail-tele out of temple)'
+          );
+          stickyWall = null;
+          await teleTo(page, FLAMTAER_COURTYARD, 2, 25_000);
+          await waitSceneReady(page, 15_000);
+          await restock();
+        }
+        // Near but outside: do **not** walkWorld(courtyard). Closed ring
+        // pathfinds around the temple and cancels p_oploc. Op from here.
       }
 
       const thrash = await page.evaluate(
-        async ({ sticky, center, box }) => {
+        async ({ sticky, center, box, wallBox }) => {
           const a = globalThis.__lc377?.actions;
           const r = globalThis.__lc377?.reader;
           a?.continueDialog?.();
@@ -525,17 +563,15 @@ try {
           const me = r?.worldTile?.();
           if (!me) return { ok: false, reason: 'no-tile' };
 
-          // Keep interior bias: if outside box, walk center (tele handled host-side).
-          const inside =
-            me.x >= box.x0 && me.x <= box.x1 && me.z >= box.z0 && me.z <= box.z1;
-          if (!inside) {
-            a?.walkWorld?.(center.x, center.z);
-            return { ok: false, reason: 'outside', me };
-          }
-
-          const walls = (r?.locs?.({ maxDist: 14 }) ?? []).filter(l =>
-            /wall|rubble/i.test(String(l?.name ?? ''))
-          );
+          const walls = (r?.locs?.({ maxDist: 14 }) ?? []).filter(l => {
+            const n = String(l?.name ?? '');
+            if (!/^broken wall$|^temple wall$/i.test(n)) return false;
+            const id = l?.id | 0;
+            if (id === 174 || id === 175 || id === 1629 || id === 1630) return false;
+            const wx = (l?.wx ?? l?.x) | 0;
+            const wz = (l?.wz ?? l?.z) | 0;
+            return wx >= wallBox.x0 && wx <= wallBox.x1 && wz >= wallBox.z0 && wz <= wallBox.z1;
+          });
           const opsOf = l => (l?.ops || []).map(o => String(o ?? ''));
           /** Still needs segment advance (Broken / mid) — not full Temple wall Reinforce-only. */
           const canRepair = l => opsOf(l).some(o => /repair/i.test(o));
@@ -554,6 +590,8 @@ try {
             else if (wx > center.x) sx = wx - 1;
             if (wz < center.z) sz = wz + 1;
             else if (wz > center.z) sz = wz - 1;
+            sx = Math.min(box.x1, Math.max(box.x0, sx));
+            sz = Math.min(box.z1, Math.max(box.z0, sz));
             return { x: sx, z: sz };
           };
           const cheb = (ax, az, bx, bz) => Math.max(Math.abs(ax - bx), Math.abs(az - bz));
@@ -572,12 +610,18 @@ try {
               ) || null;
           }
           if (!target) {
-            // Prefer Broken / Repairable segs; only Reinforce if no broken left.
-            const repairable = walls.filter(l => canRepair(l) || /broken|rubble/i.test(nameOf(l)));
-            const broken = repairable.filter(l => /broken|rubble/i.test(nameOf(l)));
-            let pool = broken.length ? broken : repairable;
-            if (!pool.length) pool = walls.filter(canWork);
+            // Advance any seg that still has Repair — mid-stage corners are
+            // named "Temple wall" after 4079→4080. Preferring only "Broken"
+            // abandoned them at stage 1 (`mtnsqqm0bg` 4 corners stuck).
+            const needsAdvance = walls.filter(canRepair);
+            let pool = needsAdvance.length ? needsAdvance : walls.filter(canWork);
+            // Leftover Broken first — mid-stage Temple Repair is the same
+            // pool, but 60-85n sat on finished-wall Reinforce (sanc 93%)
+            // while 3 Broken never got a click.
             pool.sort((a, b) => {
+              const aBroken = /^broken wall$/i.test(nameOf(a)) ? 0 : 1;
+              const bBroken = /^broken wall$/i.test(nameOf(b)) ? 0 : 1;
+              if (aBroken !== bBroken) return aBroken - bBroken;
               const da = cheb(me.x, me.z, wxOf(a), wzOf(a));
               const db = cheb(me.x, me.z, wxOf(b), wzOf(b));
               return da - db;
@@ -593,14 +637,21 @@ try {
           const stand = insideStand(wx, wz);
           const distStand = cheb(me.x, me.z, stand.x, stand.z);
           const moving = !!r?.playerMoving?.();
+          const inside =
+            me.x >= box.x0 && me.x <= box.x1 && me.z >= box.z0 && me.z <= box.z1;
 
           const stickyKeep =
             canRepair(target) || /broken|rubble/i.test(nameOf(target))
               ? { wx, wz }
               : null;
 
-          // Only walk when not already on/near the inside stand tile.
-          if (distStand > 1 && !moving) {
+          const distWall = cheb(me.x, me.z, wx, wz);
+          // Adjacent (inside or outside) → Repair. Do **not** walkWorld(altar):
+          // at 95% the ring is closed, so a walk to center from 3508/3509
+          // pathfinds around the whole temple and cancels p_oploc (60-85p).
+          if (distWall <= 1) {
+            // fall through to op
+          } else if (inside && distStand > 0 && !moving) {
             a?.walkWorld?.(stand.x, stand.z);
             return {
               ok: true,
@@ -610,10 +661,33 @@ try {
               me,
               sticky: stickyKeep
             };
-          }
-
-          // Product continuous p_oploc(3): do not spam re-click while busy.
-          if (moving) {
+          } else if (inside && moving) {
+            return {
+              ok: true,
+              action: 'wait-move',
+              wall: { wx, wz, name: nameOf(target) },
+              stand,
+              me,
+              sticky: stickyKeep
+            };
+          } else if (!inside && distWall > 1 && !moving) {
+            // Stay outside the ring. Approach tile = one step *away* from center.
+            let ax = wx;
+            let az = wz;
+            if (wx < center.x) ax = wx - 1;
+            else if (wx > center.x) ax = wx + 1;
+            if (wz < center.z) az = wz - 1;
+            else if (wz > center.z) az = wz + 1;
+            a?.walkWorld?.(ax, az);
+            return {
+              ok: true,
+              action: 'walk-outside-approach',
+              wall: { wx, wz, name: nameOf(target) },
+              stand: { x: ax, z: az },
+              me,
+              sticky: stickyKeep
+            };
+          } else if (!inside && moving) {
             return {
               ok: true,
               action: 'wait-move',
@@ -630,10 +704,7 @@ try {
             ops.find(o => /repair/i.test(o)) ||
             ops.find(o => /reinforce/i.test(o)) ||
             'repair';
-          a?.opLocAt?.(wx, wz, op) ||
-            a?.opLoc?.(nameOf(target), op) ||
-            a?.opLoc?.('Broken', 'repair') ||
-            a?.opLoc?.('wall', 'repair');
+          a?.opLocAt?.(wx, wz, op) || a?.opLoc?.(nameOf(target), op);
           // Keep sticky only for Repair targets; finished Temple wall → re-pick next tick.
           const keepSticky = canRepair(target) || /broken|rubble/i.test(nameOf(target));
           return {
@@ -649,13 +720,12 @@ try {
         {
           sticky: stickyWall,
           center: TEMPLE_CENTER,
-          box: TEMPLE_BOX
+          box: TEMPLE_BOX,
+          wallBox: TEMPLE_WALLS
         }
       );
       if (thrash?.sticky) stickyWall = thrash.sticky;
       else stickyWall = null;
-      // Rotate sticky if thrash keeps wait-move / reinforce on same tile with no wall progress
-      if (ticks % 80 === 0) stickyWall = null;
       if (ticks % 40 === 0 && thrash) {
         console.log(
           `[quest-mortton] courtyard thrash`,
@@ -678,6 +748,15 @@ try {
           `[quest-mortton] flamtaer tick=${ticks} stage=${stage} repaired_p=${repairedP} build=${build} res=${resPool} tile=${JSON.stringify(tile)} walls=${JSON.stringify(snap.names)} inv hammers=${(s?.names || []).filter(n => /hammer/i.test(n)).length} plank=${s?.plank} brick=${s?.brick} paste=${s?.paste}`
         );
         if (shot && ticks % 60 === 0) await shot(`flamtaer-t${ticks}`);
+        // loc_change-dead only. Aug 8 full 15 segs was ~480t — do not abort
+        // mid-rebuild (corners finish after straights).
+        const templeN = Number(snap.names?.['Temple wall'] || 0);
+        const brokenN = Number(snap.names?.['Broken Wall'] || 0);
+        if (ticks >= 400 && templeN < 1 && brokenN >= 10 && Number(repairedP) <= 25) {
+          fail(
+            `FAIL-FAST: rebuild loc_change dead (t=${ticks} repaired_p=${repairedP} walls=${JSON.stringify(snap.names)})`
+          );
+        }
       }
       if (ticks % 4 === 0) {
         stage = await getServerVarQuiet(page, 'morttonquest');
@@ -696,9 +775,9 @@ try {
     if (!(Number(stage) >= Math.min(55, rebuildWant))) {
       fail(`flamtaer-gate FAIL: morttonquest=${stage} want≥${Math.min(55, rebuildWant)}`);
     }
-    if (rebuildWant >= 60 && Number(stage) < 60) {
+    if (rebuildWant >= 60 && Number(repairedP) < 100) {
       fail(
-        `flamtaer-60 FAIL: morttonquest=${stage} repaired_p=${repairedP} want≥60 (need full templewall_10 segments). walls=${JSON.stringify(finalWalls.names)}`
+        `flamtaer-60 FAIL: morttonquest=${stage} repaired_p=${repairedP} want repaired_p≥100 (need templewall_10 segments). walls=${JSON.stringify(finalWalls.names)}`
       );
     }
     if (target < 65) {
@@ -750,6 +829,7 @@ try {
       // Mats first (broken-altar upgrade needs resource pool on wall oploc), then food/oil.
       await giveItems(page, [
         ['hammer', 1],
+        ['flamtaer_hammer', 1],
         ['swamppaste', 40],
         ['limestonebrick', 6],
         ['woodplank', 6],
@@ -825,6 +905,13 @@ try {
       const oilDeadline = Date.now() + oilMs;
       let oilTicks = 0;
       let lit = false;
+      /** Skip this Broken-wall tile when repaired_p stalls (rotate ring). */
+      let oilSkipWall = null;
+      let lastOilRepaired = null;
+      let oilRepairedStall = 0;
+      // ::getvar every tick looks like AFK (chat flood + 2–8s waits). Refresh every 15.
+      let sancRawNow = 0;
+      let sancNow = 0;
       while (Date.now() < oilDeadline && Number(stage) < 65) {
         oilTicks++;
         if (oilTicks % 3 === 0) {
@@ -837,14 +924,25 @@ try {
         const tile = await page.evaluate(() => globalThis.__lc377?.worldTile?.());
         if (
           !tile ||
-          tile.x < TEMPLE_BOX.x0 ||
-          tile.x > TEMPLE_BOX.x1 ||
-          tile.z < TEMPLE_BOX.z0 ||
-          tile.z > TEMPLE_BOX.z1
+          tile.x < TEMPLE_STAY.x0 ||
+          tile.x > TEMPLE_STAY.x1 ||
+          tile.z < TEMPLE_STAY.z0 ||
+          tile.z > TEMPLE_STAY.z1
         ) {
           console.log('[quest-mortton] SOFT re-tele courtyard (oil path)');
           await teleTo(page, FLAMTAER_COURTYARD, 2, 20_000);
           await waitSceneReady(page, 12_000);
+        }
+
+        // Stay inside the courtyard. Flee-south is the old death spiral
+        // (shades are outside; we spawn on 3505,3315). Eat only.
+        if (residualMode) {
+          await page.evaluate(() => {
+            const a = globalThis.__lc377?.actions;
+            a?.eatIfNeeded?.('Lobster', 12, { floor: 40, minMissing: 8 });
+            a?.continueDialog?.();
+            a?.dismissModalMessage?.();
+          });
         }
 
         // Soft thrash only: reseed repaired_p while Broken Fire altar (hides pack/world).
@@ -863,19 +961,29 @@ try {
         //   • %temple_sanctity / _p = **player varp** (new account starts 0; drains on timer).
         // Light: sanctity_p≥10 (raw≥300). Olive→sacred oil: raw≥300 (10% mes). Serum: raw≥600 (20%).
         // Thrash uses **20% / raw≥600 before pour** so post-light drain + multi-dose don't bounce.
-        const sancRawNow = Number(
-          (await getServerVarQuiet(page, 'temple_sanctity').catch(() => 0)) ?? 0
-        );
-        const sancNow = Number(
-          (await getServerVarQuiet(page, 'temple_sanctity_p').catch(() => 0)) ?? 0
-        );
+        if (oilTicks === 1 || oilTicks % 15 === 0) {
+          sancRawNow = Number(
+            (await getServerVarQuiet(page, 'temple_sanctity').catch(() => 0)) ?? 0
+          );
+          sancNow = Number(
+            (await getServerVarQuiet(page, 'temple_sanctity_p').catch(() => 0)) ?? 0
+          );
+        }
         const needSancLight = sancNow < 10 || sancRawNow < 300;
         const needSancPour = sancNow < 20 || sancRawNow < 600;
         const lowSanc = needSancPour; // thrash until pour-ready
         const captureMesbox = residualMode && needSancLight && oilTicks % 20 === 5;
 
         const step = await page.evaluate(
-          async ({ center, residual, captureMesbox: cap, needSancLight, needSancPour }) => {
+          async ({
+            center,
+            courtyard,
+            residual,
+            captureMesbox: cap,
+            needSancLight,
+            needSancPour,
+            skipWall
+          }) => {
             const a = globalThis.__lc377?.actions;
             const r = globalThis.__lc377?.reader;
             // Soft thrash: always clear. Residual mesbox capture: leave chat open.
@@ -887,7 +995,14 @@ try {
             }
 
             const me = r?.worldTile?.();
-            const locs = r?.locs?.({ maxDist: 14 }) ?? [];
+            // Only the altar scenery tile itself is a dead pose. Courtyard
+            // 3505,3315 is cheb=1 from altar 3506,3316 — that is the *correct*
+            // stand. cheb<=1 here looped off-altar forever (mtnsqnu7q1).
+            if (me && me.x === center.x && me.z === center.z) {
+              a?.walkWorld?.(courtyard.x, courtyard.z);
+              return { action: 'off-altar', lit: false, me };
+            }
+            const locs = r?.locs?.({ maxDist: 16 }) ?? [];
             const flaming = locs.find(l =>
               /flaming.*fire altar|flaming fire altar/i.test(String(l?.name ?? ''))
             );
@@ -902,33 +1017,60 @@ try {
                 /wall/i.test(String(l?.name ?? '')) &&
                 (l.ops || []).some(o => /repair|reinforce/i.test(String(o ?? '')))
             );
-            // Broken wall Repair first when altar broken; Temple reinforce is sanc-only.
-            const wall =
-              walls.find(
+            const wxOf = l => (l?.wx ?? l?.x) | 0;
+            const wzOf = l => (l?.wz ?? l?.z) | 0;
+            const cheb = (ax, az, bx, bz) => Math.max(Math.abs(ax - bx), Math.abs(az - bz));
+            const isSkip = l =>
+              skipWall && wxOf(l) === (skipWall.wx | 0) && wzOf(l) === (skipWall.wz | 0);
+            const brokenRepair = walls
+              .filter(
                 l =>
                   /broken/i.test(String(l?.name ?? '')) &&
-                  (l.ops || []).some(o => /repair/i.test(String(o ?? '')))
+                  (l.ops || []).some(o => /repair/i.test(String(o ?? ''))) &&
+                  !isSkip(l)
+              )
+              .sort((a, b) => {
+                if (!me) return 0;
+                return cheb(me.x, me.z, wxOf(a), wzOf(a)) - cheb(me.x, me.z, wxOf(b), wzOf(b));
+              });
+            // Broken wall Repair first when altar broken; rotate skipWall when repaired_p stalls.
+            const wall =
+              brokenRepair[0] ||
+              walls.find(
+                l =>
+                  (l.ops || []).some(o => /repair/i.test(String(o ?? ''))) && !isSkip(l)
               ) ||
-              walls.find(l => (l.ops || []).some(o => /repair/i.test(String(o ?? '')))) ||
-              walls.find(l =>
-                (l.ops || []).some(o => /reinforce/i.test(String(o ?? '')))
+              walls.find(
+                l =>
+                  (l.ops || []).some(o => /reinforce/i.test(String(o ?? ''))) && !isSkip(l)
               ) ||
               walls[0] ||
               null;
-            const walkToWall = w => {
-              const wx = w.wx ?? w.x;
-              const wz = w.wz ?? w.z;
+            const standFor = w => {
+              const wx = wxOf(w);
+              const wz = wzOf(w);
+              // Step toward courtyard, never onto the altar tile.
               let sx = wx;
               let sz = wz;
-              if (wx < center.x) sx = wx + 1;
-              else if (wx > center.x) sx = wx - 1;
-              if (wz < center.z) sz = wz + 1;
-              else if (wz > center.z) sz = wz - 1;
-              if (me && Math.max(Math.abs(me.x - sx), Math.abs(me.z - sz)) > 1) {
-                a?.walkWorld?.(sx, sz);
-                return true;
+              if (wx < courtyard.x) sx = wx + 1;
+              else if (wx > courtyard.x) sx = wx - 1;
+              if (wz < courtyard.z) sz = wz + 1;
+              else if (wz > courtyard.z) sz = wz - 1;
+              if (sx === center.x && sz === center.z) {
+                sx = courtyard.x;
+                sz = courtyard.z;
               }
-              return false;
+              return { wx, wz, sx, sz };
+            };
+            // 60-85p oil crash: this helper was called but never defined.
+            // Adjacent → do not walk (closed ring + p_oploc). Never walk to altar.
+            const walkToWall = w => {
+              if (!me || !w) return false;
+              const { wx, wz, sx, sz } = standFor(w);
+              if (cheb(me.x, me.z, wx, wz) <= 1) return false;
+              if (sx === center.x && sz === center.z) return false;
+              a?.walkWorld?.(sx, sz);
+              return true;
             };
 
             // Residual: broken altar upgrades via wall build. Prefer Repair on Broken segs.
@@ -939,12 +1081,41 @@ try {
                   a?.opLoc?.(broken.name, 'repair');
                 return { action: 'fix-broken-altar', lit: false, broken: true };
               }
-              if (walkToWall(w)) {
+              const { wx, wz, sx, sz } = standFor(w);
+              const dWall = me ? cheb(me.x, me.z, wx, wz) : 99;
+              // Already next to the wall → Repair. Walking here cancels p_oploc.
+              if (dWall <= 1) {
+                const ops = (w.ops || []).map(o => String(o ?? ''));
+                const op =
+                  ops.find(o => /repair/i.test(o)) ||
+                  ops.find(o => /reinforce/i.test(o)) ||
+                  'repair';
+                a?.opLocAt?.(wx, wz, op) || a?.opLoc?.(w.name, op);
+                return {
+                  action: 'wall-for-broken-altar',
+                  lit: false,
+                  broken: true,
+                  name: w.name,
+                  op,
+                  wx,
+                  wz,
+                  dWall
+                };
+              }
+              const dStand = me ? cheb(me.x, me.z, sx, sz) : 99;
+              if (dStand > 1) {
+                a?.walkWorld?.(sx, sz);
                 return {
                   action: 'walk-wall-broken-altar',
                   lit: false,
                   broken: true,
-                  name: w.name
+                  name: w.name,
+                  wx,
+                  wz,
+                  sx,
+                  sz,
+                  dWall,
+                  dStand
                 };
               }
               const ops = (w.ops || []).map(o => String(o ?? ''));
@@ -952,13 +1123,16 @@ try {
                 ops.find(o => /repair/i.test(o)) ||
                 ops.find(o => /reinforce/i.test(o)) ||
                 'repair';
-              a?.opLocAt?.(w.wx ?? w.x, w.wz ?? w.z, op) || a?.opLoc?.(w.name, op);
+              a?.opLocAt?.(wx, wz, op) || a?.opLoc?.(w.name, op);
               return {
                 action: 'wall-for-broken-altar',
                 lit: false,
                 broken: true,
                 name: w.name,
-                op
+                op,
+                wx,
+                wz,
+                dWall
               };
             }
 
@@ -1059,10 +1233,12 @@ try {
           },
           {
             center: TEMPLE_CENTER,
+            courtyard: FLAMTAER_COURTYARD,
             residual: residualMode,
             captureMesbox,
             needSancLight,
-            needSancPour
+            needSancPour,
+            skipWall: oilSkipWall
           }
         );
 
@@ -1077,14 +1253,25 @@ try {
           const rp = await getServerVarQuiet(page, 'temple_repaired_p').catch(() => null);
           const alts = await altarSnap();
           console.log(
-            `[quest-mortton] oil diag t=${oilTicks} repaired_p=${rp} sanc=${sancRawNow}/${sancNow} step=${step?.action} altars=${JSON.stringify(alts)}`
+            `[quest-mortton] oil diag t=${oilTicks} repaired_p=${rp} sanc=${sancRawNow}/${sancNow} step=${step?.action} wall=${step?.name || ''} altars=${JSON.stringify(alts)}`
           );
+          const rpN = Number(rp);
+          if (lastOilRepaired != null && rpN === lastOilRepaired) oilRepairedStall += 15;
+          else oilRepairedStall = 0;
+          lastOilRepaired = rpN;
+          if (oilRepairedStall >= 30 && step?.name) {
+            oilSkipWall = { wx: step.wx ?? step.x, wz: step.wz ?? step.z };
+            console.log('[quest-mortton] oil rotate wall (repaired_p stall)', oilSkipWall, step?.name);
+          }
+          // Fail only if repaired_p stalled AND still Broken — not on tick 90 alone
+          // (full ring can take >90 ticks; mtnsqnl4uj was 25% at t=60).
           if (
-            oilTicks >= 90 &&
+            oilTicks >= 120 &&
+            oilRepairedStall >= 45 &&
             alts.some(a => /broken fire altar/i.test(String(a?.name ?? '')))
           ) {
             fail(
-              `RESIDUAL broken Fire altar stuck ${oilTicks} ticks (sanc=${sancNow}% repaired_p=${rp}; need wall oploc with mats + repaired_p=100 to upgrade). last=${JSON.stringify(step)}`
+              `RESIDUAL broken Fire altar + repaired_p stalled ${oilRepairedStall} ticks (sanc=${sancNow}% repaired_p=${rp}; rotate exhausted). last=${JSON.stringify(step)}`
             );
           }
         }
@@ -1131,7 +1318,7 @@ try {
           const sancP = await getServerVarQuiet(page, 'temple_sanctity_p').catch(() => null);
           const alts = await altarSnap();
           console.log(
-            `[quest-mortton] oil tick=${oilTicks} stage=${stage} lit=${lit} sanc=${sanc}/${sancP} step=${step?.action} altars=${JSON.stringify(alts)}`
+            `[quest-mortton] oil tick=${oilTicks} stage=${stage} lit=${lit} sanc=${sanc}/${sancP} step=${step?.action} wall=${step?.name || ''} @${step?.wx ?? ''},${step?.wz ?? ''} altars=${JSON.stringify(alts)}`
           );
           if (shot && oilTicks % 45 === 0) await shot(`oil-t${oilTicks}`);
         }
@@ -1190,18 +1377,44 @@ try {
       // clearinv without mats → fix-broken-altar forever, never flaming).
       // Soft thrash: also sacred oil + remains (DIRTY under bar §2).
       if (residualMode) {
-        // Temple thrash fills 28 slots — ~clearinv (host prep) then generic kit only.
-        // Do NOT re-give sacred oil: product re-make with olive at temple if wiped.
-        await cheatQuiet(page, '~clearinv', 500);
-        await seedLoarCombatKit(page, [
-          ['logs', 6],
-          ['tinderbox', 1],
-          ['oliveoil4', 3],
-          ['hammer', 1],
-          ['swamppaste', 30],
-          ['limestonebrick', 4],
-          ['woodplank', 4]
-        ]);
+        // If first-oil just wrote sacred oil / pyre logs, keep them.
+        // ~clearinv here was the 75→85 remake death spiral (wipe product oil →
+        // Broken-altar wall walk for 280 ticks). Generic logs/tinder only when missing.
+        const keep = await page.evaluate(() => {
+          const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
+          const names = inv.map(i => i?.name).filter(Boolean);
+          return {
+            oil: names.some(n => /sacred oil/i.test(n)),
+            pyre: names.some(n => /pyre logs/i.test(n)),
+            logs: names.some(n => /^logs$/i.test(n)),
+            tinder: names.some(n => /tinderbox/i.test(n)),
+            olive: names.some(n => /olive oil/i.test(n)),
+            free: 28 - inv.length,
+            names
+          };
+        });
+        console.log('[quest-mortton] residual pyre pre-kit', JSON.stringify(keep));
+        if (keep.oil || keep.pyre) {
+          const extra = [];
+          if (!keep.logs) extra.push(['logs', 4]);
+          if (!keep.tinder) extra.push(['tinderbox', 1]);
+          if (!keep.olive) extra.push(['oliveoil4', 1]);
+          extra.push(['lobster', 4]);
+          await seedLoarCombatKit(page, extra);
+        } else {
+          // Soft-75 entry with no oil: remake at temple (mats required).
+          await cheatQuiet(page, '~clearinv', 500);
+          await seedLoarCombatKit(page, [
+            ['logs', 6],
+            ['tinderbox', 1],
+            ['oliveoil4', 3],
+            ['hammer', 1],
+            ['flamtaer_hammer', 1],
+            ['swamppaste', 30],
+            ['limestonebrick', 4],
+            ['woodplank', 4]
+          ]);
+        }
         const invCheck = await page.evaluate(() => {
           const inv = globalThis.__lc377?.reader?.inventory?.() ?? [];
           return {
@@ -1359,20 +1572,11 @@ try {
             await cheatQuiet(page, 'setvar morttonmulti 34', 300).catch(() => {});
             await giveItems(page, [['mort_serum3', 2]]).catch(() => {});
           } else if (residualMode) {
-            await page.evaluate(async () => {
-              const a = globalThis.__lc377?.actions;
-              const r = globalThis.__lc377?.reader;
-              a?.setSideTab?.(3);
-              const inv = r?.inventory?.() ?? [];
-              if (inv.some(i => /serum 207/i.test(String(i?.name ?? '')))) return;
-              const tar = inv.find(i => /tarromin/i.test(String(i?.name ?? '')));
-              const vial = inv.find(i => /vial of water/i.test(String(i?.name ?? '')));
-              const ash = inv.find(i => /^ashes$/i.test(String(i?.name ?? '')));
-              const unf = inv.find(i => /unf|tarromin potion/i.test(String(i?.name ?? '')));
-              if (tar && vial) a?.useHeldOnHeld?.(tar.name, vial.name);
-              else if (unf && ash) a?.useHeldOnHeld?.(ash.name, unf.name);
-            });
-            await page.waitForTimeout(800);
+            // Complete talk is on @ulsquire_talk. Afflicted Talk without serum
+            // is gibberish (@afflicted_talk). Serum 207 is generic (Razmire /
+            // mid brew already HARD). Use-on is the product un-afflict.
+            await giveItems(page, [['mort_serum3', 2]]).catch(() => {});
+            await page.waitForTimeout(400);
           }
           const talk = await page.evaluate(async () => {
             const a = globalThis.__lc377?.actions;
@@ -1947,10 +2151,15 @@ try {
                       (l.ops || []).some(o => /repair|reinforce/i.test(String(o ?? '')))
                   );
                   const wall =
+                    walls.find(
+                      l =>
+                        /broken/i.test(String(l?.name ?? '')) &&
+                        (l.ops || []).some(o => /repair/i.test(String(o ?? '')))
+                    ) ||
+                    walls.find(l => (l.ops || []).some(o => /repair/i.test(String(o ?? '')))) ||
                     walls.find(l =>
                       (l.ops || []).some(o => /reinforce/i.test(String(o ?? '')))
                     ) ||
-                    walls.find(l => /broken/i.test(String(l?.name ?? ''))) ||
                     walls[0] ||
                     null;
                   const me = r?.worldTile?.();

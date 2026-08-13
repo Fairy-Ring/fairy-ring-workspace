@@ -585,7 +585,15 @@ export function install(client, hooks = {}) {
       const local = reader.toLocal(wx, wz);
       if (!local) return null;
       const hits = reader.locs({ maxDist: 50 }).filter(l => l.lx === local.lx && l.lz === local.lz);
-      return hits[0] ?? null;
+      // Prefer a loc that actually has a player op. First-hit was rubble_1 (no
+      // ops) on 3510,3317 → forged OPLOC3 → "No trigger for [oploc3,rubble_1]".
+      const dressing = new Set([174, 175, 1629, 1630]);
+      const hasOp = l =>
+        !dressing.has(l.id | 0) &&
+        (l.ops || []).some(o => o && String(o).trim() && String(o) !== 'hidden');
+      // Do not fall back to rubble_1 / crumblywall — those have no trigger.
+      // Prod (NODE_PRODUCTION) would drop the packet; debug prints No trigger.
+      return hits.find(hasOp) ?? null;
     },
 
     /**

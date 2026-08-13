@@ -4,6 +4,7 @@ Sources: content `_unpack/377` `vislevel` / npc configs; smoke comments; period 
 
 | NPC / encounter | vislevel / notes | Smoke floor (setstat) | Recommended gear tier |
 |-----------------|------------------|----------------------|------------------------|
+| **Ragnar / Misc subjects** (`misc_man_1` …) | vislevel **1**; unpack HP default **1**; 289 no `hitpoints=` | ATK/STR **40** | **bronze scim** (1-shot). −6 approval on death `p_opnpc`, not first swing |
 | Loar shade/shadow (Mort’ton) | vislevel **40**; HP **38** ATK **45** STR **30** DEF **26** (crush); multi-aggro | ATK/STR **70** DEF **60** HP **80** | **adamant** full + kite + food×20 (steel@60 + thin food stalls residual hunt) |
 | Jogre (TBWT journal) | ~48 | ATK/STR 50 | steel+ |
 | Jr dagannoth / Horror mid | lighthouse | ATK 60 STR 60 DEF 50 HP 70 | steel+ / ranged 50 |

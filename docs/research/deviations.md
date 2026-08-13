@@ -6,6 +6,7 @@ Record **intentional product / platform differences** from historical May 2006 /
 
 | Date | Area | Deviation | Why | Owner |
 |------|------|-----------|-----|-------|
+| 2026-08-12 | Content / Managing labour XP | Leif/Magnus award **full** gather XP (maple **100** WC, coal **50** Mining) from 289 `productexp`. **REVISIT.** | 289 can be wrong. OSRS until 30 Nov 2022 had **drastically reduced** kingdom-gather XP; 2007-base is closer to May 2006 than 2022 — last-resort inference is **reduced**, rate unknown (do not invent). Keep 289-full for now. | agent |
 | 2026-08-12 | Content / music LOOP mes | “Music looping now enabled/disabled.” | 377 IF + `musicloop` varp are period; **mes text** cited in 274 as July 2006 (post-tip). Button behaviour is 274 loop timer + `midi_length` | agent |
 | 2026-08-03 | Ports | WEB **81**, GAME **43595** (not stock 80/43594) | Isolation from live 274; Java client requires WEB=`80+offset`, GAME=`43594+offset` with same offset | ops |
 | 2026-08-03 | Ports | Was briefly WEB **8891** (wrong) | Broke CRC; fixed back to **81** | ops |

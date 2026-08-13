@@ -143,10 +143,11 @@ This surface does **not** ship full session plans or the entire research corpus.
 
 ### Git
 
-- **Commits stay frequent.** Small commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …). Public pushes may batch; chat is not a backup.  
-- **Push frequency can drop.** Now that remotes are public, do **not** push every unit. Batch coherent slices (or end of session) to public `fairy-ring-workspace` / FR-* so the public history stays readable. Private vault backup may still push more often than the public export.  
+- **Commits stay frequent.** Small commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …). Chat is not a backup.  
+- **Do not push unless asked.** Fairy-Ring remotes are live/public. Agents commit locally; they **do not** `git push` vault, `FR-*`, or `fairy-ring-workspace` unless a maintainer asked **this turn**.  
 - Never force-push shared branches unless maintainers explicitly ask.  
-- Never point `origin` at LostCityRS for experiment push.
+- Never point `origin` at LostCityRS for experiment push.  
+- Never push to `LostCityRS/*`.
 
 ### AI
 

@@ -36,9 +36,11 @@ const { base, rest } = parseArgs(process.argv.slice(2));
 const { username, password } = resolveAccount(rest, 'manlab');
 const shotsEnabled = process.env.SHOTS !== '0' && process.env.SHOTS !== 'false';
 
-const MAPLE = { x: 2549, z: 3864, level: 0 }; // beside mapletree 0_39_60_54_24
-const COAL = { x: 2525, z: 3895, level: 0 }; // beside coalrock1 0_39_60_30_55
-const FISH = { x: 2576, z: 3851, level: 0 }; // beside 0_40_60_rarefish 0_40_60_16_10
+const MAPLE_STAND = { x: 2549, z: 3864, level: 0 }; // next to, not on, mapletree SW
+const MAPLE_LOC = { x: 2550, z: 3864 }; // mapletree 1307 — not dummy 2550,3867
+const COAL_STAND = { x: 2525, z: 3895, level: 0 };
+const COAL_LOC = { x: 2526, z: 3895 }; // coalrock1 — not dummy 2526,3892
+const FISH_STAND = { x: 2576, z: 3851, level: 0 };
 
 async function chatTail(page, n = 16) {
   return page.evaluate(k => {
@@ -51,24 +53,49 @@ async function chatTail(page, n = 16) {
   }, n);
 }
 
-async function fireLoc(page, nameRe, opRe) {
+/** Product mes only — ::getvar floods chat and hides "You swing your axe." */
+function productChat(lines) {
+  return (lines || []).filter(t => !/^(get |set )/i.test(String(t)));
+}
+
+async function snapPose(page) {
+  return page.evaluate(() => {
+    const r = globalThis.__lc377?.reader;
+    const inv = r?.inventory?.() ?? [];
+    const worn = r?.equipment?.() ?? [];
+    return {
+      tile: r?.worldTile?.() ?? null,
+      free: Math.max(0, 28 - inv.length),
+      worn: worn.map(i => i?.name).filter(Boolean),
+      inv: inv.map(i => i?.name).filter(Boolean)
+    };
+  });
+}
+
+async function fireLocAt(page, wx, wz, opRe) {
   return page.evaluate(
-    ({ nameRe, opRe }) => {
+    ({ wx, wz, opRe }) => {
       const a = globalThis.__lc377?.actions;
       const r = globalThis.__lc377?.reader;
       if (!a || !r) return { error: 'no abi' };
-      const name = new RegExp(nameRe, 'i');
-      const op = new RegExp(opRe, 'i');
-      const locs = typeof r.locs === 'function' ? r.locs({ maxDist: 10 }) : [];
-      const hit = locs.find(
-        l => name.test(String(l?.name ?? '')) && (l.ops || []).some(o => o && op.test(String(o)))
-      );
-      let ok = false;
-      if (hit && typeof a.opLoc === 'function') ok = !!a.opLoc(hit.name, opRe, 12);
-      if (!ok && hit && typeof a.opLocAt === 'function') ok = !!a.opLocAt(hit.x, hit.z, opRe);
-      return { ok, name: hit?.name, x: hit?.x, z: hit?.z, ops: hit?.ops, n: locs.length };
+      const me = r?.worldTile?.();
+      const loc = typeof r.locAt === 'function' ? r.locAt(wx, wz) : null;
+      const ok = !!(a.opLocAt?.(wx, wz, opRe) || (loc && a.opLoc?.(loc.name, opRe, 8)));
+      return {
+        ok,
+        name: loc?.name,
+        id: loc?.id,
+        wx,
+        wz,
+        ops: loc?.ops,
+        me,
+        d:
+          me && wx != null
+            ? Math.max(Math.abs(me.x - wx), Math.abs(me.z - wz))
+            : null
+      };
     },
-    { nameRe, opRe }
+    { wx, wz, opRe }
   );
 }
 
@@ -89,22 +116,35 @@ async function fireNpcOp(page, nameRe, op1based) {
 
 async function labourUntilPlus(page, tag, fire, from) {
   let last = from;
-  for (let attempt = 0; attempt < 10; attempt++) {
-    const r = await fire();
-    console.log(`[manage-lab] ${tag} fire ${attempt}`, r);
-    if (!r?.ok && !r?.error) {
-      await waitTicks(page, 3);
-      continue;
+  let sawSwing = false;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const pose = await snapPose(page);
+    // One click, then wait. Re-click only if we never saw a product swing.
+    if (!sawSwing) {
+      const r = await fire();
+      console.log(`[manage-lab] ${tag} fire ${attempt}`, r, pose);
+    } else {
+      console.log(`[manage-lab] ${tag} hold p_oploc ${attempt}`, pose);
     }
-    last = await waitServerVar(page, 'misc_approval', {
-      from,
-      attempts: 10,
-      ticksBetween: 6
-    });
-    const chat = await chatTail(page);
-    console.log(`[manage-lab] ${tag} after wait approval=${last} (from ${from})`, chat.slice(-6));
+    for (let w = 0; w < 8; w++) {
+      await waitTicks(page, 8);
+      const prod = productChat(await chatTail(page, 24));
+      if (prod.some(t => /swing your axe|manage to mine|you catch|give it to/i.test(t))) {
+        sawSwing = true;
+      }
+      if (w % 2 === 1) {
+        last = Number(await getServerVarQuiet(page, 'misc_approval'));
+        if (Number(last) > Number(from)) {
+          console.log(`[manage-lab] ${tag} PASS ${from}→${last}`, prod.slice(-8));
+          return last;
+        }
+      }
+    }
+    const prod = productChat(await chatTail(page, 24));
+    last = Number(await getServerVarQuiet(page, 'misc_approval'));
+    console.log(`[manage-lab] ${tag} after wait approval=${last} (from ${from})`, prod.slice(-8));
     if (Number(last) > Number(from)) return last;
-    await waitTicks(page, 4);
+    sawSwing = prod.some(t => /swing your axe|manage to mine|you catch|give it to/i.test(t));
   }
   return last;
 }
@@ -140,7 +180,7 @@ async function main() {
     await waitTicks(page, 2);
 
     // --- wood ---
-    if (!(await teleTo(page, MAPLE, 2, 25_000))) fail('tele maple failed');
+    if (!(await teleTo(page, MAPLE_STAND, 2, 25_000))) fail('tele maple failed');
     await waitSceneReady(page, 15_000);
     await waitTicks(page, 3);
     await cheatQuiet(page, 'setvar misc_approval 90', 400);
@@ -156,13 +196,13 @@ async function main() {
     if (!wornAxe) fail('rune axe not worn after equip (need Attack 40)');
     const wood0 = Number(await getServerVarQuiet(page, 'misc_approval'));
     const wood1 = Number(
-      await labourUntilPlus(page, 'wood', () => fireLoc(page, 'maple', 'chop'), wood0)
+      await labourUntilPlus(page, 'wood', () => fireLocAt(page, MAPLE_LOC.x, MAPLE_LOC.z, 'chop'), wood0)
     );
     if (shot) await shot('after-wood');
     if (!(wood1 > wood0)) fail(`WOOD FAIL approval ${wood0}→${wood1}`);
 
     // --- mine ---
-    if (!(await teleTo(page, COAL, 2, 25_000))) fail('tele coal failed');
+    if (!(await teleTo(page, COAL_STAND, 2, 25_000))) fail('tele coal failed');
     await waitSceneReady(page, 15_000);
     await waitTicks(page, 3);
     await page.evaluate(() => {
@@ -176,13 +216,13 @@ async function main() {
     if (!wornPick) fail('rune pickaxe not worn after equip (need Attack 40)');
     const mine0 = Number(await getServerVarQuiet(page, 'misc_approval'));
     const mine1 = Number(
-      await labourUntilPlus(page, 'mine', () => fireLoc(page, 'rocks', 'mine'), mine0)
+      await labourUntilPlus(page, 'mine', () => fireLocAt(page, COAL_LOC.x, COAL_LOC.z, 'mine'), mine0)
     );
     if (shot) await shot('after-mine');
     if (!(mine1 > mine0)) fail(`MINE FAIL approval ${mine0}→${mine1}`);
 
     // --- fish (Etceteria rarefish, still in miscellania bounds) ---
-    if (!(await teleTo(page, FISH, 2, 25_000))) fail('tele fish failed');
+    if (!(await teleTo(page, FISH_STAND, 2, 25_000))) fail('tele fish failed');
     await waitSceneReady(page, 15_000);
     await waitTicks(page, 3);
     const fish0 = Number(await getServerVarQuiet(page, 'misc_approval'));

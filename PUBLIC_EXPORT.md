@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-12T22:03Z
+Generated: 2026-08-13T01:54Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -47,7 +47,10 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-karamja-shipyard.md
 ./docs/research/game-knowledge/anchors-miscellania.md
 ./docs/research/game-knowledge/anchors-mort-myre.md
+./docs/research/game-knowledge/anchors-outpost.md
 ./docs/research/game-knowledge/anchors-rellekka.md
+./docs/research/game-knowledge/anchors-varrock-garden.md
+./docs/research/game-knowledge/anchors-wanted-ahoy.md
 ./docs/research/game-knowledge/combat-floors-377.md
 ./docs/research/game-knowledge/flamtaer-residual-377.md
 ./docs/research/game-knowledge/harness-prep-and-gear.md
@@ -87,6 +90,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./scripts/deploy-client-ts.sh
 ./scripts/export-public-workspace.sh
 ./scripts/fetch-openrs2-cache.sh
+./scripts/inventory-skipped-config-refs.py
 ./scripts/kill-harness-smoke.sh
 ./scripts/smoke-client-ts.mjs
 ./scripts/snapshot-status.sh
@@ -202,6 +206,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/probe-scenery-anim.mjs
 ./tools/harness/quest-eadgar-smoke.mjs
 ./tools/harness/quest-horror-smoke.mjs
+./tools/harness/quest-managing-kill-minus6-smoke.mjs
 ./tools/harness/quest-managing-labour-hard-smoke.mjs
 ./tools/harness/quest-managing-m2-mapzone-smoke.mjs
 ./tools/harness/quest-managing-m3-daily-smoke.mjs

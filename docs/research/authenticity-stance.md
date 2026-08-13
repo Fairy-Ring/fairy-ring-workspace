@@ -33,7 +33,7 @@ Soft mid thrash is a **normal stage of the process**, not a moral fail. You stil
 
 1. **Do not invent player-facing or cache-absent *content*.** No new quests, drops, mechanics, messages, IDs, or “QoL” that did not exist in the target era unless the human accepts a logged **deviation**.  
    **Client track:** do not invent client behaviour — **exact port of Client-Java 377** to TS.  
-   **Internal names are LC-parity, not Jagex-or-nothing** (Decision **013**): classic 377 configs do **not** store debugnames. LC’s `*.pack` labels (`[mapletree]`, `%misc_last_update`) are reconstruction so scripts compile. We may name leftover `varp_N` / `npc_N` / `loc_N` the same way when the **row exists**, the name is **sensible**, and it does **not** collide with an existing 377 debugname. Do not claim those labels are Jagex-internal. Prefer an LC 274/289 name that already exists and era-fits.
+   **Internal names are LC-parity, not Jagex-or-nothing** (Decision **013**): classic 377 configs do **not** store debugnames. LC `*.pack` labels are reconstruction so scripts compile. **Rip** OSRS / 2007 / 274/289 compiler names onto in-scope ~May 2006 rows (OSRS forked RS2; they did not rename those symbols for fun). Skip clearly later content. Match the row, not the later id. Collisions still lose.
 2. **Follow the research source ladder** (below). Higher rungs beat lower ones.
 3. **Intentional product non-auth** → [`deviations.md`](deviations.md). **Soft mids / not-yet-e2e** → [`softpass.md`](softpass.md).
 4. **Missing triggers / stubs:** leave incomplete or finish from research — do not invent filler dialogue/loot to silence `no trigger for …`.
@@ -92,9 +92,9 @@ Full note: [`docs/research/runescript/README.md`](runescript/README.md) § Autho
 | **1** | Lost City **`377-wip`** engine + content | **Starting tree only** — **untrusted / unverified** until checked against higher rungs (see below) |
 | **2** | Historical **377 cache** (OpenRS2 id **657** = build **377**, 2006-05-02) | Authority for assets / many configs |
 | **3** | **Decompiled 377 client** (Java deob in `vendor/client-java`) | Protocol, client-side constraints, UI |
-| **4** | **Period media** (~2005–mid-2006): update posts, wiki archives of the era, videos/screenshots | Dialogue, behaviour, feel |
+| **4** | **Period media** (~2005–mid-2006): Jagex **Update:** news (OSRS wiki *Historical updates* marked “copied verbatim” from the RS site), era videos/screenshots | **Release day** is RS2-accurate from those posts. The **news body** is period. The rest of the modern wiki (walkthrough, reqs, later mechanics) is **not** |
 | **5** | **Other LC branches** (content/engine) — **prefer reusing LC work** | See next section. Deduplicates effort vs re-implementing from scratch. Prefer **274** (and other pre-377 LC) when 377-wip is wrong or empty |
-| **6** | **OSRS — last resort only** | See OSRS section |
+| **6** | **OSRS 2007-base** (Aug 2007 RS2 backup + wiki Changes) | **Last resort** on this ladder — not a stall. When 1–5 do not answer, take 2007-base (minus later Changes) and **finish** the in-scope unit. **Not** modern OSRS. |
 
 ### 377-wip content is untrusted
 
@@ -105,7 +105,7 @@ Full note: [`docs/research/runescript/README.md`](runescript/README.md) § Autho
 - Treat 377-wip as **working material**: run it, log failures, fix via research ladder (often port from **274** after era-check), then re-prove with real client actions.
 - Engine + content mismatches (wrong loc, category OPLOCU vs type tutorial script, etc.) are expected until audited.
 
-If still unknown after the ladder: **document the unknown** (`docs/research/` or gap note) and leave a stub / incomplete behaviour rather than inventing.
+If still unknown after rungs **1–5**: last-resort **2007-base** (OSRS section) and complete the in-scope unit. Leave a stub only when the thing is **out of scope** or **modern OSRS**. Last resort does **not** mean “block finishing.” Do not invent a third script.
 
 ---
 
@@ -174,29 +174,45 @@ That message is **engine debug**: the client action reached the server, but **no
 
 ---
 
-## OSRS as last resort
+## OSRS as last resort (does not block finishing)
 
-**OSRS is out of scope as a design target.** We are not building OSRS, modern or otherwise.
+**OSRS is out of scope as a design target.** We are not building modern OSRS. Rung **6** stays **last resort** — climb 1–5 first (cache, client, Update: posts, LC 274/289).
 
-Lost City (and this project) may still need OSRS **occasionally** when no 2004–2006 primary source answers a concrete question (e.g. certain combat/stat edge cases, obscure formula behaviour) — the same situation LC has hit before.
+Last resort means **use it when the higher rungs do not answer**, then **finish the unit**. It does **not** mean park the quest until a May 2006 video appears.
 
-### When OSRS is allowed
+OSRS launched from a **known-good RS2 backup (~August 2007)**. That is still RS2, ~15 months after our tip. Some media for the **May 2006 → Aug 2007** window does not exist. Inventing a third script is worse than taking 2007-base.
 
-- **Only after** rungs 1–5 have been tried and failed for that specific decision.
-- Prefer evidence from **early OSRS / close to the 2007 backup base**, not post–significant redesigns (e.g. avoid citing modern rebalances, new skill reworks, or post-update wiki as if they were 2006).
-- May 2006 is **much closer** to OSRS’s 2007 foundation than to today’s game — that is why early OSRS can be *informative*, not because “OSRS = truth for 377.”
+### The window
 
-### When OSRS is used, always
+| When | What to do |
+|------|------------|
+| On the **377 cache** / Java client / official **Update:** post | That is May 2006. Use it. |
+| Documented change **in** May 2006–Aug 2007 | Prefer the **earlier** RS2 line if we have it; else note the window and take 2007-base. |
+| Higher rungs silent | **Last resort:** 2007-base (transcript / early OSRS) **minus** wiki **Changes** after Aug 2007 / OSRS-only. Complete the in-scope content. Cite 2007-base. |
+| Modern OSRS (2013+ systems, reworks, QoL, new options) | **Out.** Subtract via Changes. Do not ship it as 377. |
 
-1. **Cite** what was used (wiki page + date/revision if possible, or “early OSRS / ~2007-base assumption”).
-2. **Log** under `docs/research/` for that feature, and if behaviour is knowingly non-2006, also `docs/research/deviations.md`.
-3. **Prefer “unknown / incomplete”** over an OSRS answer that clearly post-dates major changes.
+Same catch as dialogue, for most things (reqs, mid steps, leftover IF meaning). Release **days** stay on the Update: posts.
 
-### What not to take from OSRS
+### Method (not a research paper)
+
+1. Rungs 1–5 first.
+2. Then `Transcript:<Quest>` + quest/NPC **Changes**.
+3. Drop rows after the 2007 backup (and anything clearly OSRS-only).
+4. If a Change sits in the 2006–2007 window and we have no earlier source, keep 2007-base and say so.
+5. Do **not** invent a third version. Do **not** treat the modern walkthrough box (stamina, fairy rings, League notes) as 377.
+
+### When last-resort 2007-base is used, always
+
+1. **Cite** transcript / page + which Changes you subtracted (or “no Change row, 2007-base”).
+2. Land it in `docs/research/` for that unit. If we *know* it is post-2-May-2006 RS2, one line in [`deviations.md`](deviations.md).
+3. Prefer last-resort 2007-base over a hole. Prefer a hole over **2013+** OSRS.
+
+### What not to take from modern OSRS
 
 - QoL, interfaces, pathfinding, drop tables, or economy from post-2007 redesigns  
-- “Because that’s how OSRS does it now” without checking era  
-- Entire systems that did not exist in May 2006  
+- “Because that’s how OSRS does it now” without a Changes check  
+- Entire systems that did not exist in May 2006 (or by the 2007 backup, if we are filling the window)  
+- Walkthrough req boxes / stamina / fairy rings as May 2006 truth without era-check  
 
 ---
 

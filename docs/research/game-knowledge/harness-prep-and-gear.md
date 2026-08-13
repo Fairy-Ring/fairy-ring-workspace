@@ -74,6 +74,8 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 | MM Zooknock hand-in (greegree) | same as tunnel | + soft give: `gold_bar`, `mm_monkey_dentures`, `mm_monkey_amulet_mould` (UI **M'amulet mould**), `mm_monkey_talisman`, `mm_normal_monkey_bones` | **yes** | product OPNPCU only; **wait** chat + `p_delay(4)` before next use-on (else inv_del without greegree); mould needle = `amulet mould` not `monkey amulet mould` |
 | MM Garkor greegree ≥4 | none | soft give `mm_monkey_greegree_for_normal_monkey` (Karamjan only) | **yes** Hold iop2 | soft garkor2; tele **2805,2762**; product Hold+Talk → `seek_alliance`; wrong greegree type → need_correct_disguise only |
 | MM temple M'speak | none | soft `mm_enchanted_gold_bar` + `mm_monkey_amulet_mould` + `ball_of_wool` | n/a | tele **2810,9191 L0** (not L1); product OPLOCU bar→Wall of flame + string; UI **M'speak amulet** |
+| Managing labour HARD | ATK 40 + WC 70 / mining 60 / fishing 50 | rune axe + rune pick + lobster pot | **yes** | maple/coal/rarefish intercepts; not flax |
+| Managing kill −6 | ATK/STR **40** | `bronze_scimitar` | **yes** | Ragnar vislevel **1** HP **1**; stand **2517,3859** |
 
 ---
 
