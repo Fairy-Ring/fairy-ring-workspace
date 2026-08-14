@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-14T12:08Z
+Generated: 2026-08-14T16:10Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -247,8 +247,10 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/quest-cf-teach-start-smoke.mjs
 ./tools/harness/quest-churn-if-smoke.mjs
 ./tools/harness/quest-complete-scroll-smoke.mjs
+./tools/harness/quest-cook-e2e-smoke.mjs
 ./tools/harness/quest-cw-trade-side-smoke.mjs
 ./tools/harness/quest-destroy-if-smoke.mjs
+./tools/harness/quest-doric-e2e-smoke.mjs
 ./tools/harness/quest-dt-arch-return-smoke.mjs
 ./tools/harness/quest-dt-arch-start-smoke.mjs
 ./tools/harness/quest-dt-bartender-smoke.mjs
@@ -271,7 +273,9 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/quest-garden-bernald-smoke.mjs
 ./tools/harness/quest-garden-ellamaria-smoke.mjs
 ./tools/harness/quest-garden-list-if-smoke.mjs
+./tools/harness/quest-ghost-e2e-smoke.mjs
 ./tools/harness/quest-goblin-book-if-smoke.mjs
+./tools/harness/quest-hetty-e2e-smoke.mjs
 ./tools/harness/quest-hm-zealot-smoke.mjs
 ./tools/harness/quest-horror-check-smoke.mjs
 ./tools/harness/quest-horror-door-dest-smoke.mjs
@@ -320,7 +324,9 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/quest-osf-lights-fixed-smoke.mjs
 ./tools/harness/quest-osf-lights-place-smoke.mjs
 ./tools/harness/quest-osf-lights-search-smoke.mjs
+./tools/harness/quest-osf-petra-free-smoke.mjs
 ./tools/harness/quest-osf-petra-search-smoke.mjs
+./tools/harness/quest-osf-phantuwti-after-petra-smoke.mjs
 ./tools/harness/quest-osf-phantuwti-smoke.mjs
 ./tools/harness/quest-osf-rantz-comfy-smoke.mjs
 ./tools/harness/quest-osf-rantz-smoke.mjs
@@ -349,7 +355,9 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/quest-rfd-feast-door-smoke.mjs
 ./tools/harness/quest-rfd-if-smoke.mjs
 ./tools/harness/quest-rfd-ingredient-return-smoke.mjs
+./tools/harness/quest-rimmington-deplete-smoke.mjs
 ./tools/harness/quest-rumdeal-pete-start-smoke.mjs
+./tools/harness/quest-sheep-e2e-smoke.mjs
 ./tools/harness/quest-silver-casting-smoke.mjs
 ./tools/harness/quest-tanner-if-smoke.mjs
 ./tools/harness/quest-tbw-cleanup-smoke.mjs

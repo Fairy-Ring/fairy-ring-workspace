@@ -8,6 +8,8 @@
 
 | Date | Lesson | Source |
 |------|--------|--------|
+| 2026-08-14 | Loc `name` includes is not identity: `Hopper` matches **Hopper controls**. Wheat display is four types; only `wheat` / `wheat_small` / `wheat_smallest` have `[oploc2]`. Multi child `millbase_flour` needs its own `[oploc1]` (274). | `quest-cook-e2e-smoke.mjs` `cke2essxzdhq` |
+| 2026-08-14 | After `chatplayer` + `npc_add`, `p_delay(1)` then `npc_find` before `~chatnpc`. `if_close` before spawn lets a smoke treat the hop as done. `npc_del` via `npc_find` after send-back. | `osf_animate_rock.rs2` `osfpfssxghh8` |
 | 2026-08-14 | OSF Slagilith is script-spawn: `npc_add` birth **1804** then `npc_changetype` Attack **1802**. `npc_find` gates in-fight Read/Use. No dest. | `osf_animate_rock.rs2` `osfslssuu806` |
 | 2026-08-14 | OSF scroll **Use-on-sculpture** is `[oplocu,favour_lady_in_wall]` + `last_useitem = favour_animate_rock`. Same `@label` as Read. First Use does not write or spawn. | `osf_animate_rock.rs2` `osfusssunm8n` |
 | 2026-08-14 | Inventory Read of OSF `favour_animate_rock` is `[opheld1]` (`iop1=Read`). In-room vs out-of-range is `inzone` around loc **5808**, not dest. First Read does not consume and does not spawn. | `osf_animate_rock.rs2` `osfrdssubeec` |

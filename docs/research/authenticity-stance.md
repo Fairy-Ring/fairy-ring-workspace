@@ -113,13 +113,21 @@ If still unknown after rungs **1–5**: last-resort **2007-base** (OSRS section)
 
 **No-invent** means: make the **best guess the ladder allows** (leftover `.if` / pack / official `Update:` / period media / in-era 274/289 / last-resort 2007-base) and **ship**. It does **not** mean “find a period sentence or die.”
 
+**Invent** (operator 2026-08-14) is a number, dest, line, or mechanic **pulled out of nowhere** — no leftover, no pack op, no period process, no last-resort table. If we **know why the hole is there** (377 unpack omitted server HP; `multivar` wants a writer; QG says read the scroll again), filling it from the highest rung that answers is a **CANDIDATE** guess, not invent. Update the guess when a better source appears. Do **not** stall 377-content complete to wait for a Jagex `.rs2`.
+
 | Do | Don’t |
 |----|--------|
 | Reconstruct leftover chrome (page hide, `lj*` from a period screenshot, letter-wheel from leftover comps) and label **CANDIDATE** in [`deviations.md`](deviations.md) | Stall a leftover Read / leftover HUD because the official news is silent |
 | Prefer leftover structure + highest ladder rung that *partially* answers | Copy modern OSRS as if it were 377 without a last-resort label |
 | Update the guess later when a better source appears | Treat the first reconstruction as carved in stone |
+| When 1–5 are silent: take **2007-base minus Changes** (stats, varbit writer, dest tile, hop lines) and **ship** as **CANDIDATE** | Leave a paper tiger / cactus / no-trigger because “we do not have a 377 sentence” |
+| Prefer a dest **hole** only when last-resort is **also** silent on a tile | Invent a `p_teleport` with no ladder rung at all |
 
-Chat, XP, and start-talk still follow the ladder. A **CANDIDATE** rate or leftover page order is allowed so the leftover surface *runs*. Soft vs residual still uses [`softpass.md`](softpass.md).
+Chat, XP, and start-talk still follow the ladder. A **CANDIDATE** rate, combat table, varbit write, leftover page order, or last-resort dest is allowed so the leftover surface *runs*. Soft vs residual still uses [`softpass.md`](softpass.md).
+
+**Server-omitted unpack (operator 2026-08-14):** 377 cache often has **no** server `hitpoints` / `attack` / `moverestrict`. Engine defaults (HP **1**, wander **5**) are **not** authenticity. Fill from 274 exact when it matches; else last-resort 2007-base **minus Changes**, labeled **CANDIDATE**. Do **not** treat “no 274 donor” as “leave 1-HP forever.” Do **not** sell those numbers as unpack **VERIFIED**.
+
+**Leftover hunts:** name the **CANDIDATE** last-resort so a later product session can ship. **Implement order = none** is only for **out of era**, **false join**, or last-resort **also silent**. It is not the default when 2007-base minus Changes answers.
 
 ---
 

@@ -144,12 +144,27 @@ verify_stage() {
     fi
   done < "${REQUIRED_LIST}"
 
-  for bad in docs/plans docs/gap docs/context docs/superpowers docs/research/CORPUS_DIGEST.md; do
+  for bad in docs/plans docs/gap docs/context docs/superpowers docs/research/CORPUS_DIGEST.md docs/research/INDEX.md; do
     if [[ -e "${stage}/${bad}" ]]; then
       echo "REFUSE: private path leaked into stage: ${bad}" >&2
       missing=1
     fi
   done
+  # Research root is an allowlist. Leftover hunts / SHIP e2e findings stay in the vault.
+  if [[ -d "${stage}/docs/research" ]]; then
+    local extra
+    extra="$(find "${stage}/docs/research" -maxdepth 1 -type f -name '*.md' \
+      ! -name 'authenticity-stance.md' \
+      ! -name 'deviations.md' \
+      ! -name 'softpass.md' \
+      ! -name 'PROVENANCE-UPSTREAM-PINS.md' \
+      -print)"
+    if [[ -n "${extra}" ]]; then
+      echo "REFUSE: unexpected research root file(s) (leftover hunts stay vault):" >&2
+      echo "${extra}" >&2
+      missing=1
+    fi
+  fi
 
   if ! grep -q 'process stage' "${stage}/docs/research/softpass.md" 2>/dev/null; then
     echo "REFUSE: softpass.md missing expected framing (process stage)" >&2
