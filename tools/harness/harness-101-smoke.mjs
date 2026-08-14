@@ -34,9 +34,9 @@ import {
 const { base, rest } = parseArgs(process.argv.slice(2));
 const { username, password } = resolveAccount(rest, 'h101');
 
-/** Lumbridge courtyard — same level, no door. */
+/** Lumbridge courtyard east — stay off the castle Large door (3208 is west through it). */
 const STAND = { x: 3222, z: 3218, level: 0 };
-const WALK = { x: 3208, z: 3220, level: 0 };
+const WALK = { x: 3236, z: 3218, level: 0 };
 
 async function main() {
   await assertEnginePackHealth(base);

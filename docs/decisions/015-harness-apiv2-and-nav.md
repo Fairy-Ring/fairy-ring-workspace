@@ -18,8 +18,7 @@ We do **not** import their 274 content graph, wasm pathfinder bundle, or BotHost
 | Evidence helpers (`arrived`, `said`, `itemDelta`, `optionGone`) | Isolation ports, Playwright host |
 | Traveller: furthest in-scene click, shrink reach on `unreachable`, scene-ready wait | Existing 169 vault smokes (WalkExecutor default) |
 
-`Traversal.walkTo` stays the proven WalkExecutor (SHIP e2e).  
-`Traversal.travel` is the PR 604 walker. Flip the default only after a headed prove.
+**Adopt now (2026-08-14):** `Traversal.walkTo` defaults to `travelTo` (PR 604 hop-splitter + 377 pack + `WalkExecutor.crossTransport` for doors/stairs). WalkExecutor remains the fallback when travel ends non-arrived, and `opts.engine: 'classic'` forces it. Nested special-crossing walks still call `WalkExecutor.walkTo` so we do not recurse.
 
 ## Public export
 
@@ -36,7 +35,7 @@ Vault keeps the quest-smoke pile. Contributors clone FR-content for the world an
 
 - Vendoring `do-not-touch/apiv2` wholesale  
 - Chat sequence numbers / mapFlag (`said` / `serverRefused` are best-effort until attach grows those)  
-- Replacing WalkExecutor in SHIP e2e smokes  
+- Deleting WalkExecutor (it is the door/stair executor + fallback)  
 - BotHost / MultiBox  
 
 ## Related

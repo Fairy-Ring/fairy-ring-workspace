@@ -16,6 +16,6 @@ const out = await perform(() => walk({ x: 3208, z: 3220, level: 0 }), {
 });
 ```
 
-Long walks: `travelTo(dest)` plans with `PathFinder`, then clicks the furthest tile still in the loaded scene (shrinks the hop if the client says unreachable).
+Long walks: `Traversal.walkTo` **defaults to** `travelTo` (furthest in-scene click, shrink on unreachable). Doors/stairs use `WalkExecutor.crossTransport`. Pass `{ engine: 'classic' }` to force the old follower.
 
 **Do not** copy `quest-*-smoke.mjs` from the vault into a contributor clone. Copy `harness-101-smoke.mjs`.

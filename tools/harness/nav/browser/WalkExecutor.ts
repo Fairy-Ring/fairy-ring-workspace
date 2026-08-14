@@ -849,6 +849,18 @@ class WalkExecutorImpl {
     }
 
     /**
+     * Public hook for PR 604 `travelTo` (Decision 015). Same hop as the
+     * classic follower — specialCrossing / multi-tile door / loc Climb.
+     */
+    async crossTransport(
+        approach: { x: number; z: number; level: number },
+        step: { x: number; z: number; level: number; transport: TransportInfo },
+        log: (msg: string) => void
+    ): Promise<boolean> {
+        return this.handleTransport(approach as PathStep, step as PathStep, log);
+    }
+
+    /**
      * Classic transport hop: specialCrossing → multi-tile door → loc interact
      * (Climb / Open / Balance↔Cross / gangplank / dungeon).
      * No v2 tele inject.

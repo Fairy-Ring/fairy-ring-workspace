@@ -4,12 +4,13 @@
  * Door/stair tiles still go through WalkExecutor.handleTransport via callback.
  */
 import { ensureNav, findPath } from '../nav/browser/NavigatorMain.ts';
+import { WalkExecutor } from '../nav/browser/WalkExecutor.ts';
 import { expandWaypoints } from '../nav/pathExpand.ts';
 import type { TransportInfo } from '../nav/PathFinder.ts';
 import { arrived, CANNOT_REACH, said, sceneReady } from './evidence.ts';
 import { walk } from './interact.ts';
 import { readSnap } from './read.ts';
-import { perform, until } from './settle.ts';
+import { until } from './settle.ts';
 import type { WorldTile } from './types.ts';
 
 export type TravelOutcome =
@@ -18,12 +19,15 @@ export type TravelOutcome =
     | { kind: 'refused'; at: WorldTile; reason: string }
     | { kind: 'gave-up'; at: WorldTile; hops: number };
 
-export type CrossHop = (step: {
-    x: number;
-    z: number;
-    level: number;
-    transport: TransportInfo;
+export type CrossHop = (args: {
+    approach: WorldTile;
+    step: { x: number; z: number; level: number; transport: TransportInfo };
+    log: (m: string) => void;
 }) => Promise<boolean>;
+
+async function defaultCross(args: Parameters<CrossHop>[0]): Promise<boolean> {
+    return WalkExecutor.crossTransport(args.approach, args.step, args.log);
+}
 
 function here(): WorldTile {
     return readSnap().tile ?? { x: 0, z: 0, level: 0 };
@@ -178,30 +182,40 @@ export async function travelTo(
         }
         if (hopAt === -1) break;
         const step = tiles[hopAt]!;
-        if (step.transport && opts.cross) {
-            const ok = await opts.cross({
-                x: step.x,
-                z: step.z,
-                level: step.level,
-                transport: step.transport
+        if (step.transport) {
+            const approachTile = hopAt > 0 ? tiles[hopAt - 1]! : here();
+            const ok = await (opts.cross ?? defaultCross)({
+                approach: { x: approachTile.x, z: approachTile.z, level: approachTile.level },
+                step: {
+                    x: step.x,
+                    z: step.z,
+                    level: step.level,
+                    transport: step.transport
+                },
+                log
             });
             if (!ok) {
+                const landing = tiles[Math.min(hopAt + 1, tiles.length - 1)]!;
+                const sent = walk({ x: landing.x, z: landing.z, level: landing.level });
+                const stepped = sent.sent
+                    ? await until({
+                          arms: {
+                              there: arrived(
+                                  { x: landing.x, z: landing.z, level: landing.level },
+                                  1
+                              )
+                          },
+                          budgetTicks: 30
+                      })
+                    : null;
+                if (stepped?.kind === 'matched') {
+                    i = hopAt + 1;
+                    continue;
+                }
                 return {
                     kind: 'blocked',
                     at: here(),
                     detail: `transport ${step.transport.action} ${step.transport.locName}`
-                };
-            }
-        } else if (step.transport) {
-            const outcome = await perform(() => walk({ x: step.x, z: step.z, level: step.level }), {
-                arms: { there: arrived({ x: step.x, z: step.z, level: step.level }, 1) },
-                budgetTicks: 40
-            });
-            if (!(outcome.kind === 'matched')) {
-                return {
-                    kind: 'blocked',
-                    at: here(),
-                    detail: `no cross() for ${step.transport.locName}`
                 };
             }
         }

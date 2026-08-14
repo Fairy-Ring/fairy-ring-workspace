@@ -1021,7 +1021,7 @@ async function walkAdjacent(tile: { x: number; z: number }): Promise<boolean> {
 function navWalkLog(m: string): void {
     // Corridor / repath chatter is useful while proving the walker
     if (
-        /^(path ok|door |fail|timeout|unavailable|arrived|closest|deviated|stuck|stall|client walk|giving up|repath)/i.test(
+        /^(path ok|route |door |fail|timeout|unavailable|arrived|closest|deviated|stuck|stall|client walk|giving up|repath|travel)/i.test(
             m
         )
     ) {
@@ -1035,6 +1035,10 @@ type NavApi = {
         dest: { x: number; z: number; level?: number },
         opts?: { radius?: number; timeoutMs?: number; log?: (m: string) => void }
     ) => Promise<boolean>;
+    travelTo?: (
+        dest: { x: number; z: number; level?: number },
+        opts?: { radius?: number; log?: (m: string) => void }
+    ) => Promise<{ kind: string; detail?: string; reason?: string }>;
     ensureNav?: () => Promise<unknown>;
 };
 
@@ -1045,7 +1049,7 @@ function harnessNav(): NavApi | null {
 /**
  * Walk toward a world tile (rs2b0t Traversal.walkTo semantics).
  * - **Near (Chebyshev ≤ 3):** one scene tryMove
- * - **Farther:** classic pack walker only — **no** short-step thrash fallback
+ * - **Farther:** Traversal.walkTo (traveller default, Decision 015)
  */
 export async function walkToward(tile: { x: number; z: number; level?: number }): Promise<boolean> {
     const me = Game.tile();
@@ -1054,21 +1058,7 @@ export async function walkToward(tile: { x: number; z: number; level?: number })
     if (d <= 3) {
         return walkAdjacent(tile);
     }
-    const nav = harnessNav();
-    if (!nav?.walkTo) {
-        console.warn('[walkToward] nav not ready — refusing thrash fallback for far walk');
-        return false;
-    }
-    try {
-        return await nav.walkTo(tile, {
-            radius: 2,
-            timeoutMs: 180_000,
-            log: navWalkLog
-        });
-    } catch (e) {
-        console.warn('[walkToward] nav walkTo error', e);
-        return false;
-    }
+    return Traversal.walkTo(tile, { radius: 2, timeoutMs: 180_000, log: navWalkLog });
 }
 
 /**
@@ -1077,21 +1067,35 @@ export async function walkToward(tile: { x: number; z: number; level?: number })
 export const Traversal = {
     async walkTo(
         dest: { x: number; z: number; level?: number },
-        opts?: { radius?: number; timeoutMs?: number; log?: (m: string) => void }
+        opts?: { radius?: number; timeoutMs?: number; log?: (m: string) => void; engine?: 'traveller' | 'classic' }
     ): Promise<boolean> {
         const nav = harnessNav();
-        if (!nav?.walkTo) {
+        if (!nav?.walkTo && !nav?.travelTo) {
             console.warn('[Traversal] nav not ready');
             return false;
         }
-        // Long walks block TaskBot — tick autorun before entering walker
         RunManager.enable();
         RunManager.tick();
+        const log = opts?.log ?? navWalkLog;
+        const engine = opts?.engine ?? 'traveller';
+        if (engine === 'traveller' && nav?.travelTo) {
+            try {
+                const out = await nav.travelTo(
+                    { x: dest.x, z: dest.z, level: dest.level ?? 0 },
+                    { radius: opts?.radius ?? 2, log }
+                );
+                if (out?.kind === 'arrived') return true;
+                log(`[Traversal] travelTo ${out?.kind ?? 'null'} — falling back to WalkExecutor`);
+            } catch (e) {
+                console.warn('[Traversal] travelTo error — falling back', e);
+            }
+        }
+        if (!nav?.walkTo) return false;
         try {
             return await nav.walkTo(dest, {
                 radius: opts?.radius ?? 2,
                 timeoutMs: opts?.timeoutMs ?? 180_000,
-                log: opts?.log ?? navWalkLog
+                log
             });
         } catch (e) {
             console.warn('[Traversal] nav walkTo error', e);

@@ -5,21 +5,22 @@ async function sleep(ms: number): Promise<void> {
     await new Promise(r => setTimeout(r, ms));
 }
 
-/** One game tick on isolation is often 100–300ms. Poll, do not assume 600. */
-const POLL_MS = 50;
+/**
+ * Isolation default is 300ms (WORLD_SPEED_MS). loopCycle is a client frame
+ * counter — do not use it as a tick clock (PR 604 budgets are server ticks).
+ */
+function tickMs(): number {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const n = Number((globalThis as any).__lc377?.worldSpeedMs);
+    return Number.isFinite(n) && n >= 50 ? n : 300;
+}
 
 export async function ticks(count: number): Promise<void> {
-    const start = readSnap().tick;
-    const deadline = Date.now() + Math.max(1, count) * 800;
-    while (Date.now() < deadline) {
-        if (readSnap().tick - start >= count) return;
-        await sleep(POLL_MS);
-    }
+    await sleep(Math.max(1, count) * tickMs());
 }
 
 export async function until(opts: SettleOptions): Promise<Outcome> {
     const before = opts.since ?? readSnap();
-    const startTick = before.tick;
     for (let i = 0; i < opts.budgetTicks; i++) {
         await ticks(1);
         const now = readSnap();
@@ -31,7 +32,6 @@ export async function until(opts: SettleOptions): Promise<Outcome> {
                 return { kind: 'matched', arm, now, before, tick: now.tick };
             }
         }
-        if (now.tick - startTick >= opts.budgetTicks) break;
     }
     const now = readSnap();
     return { kind: 'expired', now, before, tick: now.tick };
