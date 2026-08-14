@@ -3,6 +3,7 @@
  * Decision 005: full rs2b0t classic stack (not thin WalkAlong).
  */
 import { walkTo, WalkExecutor, type WalkToOpts, type WalkOptions } from './WalkExecutor.ts';
+import { travelTo, type TravelOutcome } from '../../apiv2/travel.ts';
 import {
     ensureNav,
     findPath,
@@ -32,6 +33,7 @@ export {
     navReady,
     getFinder,
     walkTo,
+    travelTo,
     WalkExecutor,
     type WalkToOpts,
     type WalkOptions,
@@ -49,6 +51,10 @@ export {
     pathFacingYaw
 };
 
+export type { TravelOutcome };
+
+/** walkTo = proven WalkExecutor. travelTo = PR 604 hop-splitter (Decision 015). */
 export const Traversal = {
-    walkTo
+    walkTo,
+    travelTo
 };

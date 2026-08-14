@@ -403,10 +403,17 @@ if [[ -d "${ROOT}/scripts" ]]; then
   copy_dir_filtered "scripts"
 fi
 if [[ -d "${ROOT}/tools" ]]; then
+  # Decision 015: core harness + 101 template. Quest-smoke pile stays vault.
   copy_dir_filtered "tools" \
     --exclude '**/harness-shots/**' \
     --exclude '**/*.png' \
-    --exclude '**/*.log'
+    --exclude '**/*.log' \
+    --exclude 'harness/quest-*.mjs' \
+    --exclude 'harness/*-smoke.mjs' \
+    --exclude 'harness/*-diag.mjs' \
+    --exclude 'harness/*-probe.mjs' \
+    --exclude 'harness/*-repro.mjs'
+  copy_file "tools/harness/harness-101-smoke.mjs"
 fi
 if [[ -f "${ROOT}/vendor/README.md" ]]; then
   mkdir -p "${STAGE}/vendor"

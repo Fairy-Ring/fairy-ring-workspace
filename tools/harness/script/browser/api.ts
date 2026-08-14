@@ -1097,6 +1097,33 @@ export const Traversal = {
             console.warn('[Traversal] nav walkTo error', e);
             return false;
         }
+    },
+    /**
+     * PR 604 traveller (Decision 015). Same 377 pack as walkTo; hop-splits
+     * long walk legs inside the loaded scene. Door/stair still need WalkExecutor
+     * until `cross` is wired — prefer same-level courtyard walks first.
+     */
+    async travel(
+        dest: { x: number; z: number; level?: number },
+        opts?: { radius?: number; log?: (m: string) => void }
+    ): Promise<boolean> {
+        const nav = harnessNav();
+        if (!nav?.travelTo) {
+            console.warn('[Traversal] travelTo not ready — falling back to walkTo');
+            return Traversal.walkTo(dest, opts);
+        }
+        RunManager.enable();
+        RunManager.tick();
+        try {
+            const out = await nav.travelTo(
+                { x: dest.x, z: dest.z, level: dest.level ?? 0 },
+                { radius: opts?.radius ?? 2, log: opts?.log ?? navWalkLog }
+            );
+            return out?.kind === 'arrived';
+        } catch (e) {
+            console.warn('[Traversal] travel error', e);
+            return false;
+        }
     }
 };
 

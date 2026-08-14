@@ -9,10 +9,13 @@ See `docs/decisions/004-client-bot-harness-boundary.md`.
 > Watch the client while iterating content/scripts — headless is opt-in only.
 >
 > ```bash
+> node tools/harness/harness-101-smoke.mjs            # headed copy-this (Decision 015)
 > node tools/harness/script/run.mjs tutorial          # headed (default)
-> node tools/harness/login-walk-smoke.mjs             # headed (default)
-> HEADLESS=1 node tools/harness/login-walk-smoke.mjs  # headless when needed
+> HEADLESS=1 node tools/harness/harness-101-smoke.mjs
 > ```
+>
+> **Contributor start:** `tools/harness/harness-101-smoke.mjs` + `tools/harness/apiv2/README.md`.  
+> Vault-only: the `quest-*-smoke.mjs` pile (not exported — Decision **011** / **015**).
 >
 > Agents: prefer headed harness runs unless the user asks for headless/CI.
 
