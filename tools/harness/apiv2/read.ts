@@ -36,9 +36,22 @@ export function readSnap(): ReadSnap {
     const npcs = (r?.npcs?.() ?? []).map((n: Any) => ({
         id: n.id | 0,
         name: n.name ?? null,
-        x: n.x | 0,
-        z: n.z | 0,
-        level: (n.level ?? tile?.level ?? 0) | 0
+        x: (n.tile?.x ?? n.x) | 0,
+        z: (n.tile?.z ?? n.z) | 0,
+        level: (n.tile?.level ?? n.level ?? tile?.level ?? 0) | 0,
+        index: n.index | 0,
+        inCombat: !!n.inCombat
+    }));
+    const ground = (r?.groundItems?.({ maxDist: 24 }) ?? []).map((g: Any) => ({
+        id: g.id | 0,
+        name: g.name ?? null,
+        count: (g.count | 0) || 1,
+        x: (g.tile?.x ?? g.x ?? g.wx) | 0,
+        z: (g.tile?.z ?? g.z ?? g.wz) | 0,
+        level: (g.tile?.level ?? g.level ?? tile?.level ?? 0) | 0,
+        lx: g.lx | 0,
+        lz: g.lz | 0,
+        ops: (g.ops ?? []) as (string | null)[]
     }));
     return {
         tick: (r?.loopCycle?.() ?? 0) | 0,
@@ -49,6 +62,7 @@ export function readSnap(): ReadSnap {
         inv,
         chat,
         locs,
-        npcs
+        npcs,
+        ground
     };
 }

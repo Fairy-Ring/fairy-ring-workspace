@@ -15,7 +15,7 @@ That was a **lazy minimal give** so the character had *something* to swing — n
 
 ## Rules
 
-1. **Host prep is free (toys).** `setstat`, `give`, tele, world speed — allowed. Document in the smoke header.
+1. **Host prep is free (toys).** `setstat`, `give`, tele, world speed — allowed. Document in the smoke header. Give **the hop’s floor** (survive that hunt / wear that kit), **not** a listed overlay number. Kinds: [`../quest-stat-req-kinds-377.md`](../quest-stat-req-kinds-377.md) — start-hard / mid / boostable `stat(` vs unboostable `stat_base(` / combat-floor.
 2. **Prep is not proof.** Still walk authentic quest ops (talk, use-on, portal hops). Do not `setvar` vote progress to skip fights unless the plan explicitly marks a soft gate.
 3. **Gear matches setstat.**
    - Combat ~40–50 → steel full / scim + plate + food  
@@ -49,6 +49,9 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 
 | Smoke | setstat combat | Gear given | Equip? | Notes |
 |-------|----------------|------------|:------:|-------|
+| OSF Sanfew unwind (Taverley L1) | none | none | n/a | Talk-only. Soft `onesmallfavour 31`. **PASS** `osfsustbnb3i`. |
+| OSF Hammerspike return (mine) | none this hop | none | n/a | First Tip.it talk (changed mind). Soft `onesmallfavour 32`. **PASS** `osfhrstc1199`. Gang combat **later**. |
+| OSF Bleemadge unwind (White Wolf) | ATK/STR/DEF **60** HP **80** | **steel** scim + plate + legs + lobster×8 | **yes** | Wolves unpack-complete. Prior FAIL `osfbustbfs12` death. Talk-only. |
 | Mort’ton mid / Flamtaer residual Loar | ATK/STR **70** DEF **60** HP **80** | **adamant** scim + plate + legs + kite + lobster×20 | **yes** | Loar vis40 DEF26; multi-aggro thrash. steel@60 + food×6–8 stalled c18 hunt |
 | Horror mid | ATK 60 STR 60 DEF 50 HP 70 | (see smoke) | check | Basalt / combat floor |
 | TBWT | ATK/STR 50 + skill floors | quest vessels | n/a | Jogre 48 floor in comments |

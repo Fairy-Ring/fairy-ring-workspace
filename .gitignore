@@ -26,6 +26,15 @@ vendor/client-ts/
 vendor/Server/
 vendor/client-java*/
 
+# --- generated / deploy dirt (never ship client.js) ---
+tools/harness/.generated/
+tools/harness/nav/out/
+tools/harness/nav/data/.bak-pre-377-derive/
+**/*.js.map
+vendor/engine/public/client/*.js
+vendor/engine/public/harness/harness-client.js
+vendor/engine/public/harness/harness-client.js.map
+
 # --- OS / editor / junk ---
 .DS_Store
 **/.DS_Store

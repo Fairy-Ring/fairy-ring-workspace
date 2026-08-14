@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-14T16:26Z
+Generated: 2026-08-14T19:55Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -46,6 +46,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/corpus/verification-rubric.md
 ./docs/research/deviations.md
 ./docs/research/game-knowledge/anchors-ape-atoll.md
+./docs/research/game-knowledge/anchors-catherby.md
 ./docs/research/game-knowledge/anchors-crash-island.md
 ./docs/research/game-knowledge/anchors-digsite.md
 ./docs/research/game-knowledge/anchors-isafdar.md
@@ -55,9 +56,11 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-outpost.md
 ./docs/research/game-knowledge/anchors-ratcatchers.md
 ./docs/research/game-knowledge/anchors-rellekka.md
+./docs/research/game-knowledge/anchors-seers-village.md
 ./docs/research/game-knowledge/anchors-tai-bwo.md
 ./docs/research/game-knowledge/anchors-varrock-garden.md
 ./docs/research/game-knowledge/anchors-wanted-ahoy.md
+./docs/research/game-knowledge/anchors-white-wolf.md
 ./docs/research/game-knowledge/anchors-zanaris.md
 ./docs/research/game-knowledge/combat-floors-377.md
 ./docs/research/game-knowledge/combat-floors-ape-atoll-377.md
@@ -111,8 +114,8 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./scripts/verify-client-cache-parity.mjs
 ./tools/client-smoke/package-lock.json
 ./tools/client-smoke/package.json
-./tools/harness/.generated/Client.ts
 ./tools/harness/.gitignore
+./tools/harness/apiv2/approach.ts
 ./tools/harness/apiv2/evidence.ts
 ./tools/harness/apiv2/index.ts
 ./tools/harness/apiv2/interact.ts
@@ -145,9 +148,6 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/nav/browser/WalkAlong.ts
 ./tools/harness/nav/browser/WalkExecutor.ts
 ./tools/harness/nav/bun.lock
-./tools/harness/nav/data/.bak-pre-377-derive/doors.json
-./tools/harness/nav/data/.bak-pre-377-derive/stairEdges.json
-./tools/harness/nav/data/.bak-pre-377-derive/transports.json
 ./tools/harness/nav/data/collisionPatches.ts
 ./tools/harness/nav/data/dangerZones.ts
 ./tools/harness/nav/data/doors.json
@@ -166,11 +166,6 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/nav/loadTransportGraph.ts
 ./tools/harness/nav/localReach.ts
 ./tools/harness/nav/navEngine.ts
-./tools/harness/nav/out/basemap/worldmap-basemap.manifest.json
-./tools/harness/nav/out/basemap/worldmap-key-index.78fba73164f27708.json
-./tools/harness/nav/out/collision.lcnav
-./tools/harness/nav/out/collision.lcnav.gz
-./tools/harness/nav/out/worldmap.jag
 ./tools/harness/nav/package.json
 ./tools/harness/nav/pathExpand.ts
 ./tools/harness/nav/PathFinder.ts

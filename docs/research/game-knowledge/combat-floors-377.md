@@ -4,6 +4,7 @@ Sources: content `_unpack/377` `vislevel` / npc configs; smoke comments; period 
 
 | NPC / encounter | vislevel / notes | Smoke floor (setstat) | Recommended gear tier |
 |-----------------|------------------|----------------------|------------------------|
+| **White Wolf peak** (`whitewolf` / `_sentry` / `wolfpack_leader_whiter`) | vis **38** HP **44** · sentry vis **25** HP **34** · Big Wolf vis **73** HP **74** ATK **60** — unpack **already has** combat | Talk-only ATK/STR/DEF **60** HP **80** | **steel** scim+plate+legs + lobster×8. Fresh mainland **dies**. Do **not** inject wolf stats. |
 | **Ragnar / Misc subjects** (`misc_man_1` …) | vislevel **1**; unpack HP default **1**; 289 no `hitpoints=` | ATK/STR **40** | **bronze scim** (1-shot). −6 approval on death `p_opnpc`, not first swing |
 | Loar shade/shadow (Mort’ton) | vislevel **40**; HP **38** ATK **45** STR **30** DEF **26** (crush); multi-aggro | ATK/STR **70** DEF **60** HP **80** | **adamant** full + kite + food×20 (steel@60 + thin food stalls residual hunt) |
 | Jogre (TBWT journal) | ~48 | ATK/STR 50 | steel+ |

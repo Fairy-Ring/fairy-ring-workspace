@@ -113,7 +113,17 @@ If still unknown after rungs **1–5**: last-resort **2007-base** (OSRS section)
 
 **No-invent** means: make the **best guess the ladder allows** (leftover `.if` / pack / official `Update:` / period media / in-era 274/289 / last-resort 2007-base) and **ship**. It does **not** mean “find a period sentence or die.”
 
-**Invent** (operator 2026-08-14) is a number, dest, line, or mechanic **pulled out of nowhere** — no leftover, no pack op, no period process, no last-resort table. If we **know why the hole is there** (377 unpack omitted server HP; `multivar` wants a writer; QG says read the scroll again), filling it from the highest rung that answers is a **CANDIDATE** guess, not invent. Update the guess when a better source appears. Do **not** stall 377-content complete to wait for a Jagex `.rs2`.
+**Invent** (operator 2026-08-14, restated same day): a dest, stat, line, rate, or mechanic that **did not come from a RuneScape source** — leftover `.if` / pack / period media / 274–289 era-check / **last-resort 2007-base** (Tip.it Aug 2007, OSRS transcript minus Changes). We lean on that 07 fallback **heavily**. The canonical invent is a **made-up percentage with no cite**. 2007-base *is* a cite. Filling a known hole (377 unpack omitted server HP; `multivar` wants a writer) from the highest rung that answers is a **CANDIDATE**, not invent. Update the guess when a better source appears. Do **not** stall 377-content complete to wait for a Jagex `.rs2`.
+
+| Tag | Rank | Meaning |
+|-----|------|---------|
+| **VERIFIED** | Highest we measured | 377 cache / pack / unpack / live `.rs2` this pass |
+| **CANDIDATE** | Ship | Ladder answered (incl. **2007-base minus Changes**). Label. Update if a higher rung appears |
+| **UNKNOWN** | Do not fill | No RuneScape cite at any rung yet |
+| **SUBTRACT** | Do not ship | Later OSRS / RS3 / Overview / remapped ids |
+| **Invent** | Forbidden | Made-up dest / HP / % / line with **no** RS cite |
+
+Higher rung beats lower. Do not skip to 07 when leftover/pack already answers. Do not treat 07 as invent.
 
 | Do | Don’t |
 |----|--------|

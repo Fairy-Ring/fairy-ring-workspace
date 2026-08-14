@@ -26,7 +26,8 @@ Cold resume: agents should **read this folder** before inventing `giveItems` / `
 
 | Doc | Contents |
 |-----|----------|
-| [`harness-prep-and-gear.md`](harness-prep-and-gear.md) | **Host prep policy** — setstat + give + equip; match gear to combat floor |
+| [`harness-prep-and-gear.md`](harness-prep-and-gear.md) | **Host prep policy** — setstat + give + equip; match gear to combat floor. Kinds: [`../quest-stat-req-kinds-377.md`](../quest-stat-req-kinds-377.md) |
+| [`../quest-stat-req-kinds-377.md`](../quest-stat-req-kinds-377.md) | Start-hard vs mid vs journal overlay vs combat-floor; `stat(` boostable vs `stat_base` not |
 | [`harness-tele-stand.md`](harness-tele-stand.md) | **Tele / stand** — next to loc, not on it; Flamtaer courtyard vs altar |
 | [`combat-floors-377.md`](combat-floors-377.md) | Known NPC levels / smoke combat floors — **MM remains** vis/ATK–HP from 289 `quest_mm.npc` + 377 unpack (not OSRS CLs) |
 | [`anchors-rellekka.md`](anchors-rellekka.md) | Fremennik / Rellekka tiles used by Viking smokes (workman **2655,3592** — not town z-band) |
@@ -45,6 +46,9 @@ Cold resume: agents should **read this folder** before inventing `giveItems` / `
 | [`anchors-digsite.md`](anchors-digsite.md) | Exam Centre expert **3355,3333** stand **3355,3334**; Bedabin Archaeologist **3178,3042** |
 | [`anchors-zanaris.md`](anchors-zanaris.md) | FT1 Nuff **2391,4468** stand **2390,4468**; never stage **10** |
 | [`anchors-ratcatchers.md`](anchors-ratcatchers.md) | Phingspet **3245,9868** / Grimesquit **3243,9866**. Official news = day only; leftover `inter_322` not start |
+| [`anchors-seers-village.md`](anchors-seers-village.md) | OSF: Phantuwti **2705,3474** · vane L3 **2702,3476** stand **2702,3475** · anvil **2712,3495** |
+| [`anchors-catherby.md`](anchors-catherby.md) | OSF Arhein **2803,3430** stand **2804,3430** |
+| [`anchors-white-wolf.md`](anchors-white-wolf.md) | OSF Bleemadge **2847,3499** stand **2847,3498**; wolves unpack-combat |
 | [`../map-npc-spawns-jm2-377.md`](../map-npc-spawns-jm2-377.md) | How map NPC spawns work in `.jm2` (when present on this surface) |
 | [`../corpus/README.md`](../corpus/README.md) | Measured pack/folder inventories (when present) |
 

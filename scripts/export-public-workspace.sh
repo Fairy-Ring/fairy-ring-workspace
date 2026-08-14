@@ -144,12 +144,16 @@ verify_stage() {
     fi
   done < "${REQUIRED_LIST}"
 
-  for bad in docs/plans docs/gap docs/context docs/superpowers docs/research/CORPUS_DIGEST.md docs/research/INDEX.md; do
+  for bad in docs/plans docs/gap docs/context docs/superpowers docs/research/CORPUS_DIGEST.md docs/research/INDEX.md tools/harness/.generated tools/harness/nav/out; do
     if [[ -e "${stage}/${bad}" ]]; then
       echo "REFUSE: private path leaked into stage: ${bad}" >&2
       missing=1
     fi
   done
+  if find "${stage}" -type f \( -name 'client.js' -o -name 'harness-client.js' \) -print -quit | grep -q .; then
+    echo "REFUSE: deployed client JS dirt in stage (client.js / harness-client.js)" >&2
+    missing=1
+  fi
   # Research root is an allowlist. Leftover hunts / SHIP e2e findings stay in the vault.
   if [[ -d "${stage}/docs/research" ]]; then
     local extra
@@ -299,6 +303,15 @@ vendor/client-ts/
 vendor/Server/
 vendor/client-java*/
 
+# --- generated / deploy dirt (never ship client.js) ---
+tools/harness/.generated/
+tools/harness/nav/out/
+tools/harness/nav/data/.bak-pre-377-derive/
+**/*.js.map
+vendor/engine/public/client/*.js
+vendor/engine/public/harness/harness-client.js
+vendor/engine/public/harness/harness-client.js.map
+
 # --- OS / editor / junk ---
 .DS_Store
 **/.DS_Store
@@ -408,6 +421,10 @@ if [[ -d "${ROOT}/tools" ]]; then
     --exclude '**/harness-shots/**' \
     --exclude '**/*.png' \
     --exclude '**/*.log' \
+    --exclude '**/*.js.map' \
+    --exclude 'harness/.generated/' \
+    --exclude 'harness/nav/out/' \
+    --exclude 'harness/nav/data/.bak-pre-377-derive/' \
     --exclude 'harness/quest-*.mjs' \
     --exclude 'harness/*-smoke.mjs' \
     --exclude 'harness/*-diag.mjs' \

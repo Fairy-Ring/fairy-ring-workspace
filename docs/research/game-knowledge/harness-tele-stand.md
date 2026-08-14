@@ -21,6 +21,11 @@ Script / content coords (`^mortton_temple_altar_coord`, spawn rows, etc.) are fo
 
 | Feature | Loc / NPC | Stand (proved) |
 |---------|-----------|----------------|
+| OSF Bleemadge | NPC **3810** **2847,3499** L0 | **2847,3498** (S) `osfbustbj2ic` — setstat first; wolves hunt |
+| OSF Arhein | NPC **563** **2803,3430** L0 | **2804,3430** (E) `osfarssopaux` / `osfarstb3wlg` |
+| OSF Phantuwti | NPC **1798** **2705,3474** L0 | **2704,3473** (SW) `osfphssotk1s` |
+| OSF Seers vane | loc **5811** **2702,3476** L3 | **2702,3475** L3 (S) `osfvnst9ib6t` / `osfvpst9vqy3` |
+| OSF Seers anvil | loc **2783** **2712,3495** L0 | next to (not on) `osfvpst9vqy3` |
 | Gertrude pick-a-kitten | Gertrude **3151,3410** | **3151,3409** (south, in-house) `kitnsrv3ukx` |
 | TBW Gabooty | Gabooty **2794,3065** | **2793,3065** (west) |
 | TBW Rionasta | Rionasta **2782,3094** | **2781,3094** (west) `tbwprsrz68m2` |

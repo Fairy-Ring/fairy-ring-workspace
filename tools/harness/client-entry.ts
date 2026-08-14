@@ -150,6 +150,14 @@ export function startHarnessClient(nodeid = 37, lowmem = false, members = true):
         }
     }
 
+    // PR 604 apiv2 (Decision 015). Global for smokes: read → send → evidence.
+    void import('./apiv2/index.ts')
+        .then(api => {
+            (globalThis as unknown as { __lc377Api: typeof api }).__lc377Api = api;
+            console.info('[harness] __lc377Api ready (read / send / evidence)');
+        })
+        .catch(e => console.warn('[harness] apiv2 init:', e));
+
     // Nav pack + path paint. Global for walkToward; fork onAfterWorldRender → tile quads.
     void import('./nav/browser/index.ts')
         .then(async nav => {

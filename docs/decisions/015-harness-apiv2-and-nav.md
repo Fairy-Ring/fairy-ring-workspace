@@ -20,6 +20,10 @@ We do **not** import their 274 content graph, wasm pathfinder bundle, or BotHost
 
 **Adopt now (2026-08-14):** `Traversal.walkTo` defaults to `travelTo` (PR 604 hop-splitter + 377 pack + `WalkExecutor.crossTransport` for doors/stairs). WalkExecutor remains the fallback when travel ends non-arrived, and `opts.engine: 'classic'` forces it. Nested special-crossing walks still call `WalkExecutor.walkTo` so we do not recurse.
 
+**Adopt next (same day):** combat + ground take on the same send/evidence surface — `interactNpcId` / `takeGround` / `groundAppeared` / `npcCountDropped`. In-page `__lc377Api`. Still not a wholesale vendor of `do-not-touch/apiv2`.
+
+**Doors:** Talk/Attack does not walk. Call `approachNpcId` (travelTo) first so pack doors (e.g. Sedridor **1530** @ **3108,9570**) Open. Tele to the approach tile is not a cross.
+
 ## Public export
 
 Decision **011** no longer ships every `quest-*-smoke.mjs`. Public tree gets:

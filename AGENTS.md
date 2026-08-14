@@ -25,7 +25,7 @@ cd "$RS2_R377_ROOT"
 | `vendor/client-ts`, `vendor/content`, `vendor/engine` | `tools/harness/**` (later bot in its own tree) |
 | Defendable to LC-style accuracy readers | Fast thrash; **label** soft proofs |
 
-1. **Do not invent** (pull a dest/stat/line out of nowhere). A labeled **CANDIDATE** from leftover / pack / period / last-resort 2007-base is a **best guess**, not invent. Ship it; update when a better source appears.  
+1. **Do not invent** (a dest/stat/line/% with **no RuneScape cite**). Last-resort 2007-base **is** a cite. A labeled **CANDIDATE** from leftover / pack / period / 2007-base is a **best guess**, not invent. Ship it; update when a better source appears.  
 2. **Research ladder** (top → bottom): period cache/pack → Client-Java 377 → period media → other LC branches (prefer era-check / 274) → **OSRS last resort** (not RS3). Last resort **finishes** the in-scope unit — it does not stall. **274/289 is the usual start** for era-correct systems; **LC is not infallible** — if this tree’s research (cache, Update:, headed proof) differs, prefer that. Full: `docs/research/authenticity-stance.md`.  
 3. **PASS** for a quest/skill stage means **live `.rs2` wrote that stage** — not host `setvar` of the claimed stage.  
 4. Residual bar: one soft entry setvar → e2e with setstat/generic only; honest **FAIL** on the residual span, no false green.  

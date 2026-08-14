@@ -21,16 +21,50 @@ export type SendResult =
     | { sent: true; tick: number; command: WireCommand }
     | { sent: false; tick: number; reason: SendReason };
 
+export type InvItem = { id: number; name: string | null; count: number; slot: number };
+
+export type LocSnap = {
+    id: number;
+    name: string | null;
+    x: number;
+    z: number;
+    level: number;
+    ops: (string | null)[];
+};
+
+export type NpcSnap = {
+    id: number;
+    name: string | null;
+    x: number;
+    z: number;
+    level: number;
+    index: number;
+    inCombat: boolean;
+};
+
+export type GroundSnap = {
+    id: number;
+    name: string | null;
+    count: number;
+    x: number;
+    z: number;
+    level: number;
+    lx: number;
+    lz: number;
+    ops: (string | null)[];
+};
+
 export type ReadSnap = {
     tick: number;
     attached: boolean;
     ingame: boolean;
     sceneState: number;
     tile: WorldTile | null;
-    inv: { id: number; name: string | null; count: number; slot: number }[];
+    inv: InvItem[];
     chat: string[];
-    locs: { id: number; name: string | null; x: number; z: number; level: number; ops: (string | null)[] }[];
-    npcs: { id: number; name: string | null; x: number; z: number; level: number }[];
+    locs: LocSnap[];
+    npcs: NpcSnap[];
+    ground: GroundSnap[];
 };
 
 export type Evidence = (now: ReadSnap, before: ReadSnap) => boolean;
