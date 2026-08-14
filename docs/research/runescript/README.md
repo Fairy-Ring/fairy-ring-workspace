@@ -43,6 +43,7 @@ See also: [authenticity-stance.md](../authenticity-stance.md) (research ladder +
 
 | Doc | Role |
 |-----|------|
+| [`lostcity-runescriptlanguage-377.md`](lostcity-runescriptlanguage-377.md) | LC **VS Code extension** pin — not `@lostcityrs/runescript` compiler, not Ash |
 | `vendor/content/scripts/engine.rs2` | Opcode catalog (`[command,…]`) |
 | `vendor/content/scripts/engine.constant` | Core `^constants` |
 | `vendor/engine/src/engine/script/ServerTriggerType.ts` | Trigger enum |

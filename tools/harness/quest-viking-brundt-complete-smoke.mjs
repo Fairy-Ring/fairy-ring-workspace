@@ -34,7 +34,7 @@ const shotsEnabled = process.env.SHOTS !== '0' && process.env.SHOTS !== 'false';
 
 const BRUNDT = { x: 2659, z: 3669, level: 0 };
 const STAND = { x: 2658, z: 3669, level: 0 };
-/** Generic quest-complete scroll (`if_openmain(inter_238)` in send_quest_complete). */
+/** Generic quest-complete scroll (`if_openmain(questscroll_death)` — cache 12140, not 289 id 8680). */
 const QUEST_SCROLL = 12140;
 
 async function talkNpc(page, npcName, prefer = [], iters = 72) {
@@ -81,7 +81,7 @@ async function talkNpc(page, npcName, prefer = [], iters = 72) {
         } else {
           a.continueDialog?.();
           a.dismissModalMessage?.();
-          // Do not closeModal — that dismisses inter_238 quest-complete scroll.
+          // Do not closeModal — that dismisses questscroll_death.
         }
         await new Promise(res => setTimeout(res, 320));
         if ((r.modals?.()?.chat ?? -1) === -1 && i > 10) break;
@@ -165,7 +165,7 @@ async function main() {
     }
     if (scrollMain === QUEST_SCROLL && shot) await shot('quest-scroll');
     if (scrollMain !== QUEST_SCROLL) {
-      console.warn(`[vik-brundt] no inter_238 scroll (main=${scrollMain}) — first run closed it with closeModal`);
+      console.warn(`[vik-brundt] no questscroll_death (main=${scrollMain}) — first run closed it with closeModal`);
     }
 
     let stage = Number(await getServerVarQuiet(page, 'viking')) || from;
@@ -185,13 +185,13 @@ async function main() {
     if (stage < 10) fail(`BRUNDT FAIL viking=${from}→${stage} chat=${JSON.stringify(chat.slice(-12))}`);
     if (scrollMain !== QUEST_SCROLL) {
       fail(
-        `SCROLL FAIL viking=${stage} but main=${scrollMain} want inter_238=${QUEST_SCROLL} ` +
+        `SCROLL FAIL viking=${stage} but main=${scrollMain} want questscroll_death=${QUEST_SCROLL} ` +
           `(do not closeModal during complete)`
       );
     }
     console.log(
       `RESULT PASS vik-brundt viking=${from}→${stage} scroll=${QUEST_SCROLL} ` +
-        `(SOFT 8=7 votes; product Talk Brundt + inter_238)`
+        `(SOFT 8=7 votes; product Talk Brundt + questscroll_death 12140)`
     );
   } catch (e) {
     console.error(e);

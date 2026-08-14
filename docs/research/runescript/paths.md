@@ -11,7 +11,8 @@
 | Trigger enum | `vendor/engine/src/engine/script/ServerTriggerType.ts` |
 | Trigger lookup | `vendor/engine/src/engine/script/ScriptProvider.ts` |
 | Player protect / timers | `vendor/engine/src/engine/entity/Player.ts` |
-| Compiler package | `@lostcityrs/runescript` (no public language book) |
+| Compiler package | `@lostcityrs/runescript` **0.9.6** (packer — not the VS Code extension) |
+| LC editor extension | [LostCityRS/RuneScriptLanguage](https://github.com/LostCityRS/RuneScriptLanguage) — pin [`lostcity-runescriptlanguage-377.md`](lostcity-runescriptlanguage-377.md) |
 | Content inventory | `docs/gap/002-content-inventory.md` |
 | Quest checklist | `docs/runbooks/quest-impl.md` |
 | Pack / reload | `docs/runbooks/harness.md`, §9 above |

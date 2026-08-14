@@ -107,6 +107,20 @@ Full note: [`docs/research/runescript/README.md`](runescript/README.md) § Autho
 
 If still unknown after rungs **1–5**: last-resort **2007-base** (OSRS section) and complete the in-scope unit. Leave a stub only when the thing is **out of scope** or **modern OSRS**. Last resort does **not** mean “block finishing.” Do not invent a third script.
 
+### Best-guess reconstruction (operator 2026-08-13)
+
+**North star is 377-content complete.** Forward-port leftover is finite; leftover IF / greenfield after that is muddier. That is expected.
+
+**No-invent** means: make the **best guess the ladder allows** (leftover `.if` / pack / official `Update:` / period media / in-era 274/289 / last-resort 2007-base) and **ship**. It does **not** mean “find a period sentence or die.”
+
+| Do | Don’t |
+|----|--------|
+| Reconstruct leftover chrome (page hide, `lj*` from a period screenshot, letter-wheel from leftover comps) and label **CANDIDATE** in [`deviations.md`](deviations.md) | Stall a leftover Read / leftover HUD because the official news is silent |
+| Prefer leftover structure + highest ladder rung that *partially* answers | Copy modern OSRS as if it were 377 without a last-resort label |
+| Update the guess later when a better source appears | Treat the first reconstruction as carved in stone |
+
+Chat, XP, and start-talk still follow the ladder. A **CANDIDATE** rate or leftover page order is allowed so the leftover surface *runs*. Soft vs residual still uses [`softpass.md`](softpass.md).
+
 ---
 
 ## Other Lost City branches (deduplicate effort)
@@ -173,11 +187,23 @@ Same class: Managing labour 289-full 100/50 is shipped **REVISIT**; period rate 
 
 **Steer research instead:**
 
-1. Ask: **when did this system ship?** (e.g. Slayer / Farming release dates).  
+1. Ask: **when did this system ship?** Calendar: [`rev-content-dates-377.md`](rev-content-dates-377.md). Do not hunt 289 for a name whose `Update:` is after **17 Jan 2005** (Bank PIN is **19 Sep 2005**).  
 2. Prefer **377 cache + period media** for “what the player saw in May 2006.”  
-3. Use **274/289 only as structure** (how LC wired IF_BUTTON / dbrow shape), then **era-diff** row content.  
+3. Use **274/289 only as structure** (how LC wired IF_BUTTON / dbrow shape), then **era-diff** row content — and only if the feature existed by that source.  
 4. For post-2004 skills on 377: research **that skill’s era**, not “whatever 274 skill_guide.inv listed.”  
 5. Gate incomplete systems with engine flags (`PlayerStatEnabled` / `stat_enabled`) rather than shipping anachronistic guide bodies.
+
+### Internal names: date first, then lower rungs
+
+Jagex debugnames are **not** in the 377 cache and will not show up on later wikis as “the internal name.” Reconstruct from **lower rungs** (Decision **013**):
+
+| Order | Source | When |
+|------:|--------|------|
+| 1 | **377 leftover `.if` title / loc ledger slug** / existing 377 family (`bankpin_settings` → keypad `bankpin`) | Always first. This *is* the name when 274/289 predates the feature. |
+| 2 | **274 / 289 pack + scripts** | Only if the feature’s `Update:` is **≤** that source **and** the *row* matches (not the integer). |
+| 3 | Last-resort 2007-base compiler name | After 1–2 miss; still date-gated. No POH / post-377 names on this pack. |
+
+**Worked miss:** hunting 289 for Bank PIN. Official news **19 Sep 2005**; 289 is **17 Jan 2005**. 289/274 `interface.pack` has no `bankpin` root. Keypad name is leftover title + 377 `bankpin_*`.
 
 Skill-guide lesson (2026-08-04): open/wire from 274 was fine; **guide row content** and **S/F inv families in pack** are not automatic era truth — see `docs/research/skill-guide-client-server.md`.
 

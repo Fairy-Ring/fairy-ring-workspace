@@ -51,7 +51,26 @@ bash scripts/fetch-openrs2-cache.sh 410      # 410 / OpenRS2 1254 → cache/open
 
 **Do not** point the 377 engine pack at this dump.
 
-### Checksums (as published / measured in research)
+### Research-only later dumps (not product, not the 410 target)
+
+| Build | OpenRS2 id | Timestamp | Local | Research |
+|------:|-----------:|-----------|-------|----------|
+| **412** | **1221** | 2006-05-31 | `cache/openrs2-412/` | [`docs/research/cache-412.md`](../docs/research/cache-412.md) |
+| **413** | **1386** | 2006-06-06 | `cache/openrs2-413/` | [`docs/research/cache-413.md`](../docs/research/cache-413.md) |
+| **414** | **231** | 2006-06-13 | `cache/openrs2-414/` | [`docs/research/cache-414.md`](../docs/research/cache-414.md) |
+| **418** | **1658** | 2006-07-04 | `cache/openrs2-418/` | [`docs/research/cache-418.md`](../docs/research/cache-418.md) |
+| **419** | **1656** | 2006-07-09 | `cache/openrs2-419/` | [`docs/research/cache-419.md`](../docs/research/cache-419.md) |
+| **422** | **1193** | 2006-08-05 | `cache/openrs2-422/` | [`docs/research/cache-422.md`](../docs/research/cache-422.md) |
+
+```bash
+bash scripts/fetch-openrs2-cache.sh 418
+bash scripts/fetch-openrs2-cache.sh 419
+bash scripts/fetch-openrs2-cache.sh 422
+```
+
+All three are complete live-en **12/12**. Product stays **377**. Next *target* stays **410**.
+
+### Checksums (OpenRS2 **657** / product **377** only)
 
 ```
 5467efe75598a77f6f8d1960178cc21ad32c17613143f8aeabfcdfd23a172ed4  disk.zip

@@ -101,6 +101,13 @@ require_vault_sources() {
       fi
       continue
     fi
+    if [[ "${rel}" == docs/progress/* ]]; then
+      if [[ ! -e "${ROOT}/docs/export/progress/${rel#docs/progress/}" ]]; then
+        echo "MISSING vault source: docs/export/progress/${rel#docs/progress/} (feeds ${rel})" >&2
+        missing=1
+      fi
+      continue
+    fi
     if [[ "${rel}" == "docs/research/corpus/README.md" ]]; then
       if [[ ! -f "${ROOT}/docs/export/corpus-README.md" ]]; then
         echo "MISSING vault source: docs/export/corpus-README.md (feeds corpus/README.md)" >&2
@@ -362,6 +369,11 @@ done
 mkdir -p "${STAGE}/docs"
 cp -a "${ROOT}/docs/export/README.md" "${STAGE}/docs/README.md"
 echo "  + docs/README.md (from docs/export/README.md — edit that file in vault)"
+
+mkdir -p "${STAGE}/docs/progress"
+cp -a "${ROOT}/docs/export/progress/index.html" "${STAGE}/docs/progress/index.html"
+cp -a "${ROOT}/docs/export/progress/README.md" "${STAGE}/docs/progress/README.md"
+echo "  + docs/progress/ (from docs/export/progress/ — public countdown)"
 
 if [[ -d "${ROOT}/docs/runbooks" ]]; then
   mkdir -p "${STAGE}/docs/runbooks"

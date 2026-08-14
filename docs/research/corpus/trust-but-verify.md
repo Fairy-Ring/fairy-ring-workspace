@@ -29,7 +29,7 @@ Examples of good recipes:
 
 ## Scheduler / continue
 
-Campaign reminder prompt should: open this file, process verify-queue, spawn ≤3 new research agents, re-measure pending claims.
+Campaign reminder prompt should: open this file, process verify-queue, spawn as many named research agents as needed (unique exclusive write paths; do not step on each other; do not kill others), re-measure pending claims.
 
 ## What never gets VERIFIED without smoke
 

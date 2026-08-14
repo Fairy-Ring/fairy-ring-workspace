@@ -5,6 +5,12 @@
 # Usage:
 #   bash scripts/fetch-openrs2-cache.sh           # 377 / OpenRS2 657
 #   bash scripts/fetch-openrs2-cache.sh 410       # 410 / OpenRS2 1254
+#   bash scripts/fetch-openrs2-cache.sh 412       # 412 / OpenRS2 1221
+#   bash scripts/fetch-openrs2-cache.sh 413       # 413 / OpenRS2 1386
+#   bash scripts/fetch-openrs2-cache.sh 414       # 414 / OpenRS2 231
+#   bash scripts/fetch-openrs2-cache.sh 418       # 418 / OpenRS2 1658
+#   bash scripts/fetch-openrs2-cache.sh 419       # 419 / OpenRS2 1656
+#   bash scripts/fetch-openrs2-cache.sh 422       # 422 / OpenRS2 1193
 #   bash scripts/fetch-openrs2-cache.sh --disk-only
 #   DEST=/path/to/dir OPENRS2_ID=1254 bash scripts/fetch-openrs2-cache.sh 410
 set -euo pipefail
@@ -30,8 +36,14 @@ done
 case "$BUILD" in
   377) DEFAULT_ID=657 ;;
   410) DEFAULT_ID=1254 ;;
+  412) DEFAULT_ID=1221 ;;
+  413) DEFAULT_ID=1386 ;;
+  414) DEFAULT_ID=231 ;;
+  418) DEFAULT_ID=1658 ;;
+  419) DEFAULT_ID=1656 ;;
+  422) DEFAULT_ID=1193 ;;
   *)
-    echo "unknown build $BUILD (known: 377, 410). Set OPENRS2_ID=… explicitly." >&2
+    echo "unknown build $BUILD (known: 377, 410, 412, 413, 414, 418, 419, 422). Set OPENRS2_ID=… explicitly." >&2
     if [[ -z "${OPENRS2_ID:-}" ]]; then
       exit 2
     fi

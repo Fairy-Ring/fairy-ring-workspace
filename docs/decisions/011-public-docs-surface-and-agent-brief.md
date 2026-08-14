@@ -48,6 +48,7 @@ Session thrash can stay private process. The **public surface** still carries th
 | **`docs/research/corpus/`** (inventories + rubric/trust) | Measured pack/folder facts; **not** verify-queue ops |
 | `docs/research/PROVENANCE-UPSTREAM-PINS.md` | Upstream SHAs |
 | Thin `docs/runbooks/*` | Bootstrap / isolation / harness |
+| **`docs/export/progress/`** | Public 377 countdown. Server door = content-complete (maintainers e2e every quest). Org Pages `Fairy-Ring.github.io`. Vault truth is `docs/gap/003-content-complete-countdown.md` (not shipped). |
 | `tools/harness/**` | Toys (no shot dumps) |
 | `scripts/` | Isolation helpers |
 | Vendor index README | Clone layout only |

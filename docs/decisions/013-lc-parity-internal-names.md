@@ -33,6 +33,8 @@
    - **Collisions still lose** (point 4).
    - **NXT 216 is not a pack ledger.** That dump has engine/prot/Type tokens, not `[templewall_base]`. In-tree rip sources today: LC 274/289 pack names (already preferred) + any hashed/OSRS **pack** name table we pull. Cache `name=` slugs we already wrote stay reconstruction until replaced by a real compiler name.
 
+8. **Date the feature before a 274/289/OSRS name hunt.** Calendar: [`rev-content-dates-377.md`](../research/rev-content-dates-377.md). Jagex internals are unpublished; leftover `.if` **title** / loc slug is the lower-rung name we actually have. Do not open 289 pack for Bank PIN (19 Sep 2005), Blast Furnace (8 Mar 2005), Farming (11 Jul 2005), or anything else whose `Update:` is after **17 Jan 2005**.
+
 ## Why
 
 Unpack headers come from `*.pack.getById`, not from OpenRS2 657. Varp configs have no name field. Flo *does* store a cache string and LC still headers from `flo.pack`. Holding ourselves to “only Ash-leaked names” would be **stricter than LC**, which this project explicitly is not.
@@ -43,4 +45,4 @@ New content: quests, NPCs, locs, objs, interface IDs, chat, loot, mechanics, QoL
 
 ## Related
 
-[`authenticity-stance.md`](../research/authenticity-stance.md) (OSRS 2007-base = last resort, does not block finishing) · [`varp-unnamed-377.md`](../research/varp-unnamed-377.md) · [`nxt-osrs-216-debug-symbols.md`](../research/nxt-osrs-216-debug-symbols.md) · [`nxt-216-vs-fr-naming-audit.md`](../research/nxt-216-vs-fr-naming-audit.md) · Decision 009
+[`authenticity-stance.md`](../research/authenticity-stance.md) (OSRS 2007-base = last resort, does not block finishing) · [`rev-content-dates-377.md`](../research/rev-content-dates-377.md) · [`varp-unnamed-377.md`](../research/varp-unnamed-377.md) · [`nxt-osrs-216-debug-symbols.md`](../research/nxt-osrs-216-debug-symbols.md) · [`nxt-216-vs-fr-naming-audit.md`](../research/nxt-216-vs-fr-naming-audit.md) · Decision 009

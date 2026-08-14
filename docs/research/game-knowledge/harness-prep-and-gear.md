@@ -58,6 +58,14 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 | Viking Sigli (policy) | 60/60/50/50 HP≥50 | **adamant** scim + plate + legs + kite + lobster×20 | **yes** | Draugen vislevel **69**, melee def **100** — steel too slow (mid32 timeout) |
 | Viking Thorvald/Koschei | 70/70/60/70 unarmed | **empty** after Peer bank; food only | n/a | `can_enter_thorvald_trial` bans weapon/armour cats. **Only soft weapon path:** `dramen_branch` + fletching `knife` → fletch **in pen** to staff (staff itself blocked at entry — `weapon_staff`). See `combat-floors-377.md` §Koschei |
 | Viking Koschei form-detect | 70/70/60/70 unarmed | wipe + lobster×25 (no combat gear → skip Peer) | n/a | Dedicated `quest-viking-koschei-forms-smoke.mjs`. Eat 1–3; **stop food** on id **1293** / f3 chat (honour). Do not invent F1 watering. |
+| DT village Eblis | HP **90** (bandit camp) | none | n/a | Soft `deserttreasure` 4/5/7. Tele **3181,2984** (W of curtain). Never **3185,2982** (tent-floor CLIP). Never 10. No take. |
+| BAR Dondakan | HP **90** | none | n/a | Soft `fishingcompo 5` + `mcannon 11`. Tele **2824,10167**. Write **10** not **1**. Never 110. |
+| HM Zealot | HP **90** (Mort Myre) | none | n/a | Tele **3443,3258**. No key. Pickpocket not this smoke. |
+| RC sisters | HP **40** | none | n/a | Tele **3244,9868**. **0** write. No 2024 *'Ello*. |
+| CF east-dock Teach | HP **90** | none | n/a | Soft `fever_quest 1`. Tele **3712,3496 L1**. Let's go no dest. |
+| Garden Ellamaria | none | none | n/a | Tele **3227,3477**. No CoF/Farming gate this unit. |
+| Ahoy Velorina | HP **90** | **Ghostspeak amulet** (wear) | **yes** | Tele **3678,3509**. Woo then wear. No Necrovarus. |
+| FT1 Nuff busy | none | none | n/a | Soft `fairy_farmers_quest 6`. Tele **2390,4468**. Never 10. No symptoms IF. |
 | Farming F1 potato grow | farming **1** | rake + dibber + spade + potato_seed×12 | n/a | Falador stand **3049,3307**; getvar **`farming_allotment_varp_1_0_7`** (not leftover `varbit_708`). REAL grow: `FARMING_F1_REAL_GROW=1` + `WORLD_SPEED_MS=20`. Lep **3053,3305** may wander (do not pin). |
 | Viking Lalli stew | none | cabbage + potato + onion (generic) | n/a | Soft `viking` 6. Product rock from Askeladden; **do not** give fleece/wool. |
 | Viking fleece spin | none | give `viking_golden_fleece` (stew already product) | n/a | Lumbridge wheel **3209,3213** L1. Rellekka wheel refuses if `viking` < 10. |

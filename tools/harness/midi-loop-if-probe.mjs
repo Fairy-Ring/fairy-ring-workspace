@@ -1,5 +1,5 @@
 /**
- * Click music LOOP (music:com_251 = 9925) and expect the enable mes.
+ * Click music LOOP (music:loop = 9925) and expect the enable mes.
  *
  *   HARNESS_EPHEMERAL=1 HEADLESS=1 bun tools/harness/midi-loop-if-probe.mjs
  */
@@ -15,7 +15,7 @@ import {
   waitTicks
 } from './lib/harness.mjs';
 
-const LOOP_COM = 9925; // music:com_251
+const LOOP_COM = 9925; // music:loop
 const { base, rest } = parseArgs(process.argv.slice(2));
 const { username, password } = resolveAccount(rest, 'midiloop');
 

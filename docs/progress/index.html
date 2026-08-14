@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fairy Ring — 377 countdown</title>
+  <meta name="description" content="Fairy Ring rev 377 content countdown. Derived from Lost City open work — not official Lost City or Jagex.">
+  <style>
+    :root {
+      --bg: #10140f;
+      --panel: #1a2118;
+      --ink: #e8efe4;
+      --muted: #9aa894;
+      --line: #2c3628;
+      --ship: #6fbf73;
+      --spine: #d4b15a;
+      --red: #d07a6a;
+      --oos: #7a8476;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header, main, footer { max-width: 52rem; margin: 0 auto; padding: 1.25rem 1.25rem 0; }
+    header { padding-top: 2rem; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin: 0 0 0.35rem; letter-spacing: 0.01em; }
+    .sub { color: var(--muted); margin: 0 0 1.25rem; }
+    .bars { display: grid; gap: 0.75rem; margin: 1.25rem 0 1.75rem; }
+    .bar {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+    }
+    .bar h2 { font-size: 0.95rem; margin: 0 0 0.35rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .bar p { margin: 0; }
+    .status { font-weight: 600; }
+    .near { color: var(--spine); }
+    .not { color: var(--red); }
+    table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.5rem; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .n { text-align: right; font-variant-numeric: tabular-nums; width: 4rem; }
+    .tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; }
+    .tag.ship { color: var(--ship); }
+    .tag.spine { color: var(--spine); }
+    .tag.red { color: var(--red); }
+    h2 { font-size: 1.15rem; margin: 1.75rem 0 0.4rem; }
+    p.lead { color: var(--muted); }
+    footer { color: var(--muted); font-size: 0.85rem; padding: 2rem 1.25rem 3rem; }
+    a { color: #c5d4b8; }
+    ul { padding-left: 1.2rem; }
+    li { margin: 0.25rem 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fairy Ring</h1>
+    <p class="sub">Rev 377 (~2 May 2006) content countdown. Measured 14 Aug 2026. Derived from Lost City open work — not official Lost City or Jagex.</p>
+  </header>
+  <main>
+    <div class="bars">
+      <section class="bar">
+        <h2>Server door — 377 content-complete</h2>
+        <p><span class="status not">Not close.</span> We walk every in-era quest end to end before a public world. Soft leftover hops are process. A red questlist row with no start is not a public test.</p>
+      </section>
+    </div>
+
+    <h2>Scoreboard</h2>
+    <p class="lead">104 questlist rows. Folder census 89 (was 74 on 8 Aug). SHIP means a tree exists — we still e2e it.</p>
+    <table>
+      <thead><tr><th>Bucket</th><th class="n">n</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag ship">SHIP</span></td><td class="n">68</td><td>Inherited or Wave 1 tree. Maintainer e2e still required.</td></tr>
+        <tr><td><span class="tag spine">SPINE</span></td><td class="n">17</td><td>Start shipped. Complete still open.</td></tr>
+        <tr><td><span class="tag red">RED</span></td><td class="n">19</td><td>On the questlist. No honest start yet.</td></tr>
+      </tbody>
+    </table>
+    <p class="lead">Remaining toward the door: 68 SHIP e2e + 19 first starts + 17 spine finishes + 3 XL minigames + Farming/Slayer residuals + Swan Song last. Count <em>units</em>, not leftover hops.</p>
+
+    <h2>Spine (start exists)</h2>
+    <table>
+      <thead><tr><th>Quest</th><th>Shipped</th><th>Stops (do not invent)</th></tr></thead>
+      <tbody>
+        <tr><td>One Small Favour</td><td>kill 25→26, Slagilith HP 60</td><td>free Petra, dest, key-ring chrome, lamps</td></tr>
+        <tr><td>Desert Treasure</td><td>8→10</td><td>mirrors, Ancient Magicks, complete 15</td></tr>
+        <tr><td>Ghosts Ahoy</td><td>stage 3, tea / porcelain</td><td>milk Use, dest, ectophial</td></tr>
+        <tr><td>Between a Rock…</td><td>stay 10, gold cannonball</td><td>cannon dest, complete 110</td></tr>
+        <tr><td>Enakhra’s Lament</td><td>statue slim, stay 1</td><td>head, Camulet, complete 10</td></tr>
+        <tr><td>Making History</td><td>start + two field tracks</td><td>Erin, wrap, dest</td></tr>
+        <tr><td>Garden of Tranquillity</td><td>0→1 + list</td><td>farmer pay, plants</td></tr>
+        <tr><td>Mourning’s End Part I</td><td>0→1</td><td>letter, dest, crystal</td></tr>
+        <tr><td>Cabin Fever</td><td>0→1</td><td>sail dest</td></tr>
+        <tr><td>Rum Deal</td><td>0→1</td><td>still / dest</td></tr>
+        <tr><td>A Fairy Tale Part I</td><td>stay 6</td><td>Tanglefoot, complete 10</td></tr>
+        <tr><td>Recipe for Disaster</td><td>1→2</td><td>feast dest, guests</td></tr>
+        <tr><td>Recruitment Drive</td><td>Tiffy start</td><td>puzzles, complete (blocks Wanted!)</td></tr>
+        <tr><td>Mountain Daughter</td><td>stay 1</td><td>pool, dest</td></tr>
+        <tr><td>Haunted Mine</td><td>0→1</td><td>cart dest</td></tr>
+        <tr><td>Ratcatchers</td><td>sisters refuse</td><td>pits</td></tr>
+        <tr><td>Tears of Guthix</td><td>Juna loc</td><td>HUD closed</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Red (no honest start)</h2>
+    <ul>
+      <li>Roving Elves</li>
+      <li>Creature of Fenkenstrain</li>
+      <li>The Feud</li>
+      <li>Icthlarin’s Little Helper</li>
+      <li>Zogre Flesh Eaters</li>
+      <li>The Giant Dwarf</li>
+      <li>The Lost Tribe</li>
+      <li>Forgettable Tale of a Drunken Dwarf</li>
+      <li>A Tail of Two Cats</li>
+      <li>Wanted! (blocked on Recruitment Drive complete)</li>
+      <li>Shadow of the Storm</li>
+      <li>Spirits of the Elid</li>
+      <li>Devious Minds</li>
+      <li>The Hand in the Sand</li>
+      <li>In Aid of the Myreque</li>
+      <li>A Soul’s Bane</li>
+      <li>Rag and Bone Man</li>
+      <li>Mourning’s End Part II</li>
+      <li>Swan Song (Wave 6 last — 2 May 2006 headline)</li>
+    </ul>
+
+    <h2>Skills and minigames</h2>
+    <p>Pre-Slayer skills ship. Slayer assign + kill is in. Farming is Falador potato only — do not invent disease rates. Construction is out of era.</p>
+    <p>Castle Wars, Duel Arena, Trawler, Treasure Trails, and similar inherited minigames are present and unproven in multiplayer. Pest Control has no instance. Barrows has no script tree. Champions’ Challenge has no scripts.</p>
+
+    <h2>Out of era (not remaining 377 work)</h2>
+    <p>A Fairy Tale Part II, Royal Trouble, Trouble Brewing, Construction / player-owned houses. Those are after ~2 May 2006.</p>
+
+    <h2>After 377</h2>
+    <p>This board is rev 377 only. Next target is revision 410 (~26 May 2006) after 377 is frozen — first post-overhaul cache, including Royal Trouble. Construction / player-owned houses are 412 (31 May 2006). Do not grow this page into a multi-rev roadmap; start a new board when 377 closes.</p>
+  </main>
+  <footer>
+    <p>Source of truth lives in the Fairy Ring vault. This page is the thin public copy. Repos: <a href="https://github.com/Fairy-Ring">github.com/Fairy-Ring</a>.</p>
+    <p>RuneScape is Jagex’s. We describe a historical revision. We do not claim that brand.</p>
+  </footer>
+</body>
+</html>

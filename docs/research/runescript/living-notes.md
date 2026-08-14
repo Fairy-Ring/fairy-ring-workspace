@@ -8,6 +8,14 @@
 
 | Date | Lesson | Source |
 |------|--------|--------|
+| 2026-08-14 | OSF Slagilith is script-spawn: `npc_add` birth **1804** then `npc_changetype` Attack **1802**. `npc_find` gates in-fight Read/Use. No dest. | `osf_animate_rock.rs2` `osfslssuu806` |
+| 2026-08-14 | OSF scroll **Use-on-sculpture** is `[oplocu,favour_lady_in_wall]` + `last_useitem = favour_animate_rock`. Same `@label` as Read. First Use does not write or spawn. | `osf_animate_rock.rs2` `osfusssunm8n` |
+| 2026-08-14 | Inventory Read of OSF `favour_animate_rock` is `[opheld1]` (`iop1=Read`). In-room vs out-of-range is `inzone` around loc **5808**, not dest. First Read does not consume and does not spawn. | `osf_animate_rock.rs2` `osfrdssubeec` |
+| 2026-08-13 | Harness `chooseOption`: `want.includes(t)` makes **Don't read book** select **Read book**. Pick by `comId` / `^read\\b` vs `don't read`. | `quest-dt-arch-return-smoke.mjs` `dtretss5u394` |
+| 2026-08-13 | `%npc_int` is a per-instance scratch flag (macros already use it). FT1 GAG uses it as “this gardener already gave a theory” so five Talk-tos to Elstan cannot finish the chase. Lost on respawn — not a named quest bit. | `ft1_gag.rs2` |
+| 2026-08-13 | Integer `+` in an assignment needs **`calc(...)`** — bare `$a + $b` is a syntax error. | `rfd_another_cooks.rs2` pack |
+| 2026-08-13 | **Unable to jump to labels from within a proc** — packer error. Prefix hooks must `@label` (and `return` on every terminal label) or keep the whole tree inside the proc with no `@`. | `dt_terry.rs2` pack |
+| 2026-08-13 | LostCityRS/RuneScriptLanguage is the **VS Code extension**, not `@lostcityrs/runescript` 0.9.6 compiler; pin [`lostcity-runescriptlanguage-377.md`](lostcity-runescriptlanguage-377.md). `.cs2`/`.ls2`/`.ss2`/`.gs2` are LC later-era registrations, not 377 product. | operator ask |
 | 2026-08-07 | **@JagexAsh (Mod Ash) tweets about RuneScript are absolutely authoritative** unless later contradicted; land citations in this manual | Operator policy → [README.md](README.md) § Authority |
 | 2026-08-08 | Corpus campaign: residual mine → [residuals-inbox.md](residuals-inbox.md) (queue arity, softtimer vs settimer, F2P category strip, map loc ≠ script bind) | 3h research campaign |
 | 2026-08-08 | Opcode usage census: top call-like sites under content scripts → [opcode-usage-census.md](opcode-usage-census.md) (**VERIFIED_DRAFT**); `obj_add`/`chatnpc`/`p_delay`/`mes` lead; `queue` dominated by duel zone grid; re-measure via `_opcode_census_measure.py` | census unit |
@@ -55,7 +63,7 @@
 
 ### 12.1 Multi-npc / multi-loc (detail)
 
-Map/jm2 may spawn a **multi base** (`*_multinpc_*`) with `multivar` / `multinpc=` table. Concrete form holds name/ops and is what scripts bind.
+Map/jm2 may spawn a **multi base** (`*_multinpc_*`) with `multivar` / `multinpc=` table. Concrete form holds name/ops and is what scripts bind. Engine indexes `multinpc[state]` — holes pack as **65535**. BAR `dwarfrock_quest` table is **0/10/20…/110**; write **1** hid Dondakan (`bardnss8tydf`). First visible start write is **10**.
 
 | Layer | Must use |
 |-------|----------|

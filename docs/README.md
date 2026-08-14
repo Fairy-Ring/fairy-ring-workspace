@@ -13,6 +13,8 @@ This tree ships a **thin** documentation set only.
 | Root `AGENTS.md` (from `docs/export/AGENTS.md`) | Harness screenshot archives |
 | Thin runbooks | |
 
+**377 countdown (public):** [`progress/index.html`](progress/index.html) — server door = content-complete (maintainers e2e every quest). Also on org Pages. Vault truth is private `docs/gap/003-content-complete-countdown.md`.
+
 Need depth on a **named** unit? Open a GitHub issue — Decision **011**.
 
 ## Runbooks (this surface)

@@ -2,7 +2,8 @@
 
 **Purpose:** Know the **entire** `scripts/quests/` surface before implementing.
 
-**Measured:** 2026-08-08 · path `vendor/content/scripts/quests/` · `.rs2` recursive counts.
+**Measured:** 2026-08-08 · path `vendor/content/scripts/quests/` · `.rs2` recursive counts.  
+**Stale:** 2026-08-14 live folder count is **89** (not 74). Live board: [`../../gap/003-content-complete-countdown.md`](../../gap/003-content-complete-countdown.md). Do not re-census this file unless assigned.
 
 **Tags:** counts are **VERIFIED**; playability = separate research/smoke.
 
