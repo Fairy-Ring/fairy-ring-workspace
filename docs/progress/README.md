@@ -9,7 +9,8 @@ Ship:
 |------|------|
 | `index.html` | Human board (server door = 377 content-complete; maintainers e2e) |
 
-Publish: copy this folder to `Fairy-Ring/Fairy-Ring.github.io` (org root Pages → `https://fairy-ring.github.io/`).  
+Publish: `bash scripts/publish-public-board.sh --push` (copies this folder to `Fairy-Ring/Fairy-Ring.github.io` → `https://fairy-ring.github.io/`).  
+Nightcap: `bash scripts/closeout-public.sh` (thin workspace export **and** Pages board).  
 Do **not** put the full vault `docs/research/` on Pages (Decision **011**).
 
-Refresh the HTML **same turn** the vault scoreboard flips a RED or SPINE row.
+Refresh the HTML **same turn** the vault scoreboard flips a RED or SPINE row, or a SHIP e2e walk lands. No smoke account ids.
