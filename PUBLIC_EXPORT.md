@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-15T05:15Z
+Generated: 2026-08-15T21:19Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -46,6 +46,8 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/corpus/verification-rubric.md
 ./docs/research/deviations.md
 ./docs/research/game-knowledge/anchors-ape-atoll.md
+./docs/research/game-knowledge/anchors-barrows.md
+./docs/research/game-knowledge/anchors-burgh.md
 ./docs/research/game-knowledge/anchors-catherby.md
 ./docs/research/game-knowledge/anchors-crash-island.md
 ./docs/research/game-knowledge/anchors-digsite.md
@@ -53,10 +55,13 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-karamja-shipyard.md
 ./docs/research/game-knowledge/anchors-miscellania.md
 ./docs/research/game-knowledge/anchors-mort-myre.md
+./docs/research/game-knowledge/anchors-osf-guthix-heat.md
 ./docs/research/game-knowledge/anchors-outpost.md
+./docs/research/game-knowledge/anchors-pest-cross.md
 ./docs/research/game-knowledge/anchors-ratcatchers.md
 ./docs/research/game-knowledge/anchors-rellekka.md
 ./docs/research/game-knowledge/anchors-seers-village.md
+./docs/research/game-knowledge/anchors-soulbane.md
 ./docs/research/game-knowledge/anchors-tai-bwo.md
 ./docs/research/game-knowledge/anchors-varrock-garden.md
 ./docs/research/game-knowledge/anchors-wanted-ahoy.md
@@ -192,6 +197,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./tools/harness/nav/tools/dump-client-loc.ts
 ./tools/harness/nav/tools/enrich-transports.py
 ./tools/harness/nav/tools/lib.ts
+./tools/harness/nav/tools/probe-walkable.mjs
 ./tools/harness/nav/tools/stairsParse.ts
 ./tools/harness/nav/v2/activateStateAware.ts
 ./tools/harness/nav/v2/edgeId.ts

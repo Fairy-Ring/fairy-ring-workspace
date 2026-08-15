@@ -27,7 +27,7 @@ Talk-to → expect **no trigger**. Do **not** bolt a Ratcatchers branch onto Ger
 |-------|-----|-------------|
 | Party house (guests **no** Talk-to) | `m44_79` | Ceril **2833,5099** · trellis **2844,5105** |
 | Varrock pit barman | `m45_79` | **2909,5076** |
-| Felkrash (Sarim pit) | `m46_150` | **2977,9639** |
+| Felkrash (Sarim pit) | `m46_150` | **2977,9639** · stand **2976,9639**. Talk-to **15192** **PASS** `nycatsuur83q` (soft `main_ratcatch_var 1`) |
 | Ardougne pit gambler | `m41_150` | **2660,9622** |
 | Smokin' Joe / The Beast | `m45_159` | **2930,10213** / **2913,10189** |
 

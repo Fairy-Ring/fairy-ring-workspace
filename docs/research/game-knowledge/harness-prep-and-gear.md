@@ -49,6 +49,7 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 
 | Smoke | setstat combat | Gear given | Equip? | Notes |
 |-------|----------------|------------|:------:|-------|
+| OSF Use-on-door (Taverley dusty Gate) | ATK/STR/DEF **70** HP **99** | **adamant** scim + plate + legs + kite + shark×15 | **yes** | Poison spider vis **64**. Fresh mainland dies (`osfkdsucbgp4`). **PASS** `osfkdsucgkyh`. Soft `onesmallfavour 45` + store **16**. |
 | OSF Sanfew unwind (Taverley L1) | none | none | n/a | Talk-only. Soft `onesmallfavour 31`. **PASS** `osfsustbnb3i`. |
 | OSF Hammerspike return (mine) | none this hop | none | n/a | First Tip.it talk (changed mind). Soft `onesmallfavour 32`. **PASS** `osfhrstc1199`. Gang combat **later**. |
 | OSF Bleemadge unwind (White Wolf) | ATK/STR/DEF **60** HP **80** | **steel** scim + plate + legs + lobster×8 | **yes** | Wolves unpack-complete. Prior FAIL `osfbustbfs12` death. Talk-only. |

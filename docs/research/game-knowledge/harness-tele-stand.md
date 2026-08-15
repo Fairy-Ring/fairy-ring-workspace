@@ -21,6 +21,8 @@ Script / content coords (`^mortton_temple_altar_coord`, spawn rows, etc.) are fo
 
 | Feature | Loc / NPC | Stand (proved) |
 |---------|-----------|----------------|
+| OSF brasskeydoor (Edgeville dungeon) | loc **1804** **3115,3450** L0 | **3114,3450** (W) `osfkbsud5oki` — Use **4446** **opens**. **Do not** stand on **3115,3450**. **Do not** dest. |
+| OSF dusty Gate (Taverley dungeon) | loc **2623** **2924,9803** L0 | **2923,9803** (W) `osfkdsucgkyh` — Use **4446** **opens**. Poison spider vis **64**. **Do not** stand on **2924,9803**. **Do not** dest. |
 | OSF Yanni Salika (antiques) | NPC **515** **2835,2985** L0 | **2834,2985** (W) `osflpstulqk5` / `osfkrsttzi82` / `osfymsttjc8e` / `osfyass3lg0p` — Talk-to **opens**. **Do not** stand on **2835,2985**. **Do not** dest. |
 | OSF Jungle Forester (west belt) | NPC **401** **2824,2940** L0 | **2823,2940** (W) `osffmstsxosd` — Talk-to **opens**. Primary **2863,2941** N/W still FAIL. **Do not** dest. |
 | OSF Bleemadge | NPC **3810** **2847,3499** L0 | **2847,3498** (S) `osfbustbj2ic` — setstat first; wolves hunt |
@@ -33,6 +35,8 @@ Script / content coords (`^mortton_temple_altar_coord`, spawn rows, etc.) are fo
 | TBW Rionasta | Rionasta **2782,3094** | **2781,3094** (west) `tbwprsrz68m2` |
 | BF temp gauge | loc **1945,4961** | **1945,4960** (south) `bfggesrz6t0k` |
 | MTA Rewards Guardian | NPC **3362,3318** L1 size-2 | **3362,3316** L1 (south; **3317** is on the NPC) `mtashsrzqxvp` |
+| Larxus (Champions basement) | NPC **3050** **3187,9758** L0 | **3186,9758** (W) `chimpsuhe94u` — Use-scroll **opens**. **Do not** stand on **3187,9758**. |
+| Champion Statue trap | loc **10556/10557** **3184,9758** | next to **3186,9758** then Climb-down → pit **3168,9758** `chimpsuhe94u`. Live loc is **L0** (jm2 row is L1). |
 | MTA Telekinetic portal | loc **3363,3315** L0 | **3363,3314** (south) → dest **3336,9718** `mtatksrzxcna` |
 | Pest Void Knight Exchange | VK **2654,2663** | **2654,2662** (south) `pestxss08868` |
 | DT Archaeological expert | NPC **3355,3333** | **3355,3334** (north; west **3354,3333** is flush on south timberwall) `dtterss4uf2o` |

@@ -38,6 +38,11 @@ Cold resume: agents should **read this folder** before inventing `giveItems` / `
 | [`anchors-ape-atoll.md`](anchors-ape-atoll.md) | Greegree zone / smoke stand **2755,2795**; MM remains vis pointer + greegree hunt skip |
 | [`anchors-crash-island.md`](anchors-crash-island.md) | MM Crash Island fly land **2893,2725**; Lumdo/Waydar; ch2 cutscene m40_71 |
 | [`anchors-karamja-shipyard.md`](anchors-karamja-shipyard.md) | MM seal gate **2945,3041**, stand **2943,3040**, guard **2944,3040**, Caranock **2956,3025** |
+| [`anchors-barrows.md`](anchors-barrows.md) | Six mound Dig stands → crypt dests (Ahrim **3565,3289** → **3557,9703 L3**). Brother names **CANDIDATE** |
+| [`anchors-pest-cross.md`](anchors-pest-cross.md) | Lander Cross **14315** dest **2658,2639 L1** stand **2657,2639 L1**. Match dest **EXHAUSTED** |
+| [`anchors-burgh.md`](anchors-burgh.md) | Fyiona **3480,3241** stand **3479,3241**. Soft vis bit. **341** **PASS** `tt341suu6876` |
+| [`anchors-soulbane.md`](anchors-soulbane.md) | Rift **3310,3452** stand **3309,3452** → dest **3013,5243 L0**. **15100** **PASS** `sbragsuuf0on` |
+| [`anchors-osf-guthix-heat.md`](anchors-osf-guthix-heat.md) | Falador Range **2988,3365** stand **2989,3365**. Smoke also used Lumbridge **3230,3196** / **3231,3196** |
 | [`anchors-tai-bwo.md`](anchors-tai-bwo.md) | Gabooty **2794,3065** stand **2793,3065**; Rionasta **2782,3094**; Murcaily **2816,3083** |
 | [`anchors-outpost.md`](anchors-outpost.md) | Making History: Jorral **2437,3347** (next-to, not on rug); later Melina/Droalak/Dron/Blanin |
 | [`anchors-varrock-garden.md`](anchors-varrock-garden.md) | Garden: Ellamaria **3228,3477**; palace patches; four farmers (Elstan **3053,3308** …) |
