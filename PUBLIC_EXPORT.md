@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-14T19:55Z
+Generated: 2026-08-15T02:27Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -100,6 +100,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./scripts/apply-isolation-config.sh
 ./scripts/cleanup-test-accounts.sh
 ./scripts/client-java-289-377-delta.sh
+./scripts/compile-scripts-only.sh
 ./scripts/deploy-client-ts.sh
 ./scripts/export-public-workspace.sh
 ./scripts/fetch-openrs2-cache.sh

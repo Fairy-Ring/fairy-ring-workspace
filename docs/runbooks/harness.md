@@ -213,9 +213,10 @@ After changing RuneScript under `vendor/content/` (this tree only):
 
 | Step | How |
 |------|-----|
-| Pack | `cd vendor/engine && BUILD_VERIFY=false npm run build` (varp free-IDs need verify off until reconciled) |
+| **Script-only (default hop)** | `bash scripts/compile-scripts-only.sh` then in-game **`::reload`**. Does **not** wipe `main_file_cache`. |
+| Pack (configs / maps / models) | `cd vendor/engine && BUILD_VERIFY=false npm run build` — **PackAll**. `FileStream(..., true)` **wipes** cache. Use only when you need a full pack. |
 | Env | `BUILD_VERIFY=false` in `vendor/engine/.env` (also in `scripts/apply-isolation-config.sh`) so **startup** pack does not fail |
-| In-game **`::rebuild`** | Pack+reload via DevThread (staffmod ≥ 4) |
+| In-game **`::rebuild`** | DevThread **packAll** + reload. Same wipe as `npm run build`. **Do not** use for script-only hops. |
 | In-game **`::reload`** | Re-read `data/pack` only |
 
 Success (debug): world broadcast `Loaded N scripts.`
