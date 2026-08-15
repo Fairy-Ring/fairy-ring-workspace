@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-15T02:27Z
+Generated: 2026-08-15T05:09Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```

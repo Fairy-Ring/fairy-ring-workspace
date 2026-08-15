@@ -21,6 +21,8 @@ Script / content coords (`^mortton_temple_altar_coord`, spawn rows, etc.) are fo
 
 | Feature | Loc / NPC | Stand (proved) |
 |---------|-----------|----------------|
+| OSF Yanni Salika (antiques) | NPC **515** **2835,2985** L0 | **2834,2985** (W) `osflpstulqk5` / `osfkrsttzi82` / `osfymsttjc8e` / `osfyass3lg0p` — Talk-to **opens**. **Do not** stand on **2835,2985**. **Do not** dest. |
+| OSF Jungle Forester (west belt) | NPC **401** **2824,2940** L0 | **2823,2940** (W) `osffmstsxosd` — Talk-to **opens**. Primary **2863,2941** N/W still FAIL. **Do not** dest. |
 | OSF Bleemadge | NPC **3810** **2847,3499** L0 | **2847,3498** (S) `osfbustbj2ic` — setstat first; wolves hunt |
 | OSF Arhein | NPC **563** **2803,3430** L0 | **2804,3430** (E) `osfarssopaux` / `osfarstb3wlg` |
 | OSF Phantuwti | NPC **1798** **2705,3474** L0 | **2704,3473** (SW) `osfphssotk1s` |
