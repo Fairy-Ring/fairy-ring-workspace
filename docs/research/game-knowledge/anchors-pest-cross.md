@@ -18,7 +18,7 @@ Formula: `world = mx×64 + local`. Outpost `m41_41` origin **2624, 2624**. Game 
 |------|------|------|
 | **Loc** `pest_lander_gangplank` **14315** | **2658,2639 L1** | `loc.pack` `14315=pest_lander_gangplank`. jm2 **unique** `m41_41` `1 34 15: 14315 10` (shape **10**, no angle). Unpack `pest.loc`: name **Gangplank** · *Handy for boarding the ship.* · `op1=Cross` · `active=yes` · `hillskew=yes` · `mapscene=46` · model `arhein_ship_on`. **0** `category=` · **0** dest / `board_message`. L1 MAP `h25 o42 f2`. **Do not** `teleTo` here. |
 | **Stand (tele / click)** | **2657,2639 L0** | West of loc, **actualLevel** (LINK_BELOW). L1 tele here / on the plank is **midair**. `PathFinder.walkable` **true**. **Not** dest. |
-| **Dest** | **2660,2640 L0** | **CANDIDATE** waiting-craft deck (boat floor occupancy + walkable). `p_telejump(0_41_41_36_16)`. Loc plane **2658,2639 L1** is midair — do not dest there. **Not** `m41_40`. |
+| **Dest** | **2660,2640 L0** | **CANDIDATE** lander **topside** (open-boat `pest_lander_boat_floor_*`). No L1 deck. L1 plank **2658,2639** is midair. Ladder **14314** is Climb-out later. **PASS** `pestcsvud4bu`. |
 
 Loc tile **is** dest because the plank is walkable (board **onto** the waiting craft). Dest-from-maps rule 4 only forbids standing **on** a `WALK_BLOCKED` loc. Harness still stands **next to** the loc to Cross.
 

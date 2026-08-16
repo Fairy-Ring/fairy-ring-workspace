@@ -6,6 +6,7 @@ Record **intentional product / platform differences** from historical May 2006 /
 
 | Date | Area | Deviation | Why | Owner |
 |------|------|-----------|-----|-------|
+| 2026-08-15 | Content / DT Excellent present-bit | Village Excellent **8→10** also writes `%fd_mirror_present=1` (CANDIDATE process: hill already mirrors when you walk SE). Look-into chat only. **0** dest / **15** / **6084**. | Same Talk-to as **PASS** `dtexcssaj977`. Bit join labeled. **PASS** `dtmlsv9gigz`. | agent |
 | 2026-08-15 | Content / Barrows Ahrim Dig | Dig on h85 plateau → CANDIDATE **3557,9703 L3** (collision west of stairs **6702**). Old Man **3565,3288** excluded. **0** leftover **4535**. | Occupancy + walkable is dest. Soft `give` is toy. **PASS** `brdigsutlnbj`. | agent |
 | 2026-08-15 | Content / OSF Guthix heat | `[oplocu]` on packed `scenery_2728–2732` range/fire · `bowl_water` **1921→4456** · CANDIDATE *You heat the water.* No varp / XP. Stew item-on-item kept. Cook-o-matic `cooksquestrange` not bound. | Copy-agent. Soft `setvar 13`+give is toy. **PASS** `osfghsut5m2q`. | agent |
 | 2026-08-15 | Content / Imp leftover | Larxus Use-scroll CANDIDATE 2007-base minus Changes. Surface dest `z±6400`. Pit dest leftover pit-loc centroid **3168,9758**. Victory mes leftover **15831** titles without opening the IF. XP **160/160**. Combat **VERIFIED** unpack **40/5/5/5**. **0** leftover **15831** / **2804**. | Parent “0 HP” was a short `-A` miss. Soft `give` is toy. **PASS** `chimpsuhe94u`. | agent |
