@@ -139,6 +139,24 @@ Chat, XP, and start-talk still follow the ladder. A **CANDIDATE** rate, combat t
 
 **Leftover hunts:** name the **CANDIDATE** last-resort so a later product session can ship. **Implement order = none** is only for **out of era**, **false join**, or last-resort **also silent**. It is not the default when 2007-base minus Changes answers.
 
+### LC bar — walk backward (2026-08-16)
+
+The accuracy bar is **Lost City’s bar**. LC maps OSRS / 2007-base and walks **backward** (subtract Changes after the target day). A lot of May 2006 is **not written down**. Refusing that inference (dest **PARK** because *our remesure* did not name a tile, while 2007-base does) was short-sighted.
+
+**Invent** is still a dest / stat / line / % with **no** RuneScape cite. 2007-base minus Changes **is** a cite. A labeled **CANDIDATE** is a best guess for what Jagex had — ship it; update when a higher rung appears.
+
+**Still refuse:** dest onto an L1 plank loc (midair); dest into a room that is **absent** from our 377 maps; RS3 systems; a made-up percentage; modern OSRS Changes after the Aug 2007 archive.
+
+**Dest, operationally:**
+
+1. Prefer our loc pair / dest-side occupancy + `PathFinder.walkable` next-to.  
+2. If that is silent, take the **2007-base / early OSRS mapped** `(x,z)`, subtract Changes, require the dest-side floor to **exist on our jm2**, stand next-to walkable, label **CANDIDATE**.  
+3. **PARK / EXHAUSTED** only if last-resort is **also** silent, or the dest-side room is not on our maps.
+
+Our *process* still differs from LC (isolation, dual-agent, mid-gates — Decision **009**). The *inference* matches theirs.
+
+**Later horizon (not this pack):** next *target* stays **410** (Decision **014**). Operator names a later **r468** / OSRS-base line (~10 Aug 2007 archive) as harder: more of the work will be “what Jagex would have done” from everything we learn walking 377→410. Do **not** flip `ENGINE_REVISION` here.
+
 ---
 
 ## Other Lost City branches (deduplicate effort)

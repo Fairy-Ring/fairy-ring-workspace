@@ -14,7 +14,8 @@
    - **Long horizon (shared with Lost City’s *goal*, not their *method*):** careful historical preservation of **RS2-era** RuneScape **up to the EOC / RS3 boundary** — era-true stacks, honest residuals, no invent.  
    - **This workspace / current focus:** **revision 377** (~2 May 2006; Return of the Wise Old Man era) is the **active tree**, not the permanent brand identity. Later Fairy Ring work may target other pre-EOC revisions under the same name.  
    - **Why this name:** thematic extension of Lost City / Zanaris / fairy-network lore — rings move you between places and times; this project moves careful work between tools, humans, and living playable stacks. Generic compound; not “RS2”, not “LC”, not “Wise Old Man”.  
-   - **Method (differs from LC):** isolation, mid-gates, residual bar, open AI-as-tool, thin public contributor surface — without dunking LC process (see §5).  
+   - **Method (process differs from LC):** isolation, mid-gates, residual bar, open AI-as-tool, thin public contributor surface — without dunking LC process (see §5).  
+   - **Bar (same as LC):** period first; when silent, map OSRS / 2007-base and walk **backward** (minus Changes). A labeled **CANDIDATE** is the guess. That is not invent. See [`../research/authenticity-stance.md`](../research/authenticity-stance.md) § LC bar (2026-08-16).  
    - **GitHub (illustrative names):**  
      - workspace: `fairy-ring-workspace`  
      - product: `FR-content`, `FR-engine`, `FR-client-ts`  

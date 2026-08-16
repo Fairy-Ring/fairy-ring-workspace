@@ -14,7 +14,7 @@ Research subagents were told to write **one exclusive file**, **docs only**, **n
 | Proof labels | [`softpass.md`](softpass.md) · [`deviations.md`](deviations.md) |
 | This map | [`README.md`](README.md) |
 
-Closed leftovers (**15831**, **2804**, Kharazi N/W PARK, dest invent) stay closed because **those rails** say so — not because a hop note said “STOP”.
+Closed leftovers (**15831**, **2804**, dest onto L1 plank) stay closed because **those rails** say so — not because a hop note said “STOP”. Dest **PARK** only if 2007-base minus Changes is **also** silent, or the dest-side room is not on our maps ([`authenticity-stance.md`](authenticity-stance.md) § LC bar).
 
 ## What a hop note is
 
