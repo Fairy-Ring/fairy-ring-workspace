@@ -40,6 +40,7 @@ A soft mid that **product-writes** the next stage is progress. It is **not** res
 ## Soft mid / thrash rows
 
 | Date | Unit | Soft entry / prep | Product under test | Account / note | Next (toward HARD/SEG) |
+| 2026-08-16 | other-5 Barrows Dig dests | tele **ON** each peak · give spade | product Dig → dest-cite crypt L3 · Ahrim still **3557,9703 L3** · dummy overlay **4535** · **0** 15831 / 2804 | **PASS** `br5dgsvx6axn` · Dig **HARD** · tele/give **toy** · crypt floor + stairs visible (rotate yaw) | sarc/doors later · opener **1 now** = Icthlarin |
 | 2026-08-16 | The Feud Ali M start | tele **3305,3211** · no soft stage | product Talk-to **1862** refuse stay **0** · Yes **0→1** · **0** dest / shop | **PASS** `feud0svwntz3` · Talk-to **HARD** · RED→SPINE | Pollniv later · opener **1 now** = other-5 Dig |
 | 2026-08-16 | Fenkenstrain signpost | tele **3492,3485** · no soft stage | product Read **5164** → Braindead Butler mes · bit **23** · `fenk_quest` stay **0** · **0** dest / Dr | **PASS** `fenkssvwhpgj` · Read **HARD** · RED→SPINE | Dr interview later · other-5 Dig still dest hop |
 | 2026-08-16 | Roving Elves Islwyn start | tele **2292,3147** · no soft stage | product Talk-to **1680** refuse stay **0** · Yes **0→1** · **0** dest / Eluned | **PASS** `rovissvwbvh1` · Talk-to **HARD** · RED→SPINE | Eluned later · other-5 Dig still dest hop |
