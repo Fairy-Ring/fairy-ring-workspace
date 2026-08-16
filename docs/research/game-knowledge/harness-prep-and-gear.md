@@ -130,6 +130,25 @@ Wield/Wear often needs **level + quest**. `give` alone does not equip.
 
 ---
 
+## First follower (2026-08-16)
+
+Until Two Cats `t2c0svyejlu` we had **never** spawned a pet follower in a smoke. Prior cat work only **cleared** `%follower_obj` / `%follower_uid` (pick-a-kitten `kitn`) or opened name chrome (`15192`).
+
+**Do this** (product Drop path — kitten is visible):
+
+```text
+giveItems([['kittenobject', 1]])   // pack 1555 · display Pet kitten · category=kitten
+heldOp('Pet kitten', 5)            // [opheld5,_kitten] → ~cat_drop → ~cat_spawn
+```
+
+Live result: NPC **761** `Kitten` · `npc_say("Miaow!")` · `%follower_obj` + `%follower_uid` set by `pet.rs2`. Soft `give` is **toy**. The spawn + follow is the packed kitten hook.
+
+**Do not** start with `setvar follower_obj 1555` if Drop works — that skips `~cat_spawn` and there is no cat on the tile. Fallback only if Drop fails. Hell kitten **7583** is **not** 377 pick-stock.
+
+Reuse this for any later hop that gates on `oc_category(%follower_obj) = kitten|cat|overgrown` (Gertrude already uses that same test).
+
+---
+
 ## Checklist for a new combat step
 
 - [ ] Note NPC combat level / vislevel in `combat-floors-377.md`  

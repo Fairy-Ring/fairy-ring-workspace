@@ -108,6 +108,7 @@ Local isolation only (`NODE_PRODUCTION` false, staffmod 4). Prefer **host prep**
 | **`speed <ms>`** | World tick rate (min 20ms) | **Quest e2e default 300** via `setWorldSpeed(page, 300)`; override `WORLD_SPEED_MS` |
 | **`tele …`** | Map placement | Anchors / skip commute between proof steps |
 | **`give` via `giveItems`** | Inv seed | **Inv-aware:** free-slot budget; non-stack (lobster) each take a slot — do not seed &gt; free slots at once |
+| **Kitten follower** | Product Drop after `give kittenobject` | First landed Two Cats **PASS** `t2c0svyejlu`. `heldOp(..., 5)` → `~cat_drop`. See harness-prep **First follower**. |
 
 Notes:
 
