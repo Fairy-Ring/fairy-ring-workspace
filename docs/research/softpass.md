@@ -40,6 +40,8 @@ A soft mid that **product-writes** the next stage is progress. It is **not** res
 ## Soft mid / thrash rows
 
 | Date | Unit | Soft entry / prep | Product under test | Account / note | Next (toward HARD/SEG) |
+| 2026-08-16 | Enakhra head place | soft `enakh_quest 1` + statue **3** + give **6989** · stand **3191,2925** | product Use → consume head · statue **4** · stay **1** · **0** dest / hole / **10** | **PASS** `enkhdsvv4ueg` · Use **HARD** · `setvar`+give **toy** · headed statue visible (rotate camera) | Camulet / **10** STOP · other-5 Dig still dest hop |
+| 2026-08-16 | BAR Fire dest | soft `dwarfrock_quest 10` + `dwarfrock_gold_cannonball` 1 · stand **2824,10167** | product Fire **5975** → **2306,4952 L0** · refuse unloaded · stay **10** · **0** `110` / fired bit / demon L3 | **PASS** `barfdsvurtdb` · Fire **HARD** · `setvar` **toy** · dest shot looks into mine pit next to gold (not midair; JSON npcs empty) | **110** / schematic residual · other-5 Dig still dest hop |
 | 2026-08-16 | Ahoy milk use | soft `ahoy_questvar 3` + give **1927** / **4245** | product Use → **4246**+**1925** · stay **3** · **0** dest / **4** | **PASS** `ahmksvu5zbq` · Use **HARD** · `setvar`+give **toy** | enlightenment later · dest hops L0 only |
 | 2026-08-16 | CF Cross topside | soft `fever_quest 1` + tele **3709,3496 L0** | product Cross → **3713,3496 L1** deck · not hold · stay **1** | **PASS** `cfgpsvucegu` · Cross **HARD** · `setvar` **toy** | Let's-go dest |
 | 2026-08-16 | Pest Cross lander well | soft tele **2657,2639 L0** | product Cross **14315** → **2660,2640 L0** boat floor · L1 plank midair · ladder **14314** climb-out later | **PASS** `pestcsvud4bu` · Cross **HARD** · tele **toy** | island leave later |
