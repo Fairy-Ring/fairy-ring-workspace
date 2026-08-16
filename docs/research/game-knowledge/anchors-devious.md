@@ -39,7 +39,7 @@ bun "$RS2_R377_ROOT/tools/harness/nav/tools/probe-walkable.mjs" \
   3406,3492,0 3407,3492,0 3406,3493,0 3405,3492,0
 ```
 
-Soft `setvar devious_main` = **toy**. Soft `setvar devious_monk 1` is **wrong** (shows Dead Monk).
+Soft `setvar devious_main` = **toy**. Soft `setvar devious_monk 1` is **wrong** (shows Dead Monk). Start **PASS** `dev0svzsh13` **0→1** · hooded **3075** still visible · `devious_monk` stay **0**.
 
 ---
 

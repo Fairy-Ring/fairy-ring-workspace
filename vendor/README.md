@@ -50,6 +50,6 @@ git clone https://github.com/LostCityRS/Server.git "$RS2_R377_ROOT/vendor/Server
 | Remote | Points at | Push |
 |--------|-----------|------|
 | `origin` | LostCityRS upstream | **disabled** |
-| `private` | `Fairy-Ring/FR-*` | backup / product push |
+| `private` | `Fairy-Ring/FR-*` (**public**; name is a leftover) | product push — do this when a unit lands |
 
 Never push experiment work to `LostCityRS/*` without permission.

@@ -9,8 +9,8 @@ Ship:
 |------|------|
 | `index.html` | Human board (server door = 377 content-complete; maintainers e2e) |
 
-Publish: `bash scripts/publish-public-board.sh --push` (copies this folder to `Fairy-Ring/Fairy-Ring.github.io` → `https://fairy-ring.github.io/`).  
-Nightcap: `bash scripts/closeout-public.sh` (thin workspace export **and** Pages board).  
+**Hop fold:** refresh `index.html` if gap **003** flipped, then `bash scripts/publish-public-board.sh --push` (this folder → `Fairy-Ring/Fairy-Ring.github.io` → `https://fairy-ring.github.io/`).  
+**Full shebang** (thin workspace **and** board): `bash scripts/closeout-public.sh` — only when the export surface changed or the operator asks. Do not rerun the thin export every hop.  
 Do **not** put the full vault `docs/research/` on Pages (Decision **011**).
 
 Refresh the HTML **same turn** the vault scoreboard flips a RED or SPINE row, or a SHIP e2e walk lands. No smoke account ids.

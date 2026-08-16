@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-16T15:58Z
+Generated: 2026-08-16T16:58Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -26,6 +26,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/decisions/013-lc-parity-internal-names.md
 ./docs/decisions/014-next-revision-410.md
 ./docs/decisions/015-harness-apiv2-and-nav.md
+./docs/decisions/016-e2e-from-hop-smokes.md
 ./docs/progress/index.html
 ./docs/progress/README.md
 ./docs/README.md

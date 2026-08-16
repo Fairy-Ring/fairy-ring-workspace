@@ -145,8 +145,9 @@ This surface does **not** ship full session plans or the entire research corpus.
 ### Git
 
 - **Commits stay frequent.** Small commits with clear prefixes (`docs:`, `feat(harness):`, `fix(content):`, …). Chat is not a backup.  
-- **Private vault may push often.** Maintainer `FR-vault` is private laptop backup.  
-- **Do not push public remotes unless asked.** Agents **do not** `git push` `FR-content` / `FR-engine` / `FR-client-ts` or `fairy-ring-workspace` unless a maintainer asked **this turn**.  
+- **Only `FR-vault` is private.** Push it with the commits.  
+- **`FR-content` / `FR-engine` / `FR-client-ts` are public** (remote name `private` is a leftover). Push `rs2-r377` when a coherent unit lands.  
+- Thin `fairy-ring-workspace` only when the export surface changed or a maintainer asked this turn.  
 - Never force-push shared branches unless maintainers explicitly ask.  
 - Never point `origin` at LostCityRS for experiment push.  
 - Never push to `LostCityRS/*`.

@@ -126,8 +126,9 @@ Do not point experiments at live 274 production trees.
 | | |
 |--|--|
 | **Commits** | Stay **small and frequent** — durable units of work, not chat. |
-| **Private vault** | Maintainers may push `FR-vault` often (private backup). |
-| **Public remotes** | **Only when a maintainer asks.** `FR-*` and `fairy-ring-workspace` wait. Silence on GH does not mean work stopped. |
+| **Private vault** | Maintainers push `FR-vault` with the commits. This is the **only** private GitHub remote. |
+| **FR-content / FR-engine / FR-client-ts** | **Public.** Push `rs2-r377` when a coherent unit lands. |
+| **Thin export** | `fairy-ring-workspace` when the export surface changed or a maintainer asks. |
 
 ## PR expectations
 

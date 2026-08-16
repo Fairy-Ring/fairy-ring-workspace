@@ -16,7 +16,7 @@ vendor/
 └── Server/        # optional research — LostCityRS Server shell (not required for smoke)
 ```
 
-Pins: `docs/research/PROVENANCE-UPSTREAM-PINS.md`. Typical remotes: `origin` = LostCityRS (push disabled), `private` = Fairy-Ring.
+Pins: `docs/research/PROVENANCE-UPSTREAM-PINS.md`. Typical remotes: `origin` = LostCityRS (push disabled), `private` = Fairy-Ring **public** `FR-*` (the remote name is a leftover).
 
 ---
 
@@ -153,7 +153,7 @@ Matching rule: **same revision family** for engine + content branches. Here both
 | `origin/274` | Upstream production family | N/A (read) |
 | `origin/377-wip` | Upstream WIP for May 2006 | **Do not push AI work here** |
 | `origin/377-node` | Engine-only node experiment | Read |
-| **`rs2-r377`** | Local private work branches | Only to **private** remotes if any |
+| **`rs2-r377`** | Fairy Ring product branches | Fairy-Ring **public** `FR-*` (remote still named `private`) |
 
 Never force-push or PR accidental AI dumps to LostCityRS.
 

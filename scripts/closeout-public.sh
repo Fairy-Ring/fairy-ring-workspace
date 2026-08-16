@@ -2,17 +2,16 @@
 # closeout-public.sh — operator-asked public nightcap
 #
 #   bash scripts/closeout-public.sh
-#   bash scripts/closeout-public.sh --vendor   # also push FR-content/engine/client-ts if ahead
+#   bash scripts/closeout-public.sh --vendor   # FR-* if somehow still ahead
 #
-# Always (when asked to update public):
-#   1. Thin export → fairy-ring-workspace + commit/push rs2-r377
-#   2. Org Pages board → Fairy-Ring.github.io + commit/push main
+# Thin export + Pages board. Run when the export surface changed or asked.
+# FR-content / FR-engine / FR-client-ts are public — push those with the hop
+# (`git -C vendor/<tree> push private rs2-r377`), do not wait on this script.
 #
 # Before this: refresh docs/export/progress/index.html if gap 003 flipped
 # (RED / SPINE / SHIP e2e walk). No smoke account ids on the board.
 #
-# Does NOT push LostCityRS. Vault origin is private — push that with commits,
-# not from this script (unless the working tree is already clean).
+# Does NOT push LostCityRS. Vault origin is the only private remote.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
