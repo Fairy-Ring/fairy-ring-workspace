@@ -40,6 +40,7 @@ A soft mid that **product-writes** the next stage is progress. It is **not** res
 ## Soft mid / thrash rows
 
 | Date | Unit | Soft entry / prep | Product under test | Account / note | Next (toward HARD/SEG) |
+| 2026-08-16 | Roving Elves Islwyn start | tele **2292,3147** · no soft stage | product Talk-to **1680** refuse stay **0** · Yes **0→1** · **0** dest / Eluned | **PASS** `rovissvwbvh1` · Talk-to **HARD** · RED→SPINE | Eluned later · other-5 Dig still dest hop |
 | 2026-08-16 | ToG Juna Talk-to | soft `qp` **43** · stand **3252,9515 L2** | product Talk-to **6657** · opener + bowl lines · low-QP `^dm_default` · HUD **3279** closed · stay L2 | **PASS** `togjtsvw31li` · Talk-to **HARD** · `setvar qp` **toy** · live `chatnpc_specific` (loc has no npc pointer) | bowl **4704** / stone **4703** later · other-5 Dig still dest hop |
 | 2026-08-16 | HM Check panel | soft `hauntedmine 1` + tele **2769,4521** | product Check **4949** → main **11485** · stay **1** · **0** dest | **PASS** `hmpnlsvvwe47` · Check **HARD** · tele/`setvar` **toy** · IF *Points Settings* visible | cart dest EXHAUSTED · key **4078** later · other-5 Dig still dest hop |
 | 2026-08-16 | MEP1 letter Read | soft `mourning_quest 1` + give **6071** | product `[opheld1]` mesbox · fold mes · letter stays · stay **1** · **0** dest / **683** / book IF | **PASS** `mep1lsvvrovj` · Read **HARD** · `setvar`+give **toy** · mesbox shot `mep1lsvvqkqz` | dest / crystal later · other-5 Dig still dest hop |
