@@ -94,7 +94,7 @@ Full note: [`docs/research/runescript/README.md`](runescript/README.md) § Autho
 | **3** | **Decompiled 377 client** (Java deob in `vendor/client-java`) | Protocol, client-side constraints, UI |
 | **4** | **Period media** (~2005–mid-2006): Jagex **Update:** news (OSRS wiki *Historical updates* **and** [runescape.wiki](https://runescape.wiki) pages marked “copied verbatim” from the RS site), era videos/screenshots | **Release day** is RS2-accurate from those posts. The **news body** is period. The rest of either modern wiki (walkthrough, reqs, later mechanics) is **not**. See § RS3 wiki below. |
 | **5** | **Other LC branches** (content/engine) — **prefer reusing LC work** | See next section. Deduplicates effort vs re-implementing from scratch. Prefer **274** (and other pre-377 LC) when 377-wip is wrong or empty |
-| **6** | **OSRS 2007-base** (Aug 2007 RS2 backup + wiki Changes) | **Last resort** on this ladder — not a stall. When 1–5 do not answer, take 2007-base (minus later Changes) and **finish** the in-scope unit. **Not** modern OSRS. |
+| **6** | **OSRS 2007-base** (Aug 2007 RS2 backup + [oldschool.runescape.wiki](https://oldschool.runescape.wiki) **Changes** / Update history / Transcript) | **Last resort** — not a stall. The wiki is **trusted as correct to OSRS**. Walk **backward** (subtract Changes after the target day). **Not** the modern walkthrough box. See [`osrs-wiki-changes-crawl-377.md`](osrs-wiki-changes-crawl-377.md). |
 
 ### 377-wip content is untrusted
 
@@ -259,7 +259,11 @@ That message is **engine debug**: the client action reached the server, but **no
 
 Last resort means **use it when the higher rungs do not answer**, then **finish the unit**. It does **not** mean park the quest until a May 2006 video appears.
 
-OSRS launched from a **known-good RS2 backup (~August 2007)**. That is still RS2, ~15 months after our tip. Some media for the **May 2006 → Aug 2007** window does not exist. Inventing a third script is worse than taking 2007-base.
+OSRS launched from a **known-good RS2 backup (~10 August 2007)**. That is still RS2, ~15 months after our tip. Some media for the **May 2006 → Aug 2007** window does not exist. Inventing a third script is worse than taking 2007-base.
+
+**Wiki:** [oldschool.runescape.wiki](https://oldschool.runescape.wiki) is trusted **to OSRS** (same kind of people as LC). Its **Changes** / Update history are the dated line. We did **not** crawl that line before calling remaining-code “there” (2026-08-15). That was a miss. The crawl is [`osrs-wiki-changes-crawl-377.md`](osrs-wiki-changes-crawl-377.md). Modern walkthrough chrome (stamina, fairy rings, diaries, League) is **SUBTRACT**.
+
+**Social / lore dialogue passes:** OSRS later rewrote lines that are “no longer considered socially acceptable.” This project **does not apply those rewrites**. They are almost never a May 2006→Aug 2007 change. Subtract the dated Change; keep 2007-base period voice. Do not invent a cleaned third script.
 
 ### The window
 
