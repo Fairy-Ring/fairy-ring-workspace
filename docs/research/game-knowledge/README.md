@@ -40,6 +40,8 @@ Cold resume: agents should **read this folder** before inventing `giveItems` / `
 | [`anchors-karamja-shipyard.md`](anchors-karamja-shipyard.md) | MM seal gate **2945,3041**, stand **2943,3040**, guard **2944,3040**, Caranock **2956,3025** |
 | [`anchors-barrows.md`](anchors-barrows.md) | Six mound Dig stands → crypt dests (Ahrim **3565,3289** → **3557,9703 L3**). Brother names **CANDIDATE** |
 | [`anchors-pest-cross.md`](anchors-pest-cross.md) | Lander Cross **14315** dest **2658,2639 L1** stand **2657,2639 L1**. Match dest **EXHAUSTED** |
+| [`anchors-champions-guild.md`](anchors-champions-guild.md) | Larxus stand **3186,9758 L0** · statue **3184,9758** · pit dest **3168,9758 L0** |
+| [`anchors-mta.md`](anchors-mta.md) | Hall portals / Rewards **3362,3316 L1** / Guardian stand. Room dests shipped. |
 | [`anchors-burgh.md`](anchors-burgh.md) | Fyiona **3480,3241** stand **3479,3241**. Soft vis bit. **341** **PASS** `tt341suu6876` |
 | [`anchors-soulbane.md`](anchors-soulbane.md) | Rift **3310,3452** stand **3309,3452** → dest **3013,5243 L0**. **15100** **PASS** `sbragsuuf0on` |
 | [`anchors-osf-guthix-heat.md`](anchors-osf-guthix-heat.md) | Falador Range **2988,3365** stand **2989,3365**. Smoke also used Lumbridge **3230,3196** / **3231,3196** |

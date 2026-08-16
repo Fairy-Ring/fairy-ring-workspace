@@ -91,3 +91,4 @@ Harness-tele-stand (next-to blocked loc) does **not** apply to mounds. Official 
 | Date | Note |
 |------|------|
 | 2026-08-15 | Six peak stands from `m55_51` heightfield + parent census. Dest side = dest-cite six only. Name join **CANDIDATE**. |
+| 2026-08-15 | Ahrim Climb-up **6702** dest **3565,3289 L0** planted **PASS** `brclmsv5gq0b`. Inverse of Dig. leftover **4535** closed. |

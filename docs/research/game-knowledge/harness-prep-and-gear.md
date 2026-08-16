@@ -100,6 +100,7 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 | MM temple M'speak | none | soft `mm_enchanted_gold_bar` + `mm_monkey_amulet_mould` + `ball_of_wool` | n/a | tele **2810,9191 L0** (not L1); product OPLOCU bar→Wall of flame + string; UI **M'speak amulet** |
 | Managing labour HARD | ATK 40 + WC 70 / mining 60 / fishing 50 | rune axe + rune pick + lobster pot | **yes** | maple/coal/rarefish intercepts; not flax |
 | Managing kill −6 | ATK/STR **40** | `bronze_scimitar` | **yes** | Ragnar vislevel **1** HP **1**; stand **2517,3859** |
+| Champions Lesser Demon | start ATK/STR **1** then boost **99** after slash | **none** (Larxus no weapons/armour) | n/a | overlay HP **1** · sample slash **2972** first · **PASS** `chldmsuyqn4j` |
 | Regicide craft fuse | Crafting **10** | naphtha + sulphur + limestone + pot + pestle + wool×4 + leather gloves | **yes** gloves | no give fused; Al-Kharid furnace + Isafdar loom |
 | Regicide still / still→fuse | Crafting **10** | tar + **coal×8** (unstackable) + sulphur + limestone + pot + pestle + wool×4 + gloves first | **yes** gloves | **Coal does not stack** (377 `[coal]` has no `stackable=`; ores never did). `give coal 20` fills inv. |
 

@@ -17,14 +17,15 @@ Formula: `world = mx×64 + local`. Outpost `m41_41` origin **2624, 2624**. Game 
 | Role | Tile | Note |
 |------|------|------|
 | **Loc** `pest_lander_gangplank` **14315** | **2658,2639 L1** | `loc.pack` `14315=pest_lander_gangplank`. jm2 **unique** `m41_41` `1 34 15: 14315 10` (shape **10**, no angle). Unpack `pest.loc`: name **Gangplank** · *Handy for boarding the ship.* · `op1=Cross` · `active=yes` · `hillskew=yes` · `mapscene=46` · model `arhein_ship_on`. **0** `category=` · **0** dest / `board_message`. L1 MAP `h25 o42 f2`. **Do not** `teleTo` here. |
-| **Stand (tele / click)** | **2657,2639 L1** | West of loc. L1 pier `1 33 15: h25 o42 f2` + loc **9541** `serim_pier`. dest-from-maps remesure: `PathFinder.walkable` **true**. **Not** dest. |
-| **Dest** | **2658,2639 L1** | **CANDIDATE** waiting craft. dest-cite + remesure: loc tile **walkable**. `p_telejump(1_41_41_34_15)`. **Not** a second dest. **Not** `m41_40`. |
+| **Stand (tele / click)** | **2657,2639 L0** | West of loc, **actualLevel** (LINK_BELOW). L1 tele here / on the plank is **midair**. `PathFinder.walkable` **true**. **Not** dest. |
+| **Dest** | **2660,2640 L0** | **CANDIDATE** waiting-craft deck (boat floor occupancy + walkable). `p_telejump(0_41_41_36_16)`. Loc plane **2658,2639 L1** is midair — do not dest there. **Not** `m41_40`. |
 
 Loc tile **is** dest because the plank is walkable (board **onto** the waiting craft). Dest-from-maps rule 4 only forbids standing **on** a `WALK_BLOCKED` loc. Harness still stands **next to** the loc to Cross.
 
 ```js
-const PEST_CROSS_LOC = { x: 2658, z: 2639, level: 1 }; // 14315 — dest after Cross; not teleTo
-const PEST_CROSS_STAND = { x: 2657, z: 2639, level: 1 }; // L1 pier west
+const PEST_CROSS_LOC = { x: 2658, z: 2639, level: 1 }; // 14315 loc plane — not player dest
+const PEST_CROSS_STAND = { x: 2657, z: 2639, level: 0 }; // actualLevel — L1 is midair
+const PEST_CROSS_DEST = { x: 2660, z: 2640, level: 0 }; // craft deck
 await teleTo(page, PEST_CROSS_STAND, 2, 30_000);
 ```
 
@@ -76,7 +77,7 @@ Do **not** attach `category=gangplank_*` (Entrana `ship_to_entrana_on` has it; l
 | 3-boat / 25-cap / 5-min / Void kit / 6 Jun HUD | **SUBTRACT** / other units |
 | Hunt **289** / flip **410** | product stays **377** |
 
-**PASS later (XL unit 10, not this file):** stand **2657,2639 L1** · Cross **14315** · land **2658,2639 L1** · Exchange still opens · **0** instance write · **2804** / **15831** closed.  
+**PASS (XL unit 10):** stand **2657,2639 L0** · Cross **14315** · land **2660,2640 L0** planted (L1 plank was midair) · Exchange still opens · **0** instance write · **2804** / **15831** closed · `pestcsv4qcb8` / `pestcsv4w4th`.  
 **PASS now:** loc **14315** visible from stand; click **no-op**. **PASS forbidden:** boarded game · island tele · instance / **2804** / **15831**.
 
 ```bash

@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-15T22:11Z
+Generated: 2026-08-16T01:58Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -49,12 +49,14 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-barrows.md
 ./docs/research/game-knowledge/anchors-burgh.md
 ./docs/research/game-knowledge/anchors-catherby.md
+./docs/research/game-knowledge/anchors-champions-guild.md
 ./docs/research/game-knowledge/anchors-crash-island.md
 ./docs/research/game-knowledge/anchors-digsite.md
 ./docs/research/game-knowledge/anchors-isafdar.md
 ./docs/research/game-knowledge/anchors-karamja-shipyard.md
 ./docs/research/game-knowledge/anchors-miscellania.md
 ./docs/research/game-knowledge/anchors-mort-myre.md
+./docs/research/game-knowledge/anchors-mta.md
 ./docs/research/game-knowledge/anchors-osf-guthix-heat.md
 ./docs/research/game-knowledge/anchors-outpost.md
 ./docs/research/game-knowledge/anchors-pest-cross.md
