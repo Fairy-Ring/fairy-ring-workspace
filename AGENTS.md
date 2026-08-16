@@ -106,6 +106,7 @@ Details: `README.md`, `CONTRIBUTING.md`, `docs/runbooks/` (when present).
 |------|------|
 | Rules (this file) | **`AGENTS.md`** |
 | Authenticity | `docs/research/authenticity-stance.md` |
+| Hop notes vs queue | `docs/research/hop-note-policy-377.md` |
 | Intentional non-auth | `docs/research/deviations.md` |
 | Soft mids / not-yet-e2e | `docs/research/softpass.md` |
 | RuneScript language/runtime | `docs/research/runescript/README.md` |

@@ -159,6 +159,7 @@ verify_stage() {
     local extra
     extra="$(find "${stage}/docs/research" -maxdepth 1 -type f -name '*.md' \
       ! -name 'authenticity-stance.md' \
+      ! -name 'hop-note-policy-377.md' \
       ! -name 'deviations.md' \
       ! -name 'softpass.md' \
       ! -name 'PROVENANCE-UPSTREAM-PINS.md' \
@@ -345,6 +346,7 @@ for f in "${ROOT}"/docs/decisions/*.md; do
 done
 
 copy_file "docs/research/authenticity-stance.md"
+copy_file "docs/research/hop-note-policy-377.md"
 copy_file "docs/research/PROVENANCE-UPSTREAM-PINS.md"
 copy_file "docs/research/deviations.md"
 copy_file "docs/research/softpass.md"

@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-16T17:11Z
+Generated: 2026-08-16T17:12Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -79,6 +79,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/harness-prep-and-gear.md
 ./docs/research/game-knowledge/harness-tele-stand.md
 ./docs/research/game-knowledge/README.md
+./docs/research/hop-note-policy-377.md
 ./docs/research/PROVENANCE-UPSTREAM-PINS.md
 ./docs/research/runescript/_opcode_census_measure.py
 ./docs/research/runescript/failures.md
