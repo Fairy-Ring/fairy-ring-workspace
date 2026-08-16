@@ -36,7 +36,7 @@ Do **not** flip `ENGINE_REVISION`, login, or pack to 410 in this workspace until
 
 ## Client pin (OpenRS2 32256)
 
-Game client is **not** the two linked JARs. Those are **loaders** (31737 / 33229). Game code is [clients/32256](https://archive.openrs2.org/clients/32256) (Jagex-wrapped Pack200). Local: `research/jars/410/`. Notes: [`../research/client-410-openrs2-32256.md`](../research/client-410-openrs2-32256.md).
+Game client is **not** the two linked JARs. Those are **loaders** (31737 / 33229). Game code is [clients/32256](https://archive.openrs2.org/clients/32256) (Jagex-wrapped Pack200). Local: `research/jars/410/`. Notes: [`../research/horizon/client-410-openrs2-32256.md`](../research/horizon/client-410-openrs2-32256.md).
 
 **Do not** open `rs2-r410` on Client-TS / content / engine yet. Deob into `research/deob/410/` first. LC Client-Java has no `410` branch.
 
@@ -47,7 +47,7 @@ Game client is **not** the two linked JARs. Those are **loaders** (31737 / 33229
 | OpenRS2 id | **1254** |
 | Local path | `cache/openrs2-410/` (gitignored blobs) |
 | Fetch | `bash scripts/fetch-openrs2-cache.sh 410` |
-| Research | [`../research/cache-410.md`](../research/cache-410.md) · [`../research/revision-410-horizon.md`](../research/revision-410-horizon.md) |
+| Research | [`../research/horizon/cache-410.md`](../research/horizon/cache-410.md) · [`../research/horizon/revision-410-horizon.md`](../research/horizon/revision-410-horizon.md) |
 
 ## Consequences
 

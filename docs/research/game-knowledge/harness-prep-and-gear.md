@@ -103,6 +103,7 @@ Prefer **steel scimitar + plate** as the default mid-gate kit unless the NPC is 
 | Champions Lesser Demon | start ATK/STR **1** then boost **99** after slash | **none** (Larxus no weapons/armour) | n/a | overlay HP **1** · sample slash **2972** first · **PASS** `chldmsuyqn4j` |
 | Regicide craft fuse | Crafting **10** | naphtha + sulphur + limestone + pot + pestle + wool×4 + leather gloves | **yes** gloves | no give fused; Al-Kharid furnace + Isafdar loom |
 | Regicide still / still→fuse | Crafting **10** | tar + **coal×8** (unstackable) + sulphur + limestone + pot + pestle + wool×4 + gloves first | **yes** gloves | **Coal does not stack** (377 `[coal]` has no `stackable=`; ores never did). `give coal 20` fills inv. |
+| Elid Mayor start | none | none | n/a | Tele **3443,2912**. Talk-to **3040**. Not Ghaslor **3029**. **PASS** `elid0svzkzn7`. |
 
 ---
 

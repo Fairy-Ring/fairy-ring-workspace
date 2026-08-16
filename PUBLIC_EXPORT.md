@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-16T15:31Z
+Generated: 2026-08-16T15:58Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -51,6 +51,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-catherby.md
 ./docs/research/game-knowledge/anchors-champions-guild.md
 ./docs/research/game-knowledge/anchors-crash-island.md
+./docs/research/game-knowledge/anchors-devious.md
 ./docs/research/game-knowledge/anchors-digsite.md
 ./docs/research/game-knowledge/anchors-fight-pits.md
 ./docs/research/game-knowledge/anchors-isafdar.md
@@ -58,6 +59,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-miscellania.md
 ./docs/research/game-knowledge/anchors-mort-myre.md
 ./docs/research/game-knowledge/anchors-mta.md
+./docs/research/game-knowledge/anchors-nardah.md
 ./docs/research/game-knowledge/anchors-osf-guthix-heat.md
 ./docs/research/game-knowledge/anchors-outpost.md
 ./docs/research/game-knowledge/anchors-pest-cross.md
@@ -118,6 +120,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./scripts/kill-harness-smoke.sh
 ./scripts/measure-content-complete.py
 ./scripts/measure-openrs2-41x-cache.py
+./scripts/organize-research-horizon.py
 ./scripts/publish-public-board.sh
 ./scripts/smoke-client-ts.mjs
 ./scripts/snapshot-status.sh
