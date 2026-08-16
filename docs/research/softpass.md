@@ -40,6 +40,7 @@ A soft mid that **product-writes** the next stage is progress. It is **not** res
 ## Soft mid / thrash rows
 
 | Date | Unit | Soft entry / prep | Product under test | Account / note | Next (toward HARD/SEG) |
+| 2026-08-16 | Two Cats Unferth start | tele **2919,3558** · toy give+Drop **kittenobject** | no-cat stay **0** · with kitten Yes **0→1** · stay Burthorpe L0 · **0** dest | **PASS** `t2c0svyejlu` · Talk-to **HARD** · give/Drop **toy** · kitten **761** visible | Hild later · opener **1 now** = Agrith |
 | 2026-08-16 | Forgettable Veldaban start | tele **2827,10215** · no soft stage | product Talk-to **2129** refuse stay **0** · Yes **0→1** · stay HQ L0 · **0** cutscene dest | **PASS** `fgv0svy3wx0` · Talk-to **HARD** · RED→SPINE · Veldaban in Black Guard HQ | Kelda later · opener **1 now** = Two Cats |
 | 2026-08-16 | Lost Tribe Sigmund start | tele **3210,3219 L1** · no soft stage | product Talk-to **2082** refuse stay **0** · Yes **0→1** · stay castle L1 · **0** cellar dest | **PASS** `ltr0svxwx20` · Talk-to **HARD** · RED→SPINE · Sigmund + Duke visible | cellar dest later · opener **1 now** = Forgettable |
 | 2026-08-16 | Giant Dwarf Boatman start | tele **2843,10129** · no soft stage | product Talk-to **2205** refuse stay **0** · Yes **0→1** · stay mines L0 · **0** city dest | **PASS** `gdw0svxqx7n` · Talk-to **HARD** · RED→SPINE · boatman on mine dock (not ferryman) | city dest later · opener **1 now** = Lost Tribe |
