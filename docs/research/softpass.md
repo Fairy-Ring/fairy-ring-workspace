@@ -40,6 +40,7 @@ A soft mid that **product-writes** the next stage is progress. It is **not** res
 ## Soft mid / thrash rows
 
 | Date | Unit | Soft entry / prep | Product under test | Account / note | Next (toward HARD/SEG) |
+| 2026-08-16 | Lost Tribe Sigmund start | tele **3210,3219 L1** · no soft stage | product Talk-to **2082** refuse stay **0** · Yes **0→1** · stay castle L1 · **0** cellar dest | **PASS** `ltr0svxwx20` · Talk-to **HARD** · RED→SPINE · Sigmund + Duke visible | cellar dest later · opener **1 now** = Forgettable |
 | 2026-08-16 | Giant Dwarf Boatman start | tele **2843,10129** · no soft stage | product Talk-to **2205** refuse stay **0** · Yes **0→1** · stay mines L0 · **0** city dest | **PASS** `gdw0svxqx7n` · Talk-to **HARD** · RED→SPINE · boatman on mine dock (not ferryman) | city dest later · opener **1 now** = Lost Tribe |
 | 2026-08-16 | Zogre Grish start | tele **2442,3051** · no soft stage | product Talk-to **2038** refuse stay **0** · two-pick Yes **0→1** · stay camp L0 · **0** dest / inv_add | **PASS** `zog0svxj8w8` · Talk-to **HARD** · RED→SPINE · Grish visible at Jiggig | dungeon dest later · opener **1 now** = Giant Dwarf |
 | 2026-08-16 | Icthlarin Wanderer start | tele **3316,2849** · no soft stage | product Talk-to **2006** refuse stay **0** · Yes **0→1** · stay desert L0 · **0** dest / **4504** / **97** | **PASS** `ics0svxd8z1` · Talk-to **HARD** · RED→SPINE · Wanderer visible at tent | rock dest later · opener **1 now** = Zogre |
