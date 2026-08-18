@@ -113,6 +113,8 @@ If still unknown after rungs **1–5**: last-resort **2007-base** (OSRS section)
 
 **No-invent** means: make the **best guess the ladder allows** (leftover `.if` / pack / official `Update:` / period media / in-era 274/289 / last-resort 2007-base) and **ship**. It does **not** mean “find a period sentence or die.”
 
+**Official-day leftover calendar** (275–377 packages): [index-rs Update Roadmap](https://index-rs.github.io/LC-roadmap/Update%20Roadmap.dc.html) · digest [`lc-roadmap-274-377.md`](lc-roadmap-274-377.md). Dates leftover hops. **Not** dest.
+
 **Invent** (operator 2026-08-14, restated same day): a dest, stat, line, rate, or mechanic that **did not come from a RuneScape source** — leftover `.if` / pack / period media / 274–289 era-check / **last-resort 2007-base** (Tip.it Aug 2007, OSRS transcript minus Changes). We lean on that 07 fallback **heavily**. The canonical invent is a **made-up percentage with no cite**. 2007-base *is* a cite. Filling a known hole (377 unpack omitted server HP; `multivar` wants a writer) from the highest rung that answers is a **CANDIDATE**, not invent. Update the guess when a better source appears. Do **not** stall 377-content complete to wait for a Jagex `.rs2`.
 
 | Tag | Rank | Meaning |

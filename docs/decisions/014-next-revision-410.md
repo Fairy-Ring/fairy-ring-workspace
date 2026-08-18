@@ -13,6 +13,8 @@
 
 Do **not** flip `ENGINE_REVISION`, login, or pack to 410 in this workspace until 377 product is intentionally frozen and a 410 track is opened.
 
+**Track opened 2026-08-17.** Live product is still **377**. Stack design [`../plans/2026-08-17-410-stack-design.md`](../plans/2026-08-17-410-stack-design.md): isolated `rs2-r410-stack` worktrees for JS5/login/store. **No** `ENGINE_REVISION=410` on live. **No** remote `rs2-r410` until a JS5/login mid-gate. 377 leftover stays forward-port; 410’s hard work is the stack.
+
 ## Why 410 (not 402 / 412)
 
 | Build | Date | Why not / why yes |

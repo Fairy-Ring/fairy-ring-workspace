@@ -42,6 +42,17 @@ Soft `setvar elidquest` / `setvar elid_main` = **toy**. Start **PASS** `elid0svz
 
 ---
 
+## Market stands (do not tele inside locs)
+
+| Face | NPC tile | Loc | Stand | Tag |
+|------|----------|-----|-------|-----|
+| Rokuh **3045** | **3430,2914** L0 | stall **10376** 2×2 **3430–3431,2912–2913** | **3429,2914** W | **VERIFIED** `probe-walkable` |
+| Ali the Carter **3030** | **3421,2914** L0 | loc occupancy **3420–3421,2913–2914** (W/S blocked) | **3422,2914** E | **VERIFIED** `probe-walkable` |
+
+**Do not** tele **3430,2913** (inside stall). **Do not** tele **3421,2913** (inside Carter loc). `teleTo(..., 2)` can hide that.
+
+---
+
 ## Fountain / later dest
 
 Mayor chat *names* a dried fountain. That is **not** a dest cite.
@@ -58,6 +69,7 @@ Occupancy next to a fountain loc (if packed) is a **stand**, not dest. Measure o
 
 | Date | Note |
 |------|------|
+| 2026-08-18 | Rokuh stall 2×2 · Carter loc occupancy. Stands **3429,2914** / **3422,2914**. |
 | 2026-08-16 | Opened for Elid start land. Fountain dest still **PARK**. |
 
 *Research only. Product stays 377. Hunt 289? no.*

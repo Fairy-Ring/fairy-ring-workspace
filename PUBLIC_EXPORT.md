@@ -1,7 +1,7 @@
 # Public export manifest
 
 Source of truth: vault tree (export is a copy, not a parallel product)
-Generated: 2026-08-16T17:34Z
+Generated: 2026-08-18T19:57Z
 Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 
 ```
@@ -64,6 +64,7 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./docs/research/game-knowledge/anchors-osf-guthix-heat.md
 ./docs/research/game-knowledge/anchors-outpost.md
 ./docs/research/game-knowledge/anchors-pest-cross.md
+./docs/research/game-knowledge/anchors-pollniv.md
 ./docs/research/game-knowledge/anchors-ratcatchers.md
 ./docs/research/game-knowledge/anchors-rellekka.md
 ./docs/research/game-knowledge/anchors-seers-village.md
@@ -123,12 +124,18 @@ Policy: Decision 011 — thin surface; REQUIRED.txt enforced
 ./scripts/measure-content-complete.py
 ./scripts/measure-openrs2-41x-cache.py
 ./scripts/organize-research-horizon.py
+./scripts/pack-dbrow-only.sh
+./scripts/pack-inv-npc-only.ts
 ./scripts/publish-public-board.sh
 ./scripts/smoke-client-ts.mjs
 ./scripts/snapshot-status.sh
 ./scripts/stamp-hop-note-banners.py
 ./scripts/unpack-openrs2-pack200.py
 ./scripts/verify-client-cache-parity.mjs
+./scripts/wiki-dump-extract.py
+./scripts/wiki-dump-titles-spine-2.txt
+./scripts/wiki-dump-titles-spine-next.txt
+./scripts/wiki-dump-titles-spine-old17.txt
 ./tools/client-smoke/package-lock.json
 ./tools/client-smoke/package.json
 ./tools/harness/.gitignore

@@ -66,8 +66,9 @@ export function lastHarnessShotSessionEndMs(username) {
   for (const name of names) {
     if (name.startsWith('.')) continue;
     const low = name.toLowerCase();
-    // Prefer suffix match (`mm_mmthrash1`) or exact folder === user
-    if (low !== want && !low.endsWith(`_${want}`) && !low.includes(want)) continue;
+    // Exact folder or suffix `_user` only. Do **not** `includes` — short
+    // prefixes matched old runs and made the 90s steal gate look dead.
+    if (low !== want && !low.endsWith(`_${want}`)) continue;
     const dir = path.join(root, name);
     let st;
     try {

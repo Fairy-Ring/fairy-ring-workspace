@@ -54,6 +54,7 @@ Cold resume: agents should **read this folder** before inventing `giveItems` / `
 | [`anchors-zanaris.md`](anchors-zanaris.md) | FT1 Nuff **2391,4468** stand **2390,4468**; never stage **10** |
 | [`anchors-ratcatchers.md`](anchors-ratcatchers.md) | Phingspet **3245,9868** / Grimesquit **3243,9866**. Official news = day only; leftover `inter_322` not start |
 | [`anchors-seers-village.md`](anchors-seers-village.md) | OSF: Phantuwti **2705,3474** · vane L3 **2702,3476** stand **2702,3475** · anvil **2712,3495** |
+| [`anchors-pollniv.md`](anchors-pollniv.md) | Feud / Pollniv stands. Operator **3334,2949**. Next-to, not on |
 | [`anchors-nardah.md`](anchors-nardah.md) | Elid Mayor **3040** @ **3442,2912** stand **3443,2912**. Fountain dest **PARK**. Not Ghaslor **3029**. |
 | [`anchors-devious.md`](anchors-devious.md) | Hooded monk **3075** @ **3406,3492** stand **3407,3492**. **Never** dead **3076**. Entrana dest **PARK**. |
 | [`anchors-catherby.md`](anchors-catherby.md) | OSF Arhein **2803,3430** stand **2804,3430** |

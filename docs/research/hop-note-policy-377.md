@@ -10,6 +10,7 @@ Research subagents were told to write **one exclusive file**, **docs only**, **n
 | Kind | Where |
 |------|--------|
 | Queue / what to write next | [`../context/copy-agent-opener-377.md`](../context/copy-agent-opener-377.md) · gap [`../gap/003-content-complete-countdown.md`](../gap/003-content-complete-countdown.md) |
+| Official-day leftover calendar | [`lc-roadmap-274-377.md`](lc-roadmap-274-377.md) · [index-rs Update Roadmap](https://index-rs.github.io/LC-roadmap/Update%20Roadmap.dc.html) |
 | Authenticity / dest invent / product vs toy | [`authenticity-stance.md`](authenticity-stance.md) · [`dest-cite-index-377.md`](dest-cite-index-377.md) · vault `AGENTS.md` |
 | Proof labels | [`softpass.md`](softpass.md) · [`deviations.md`](deviations.md) |
 | This map | [`README.md`](README.md) |

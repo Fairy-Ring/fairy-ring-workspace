@@ -27,6 +27,8 @@ Script / content coords (`^mortton_temple_altar_coord`, spawn rows, etc.) are fo
 | OSF Jungle Forester (west belt) | NPC **401** **2824,2940** L0 | **2823,2940** (W) `osffmstsxosd` — Talk-to **opens**. Primary **2863,2941** N/W still FAIL. **Do not** dest. |
 | OSF Bleemadge | NPC **3810** **2847,3499** L0 | **2847,3498** (S) `osfbustbj2ic` — setstat first; wolves hunt |
 | OSF Arhein | NPC **563** **2803,3430** L0 | **2804,3430** (E) `osfarssopaux` / `osfarstb3wlg` |
+| Elid Rokuh | NPC **3045** **3430,2914** L0 · stall **10376** 2×2 **3430–3431,2912–2913** | **3429,2914** (W). **Do not** **3430,2913** (inside stall). |
+| Elid Ali the Carter | NPC **3030** **3421,2914** L0 | **3422,2914** (E). **Do not** **3421,2913** (inside loc). |
 | OSF Phantuwti | NPC **1798** **2705,3474** L0 | **2704,3473** (SW) `osfphssotk1s` |
 | OSF Seers vane | loc **5811** **2702,3476** L3 | **2702,3475** L3 (S) `osfvnst9ib6t` / `osfvpst9vqy3` |
 | OSF Seers anvil | loc **2783** **2712,3495** L0 | next to (not on) `osfvpst9vqy3` |

@@ -8,13 +8,15 @@
 
 When we walk **all** in-era content start → complete (or a labeled residual) — before a public-beta world or several bot operators — the **implementer writes** the e2e smoke from our existing hop smokes. The **orchestrator reviews** it the same way we review a `.rs2`, then **runs** it. Two-way heartbeat (`.impl-status.md`) carries fixes. Neither side dunks; the loop is the product.
 
+**Hop smokes (2026-08-16):** same split, earlier. Implementer writes each hop smoke into the worktree **`.smokes/`** (gitignored). Orchestrator copies into `tools/harness/` and runs headed. Opener table says **hop smokes OPEN**. E2e stays **CLOSED**.
+
 This **replaces** the 2026-08-14 “one subagent writes *and* runs one headed walk” SOP for the unparked SHIP e2e wave. The 62-slug index stays. Cook / Sheep / Ghost / Doric / Hetty / Rune Mysteries stay walked.
 
 ## Roles
 
 | | Does | Does not |
 |--|------|----------|
-| **Implementer** (content worktree) | Write one draft e2e per queue row. Heartbeat after every unit. Apply review notes on the next draft. | Start the engine. Run Playwright. Write `$RS2_R377_ROOT`. Invent dest. `setvar` the quest under test. Claim PASS. |
+| **Implementer** (content worktree) | Write the hop smoke (`.smokes/`) after each `.rs2`. Later: one draft e2e per queue row. Heartbeat after every unit. Apply review notes on the next draft. | Start the engine. Run Playwright. Write `$RS2_R377_ROOT`. Invent dest. Claim PASS. |
 | **Orchestrator** (real tree) | Queue in the opener. Review the draft. Copy into `tools/harness/` if sane. Headed run + shots. Fold PASS/FAIL. Write review notes. | Ask the implementer to “figure out the process.” Leave a FAIL only in chat. |
 
 ## Why hop smokes first
@@ -23,10 +25,10 @@ Hop smokes already have the stand, NPC/loc id, talk loop, camera, and `PHASE` / 
 
 ## Isolation
 
-Drafts live in the implementer worktree at **`.e2e/`** (gitignored, same class as `.impl-status.md`). Orchestrator copies a reviewed file to `tools/harness/quest-<slug>-e2e-smoke.mjs`. Harness stays Decision **004**. Do not put e2e drafts in `vendor/client-ts`.
+Hop-smoke drafts live at **`.smokes/`**. E2e drafts live at **`.e2e/`**. Both gitignored (same class as `.impl-status.md`). Orchestrator copies a reviewed file to `tools/harness/quest-<slug>-smoke.mjs` (or `-e2e-smoke.mjs`). Harness stays Decision **004**. Do not put drafts in `vendor/client-ts`.
 
 ## Open / close
 
-**Closed now.** RED first starts are empty; that is not “walk every tree.” Operator or orchestrator flips the opener queue to **e2e OPEN** and names the first slug. Until then the implementer stays on whatever the opener’s live table says (today: idle / dest-cite SPINE only).
+**E2e closed now.** Hop smokes **OPEN** (opener table). Operator or orchestrator flips the opener queue to **e2e OPEN** and names the first slug. Until then the implementer writes `.rs2` + `.smokes/` hops.
 
 How-to: [`../runbooks/e2e-from-hop-smokes.md`](../runbooks/e2e-from-hop-smokes.md).

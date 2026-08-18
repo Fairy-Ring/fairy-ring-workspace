@@ -8,6 +8,7 @@
 #   bash scripts/fetch-openrs2-client.sh 418            # pack200 32186
 #   bash scripts/fetch-openrs2-client.sh 419            # pack200 32184
 #   bash scripts/fetch-openrs2-client.sh 422            # packclass 32244 (no pack200/jar)
+#   bash scripts/fetch-openrs2-client.sh 468            # jar 31163 (OSRS-base / 10 Aug 2007 cache)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -78,16 +79,29 @@ case "$BUILD" in
     GAME_ID=32244
     LOADERS=(33198 31638)
     FORMAT=packclass
-    DOC="docs/research/client-422-openrs2-32244.md"
+    DOC="docs/research/horizon/client-422-openrs2-32244.md"
+    ;;
+  468)
+    # OSRS-base family. Cache OpenRS2 633 = 2007-08-10. Client catalog 2007-08-08.
+    # Prefer the already-unpacked game jar (31163). pack200 32141 is the twin stream.
+    GAME_ID=31163
+    LOADERS=(31131 31850 33083)
+    FORMAT=jar
+    DOC="docs/research/horizon/client-468-openrs2-31163.md"
+    PACK200_ID=32141
     ;;
   *)
-    echo "unknown build $BUILD (known: 410, 412, 413, 414, 418, 419, 422). Set OPENRS2_CLIENT_ID=…" >&2
+    echo "unknown build $BUILD (known: 410, 412, 413, 414, 418, 419, 422, 468)." >&2
     exit 2
     ;;
 esac
 
+PACK200_ID="${PACK200_ID:-}"
 if [[ "$FORMAT" == "packclass" ]]; then
   GAME_FILE="client-${BUILD}-packclass.dat"
+elif [[ "$BUILD" == "468" ]]; then
+  # Catalog already-unpacked game jar. Do not reuse the 412 pack200.dat filename.
+  GAME_FILE="client-${BUILD}.jar.dat"
 else
   # 412 is already a JAR; filename is a script convention, not a format claim.
   GAME_FILE="client-${BUILD}-pack200.dat"
@@ -114,9 +128,19 @@ fetch() {
 }
 
 fetch "$GAME_ID" "$GAME_FILE"
+if [[ -n "$PACK200_ID" ]]; then
+  fetch "$PACK200_ID" "client-${BUILD}-pack200.dat"
+fi
 for id in "${LOADERS[@]}"; do
   fetch "$id" "loader-${BUILD}-${id}.jar.dat"
 done
+# Catalog jar is already a ZIP. Copy to the name extract_strings / CFR expect.
+if [[ "$FORMAT" == "jar" ]]; then
+  if [[ ! -f "client-${BUILD}.jar" ]]; then
+    cp "$GAME_FILE" "client-${BUILD}.jar"
+    echo "  copied $GAME_FILE → client-${BUILD}.jar"
+  fi
+fi
 
 if [[ "$UNPACK" -eq 1 ]]; then
   if [[ "$FORMAT" != "pack200" ]]; then
